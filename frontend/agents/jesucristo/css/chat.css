@@ -1,0 +1,251 @@
+.chat-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.chat-activity {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.activity-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 0 6px rgba(145, 199, 163, 0.12);
+}
+
+.chat-activity.is-thinking .activity-dot {
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.chat-surface {
+    padding: 18px 20px 8px;
+}
+
+.chat-empty {
+    display: grid;
+    gap: 10px;
+    padding: 18px;
+    margin-bottom: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.chat-empty h2 {
+    margin: 0;
+    font-family: "Newsreader", "Georgia", serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.chat-empty p,
+.composer-help {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.6;
+}
+
+.example-list,
+.composer-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 360px;
+    max-height: 62vh;
+    overflow-y: auto;
+    padding: 8px 2px 16px;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: min(100%, 760px);
+}
+
+.message.user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.message.bot {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.message-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.message-bubble {
+    padding: 14px 16px;
+    border-radius: 18px;
+    line-height: 1.7;
+}
+
+.message.user .message-bubble {
+    background: linear-gradient(135deg, #cfa35a, #bb8d44);
+    color: #1b1307;
+    border-bottom-right-radius: 8px;
+}
+
+.message.bot .message-bubble {
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-bottom-left-radius: 8px;
+}
+
+.message-bubble p,
+.message-bubble ul,
+.message-bubble ol,
+.message-bubble h4 {
+    margin: 0;
+}
+
+.message-bubble ul,
+.message-bubble ol {
+    padding-left: 20px;
+}
+
+.message-bubble h4 {
+    font-size: 0.95rem;
+    color: var(--accent-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.message-bubble strong {
+    color: var(--accent-soft);
+}
+
+.message.user .message-bubble strong {
+    color: inherit;
+}
+
+.message-bubble code {
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 0.92em;
+}
+
+.typing-caret {
+    display: inline-block;
+    width: 0.62ch;
+    height: 1.1em;
+    margin-left: 2px;
+    vertical-align: -0.16em;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    animation: caretBlink 0.9s steps(1) infinite;
+}
+
+.result-section {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+}
+
+.result-section h3 {
+    margin: 0;
+    font-family: "Newsreader", "Georgia", serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.result-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.result-card {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 18px;
+    background: var(--surface-muted);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.result-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.result-card-title {
+    display: grid;
+    gap: 4px;
+}
+
+.result-card-title strong {
+    font-size: 1rem;
+}
+
+.result-card-kicker,
+.result-badge {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.result-card-kicker {
+    color: var(--accent-soft);
+}
+
+.result-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(145, 199, 163, 0.14);
+    color: var(--success);
+    white-space: nowrap;
+}
+
+.result-card p {
+    margin: 0;
+    color: var(--text-soft);
+    line-height: 1.55;
+}
+
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.result-link {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.composer {
+    display: grid;
+    gap: 14px;
+    padding: 16px 20px 20px;
+    border-top: 1px solid var(--line);
+}

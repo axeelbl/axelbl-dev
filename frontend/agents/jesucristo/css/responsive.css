@@ -1,0 +1,30 @@
+@media (max-width: 760px) {
+    .app-shell {
+        width: min(100%, calc(100% - 16px));
+        padding-top: 18px;
+    }
+
+    .chat-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-container {
+        grid-template-columns: 1fr;
+    }
+
+    #sendBtn,
+    #clearBtn,
+    .toolbar-btn {
+        width: 100%;
+    }
+
+    .chat-container {
+        min-height: 300px;
+        max-height: 56vh;
+    }
+
+    .result-card-top {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base href="/agents/gym/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Assistant</title>
+    <link rel="icon" type="image/png" href="/agents/gym/pictures/favicon.png">
+    <link rel="stylesheet" href="/agents/gym/css/main.css">
+
+<style id="portfolio-back-style">
+.portfolio-back{position:fixed;top:18px;left:18px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(8,10,14,.78);backdrop-filter:blur(12px);color:#fff!important;text-decoration:none!important;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.01em;box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.portfolio-back:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.34)}
+@media(max-width:640px){.portfolio-back{top:12px;left:12px;padding:9px 12px;font-size:13px}}
+</style>
+</head>
+<body>
+<a class="portfolio-back" href="/" aria-label="Volver al portfolio principal">← Volver a axelbl.dev</a>
+
+    <div class="page-shell">
+        <header class="topbar">
+            <a href="#chatWorkspace" class="brandmark" aria-label="Ir al inicio de Gym Assistant">
+                <span class="brandmark-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 10h3V8h2v8H7v-2H4v-4zm13 0h3v4h-3v2h-2V8h2v2zM9 11h8v2H9z"/>
+                    </svg>
+                </span>
+
+                <span class="brandmark-copy">
+                    <span class="brandmark-kicker">Fitness AI Assistant</span>
+                    <strong>Gym Assistant</strong>
+                </span>
+            </a>
+
+            <nav class="topnav" aria-label="Secciones principales">
+                <a href="#chatWorkspaceInner">Chat</a>
+                <a href="#exercisesSection">Ejercicios</a>
+                <a href="#classesSection">Clases</a>
+                <a href="#helpSection">Ayuda</a>
+            </nav>
+
+            <div class="topbar-meta">
+                <span class="topbar-pill">Asistente de gym</span>
+            </div>
+        </header>
+
+        <section id="chatWorkspace">
+            <div id="avatarContainer">
+                <div class="hero-topline">
+                    <div id="heroBadge">Smart training assistant</div>
+                    <p class="hero-inline-note">
+                        Resuelve dudas, pide ejercicios y gestiona sesiones desde un unico chat.
+                    </p>
+                </div>
+
+                <div id="heroGrid">
+                    <div id="avatarColumn">
+                        <div id="avatar">
+                            <div id="avatarHalo"></div>
+                            <img id="baseFace" src="/agents/gym/pictures/eyes_open_mouth_closed.png" alt="Avatar base">
+                            <img id="mouthOpenImg" src="/agents/gym/pictures/eyes_open_mouth_open.png" alt="Avatar hablando">
+                        </div>
+
+                        <div class="coach-presence">
+                            <div id="avatarName">Gym Assistant</div>
+                            <div id="avatarStatus">Coach online</div>
+                        </div>
+
+                        <p id="heroSubtitle">
+                            Tu punto rapido de entrada para entrenar mejor.
+                        </p>
+                    </div>
+
+                    <div id="heroPanel">
+                        <article class="heroCard heroCardPrimary">
+                            <span class="heroKicker">Asistente inteligente de gimnasio</span>
+                            <h1>Habla con un coach de gym claro, visual y facil de usar.</h1>
+                            <p class="heroCopy">
+                                Pide una rutina, revisa tecnica, consulta ejercicios y reserva una sesion sin salir de la conversacion.
+                            </p>
+
+                            <div class="heroTrustBar" aria-label="Beneficios principales">
+                                <span>Rutinas</span>
+                                <span>Visuales</span>
+                                <span>Reservas</span>
+                            </div>
+                        </article>
+
+                        <div id="profileLinks" aria-label="Acciones rapidas">
+                            <a href="#" id="planBtn" aria-label="Generar rutina">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8 12h8M8 16h8M8 20h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                </svg>
+                                <span>Rutinas</span>
+                            </a>
+
+                            <a href="#" id="mediaBtn" aria-label="Ver ejercicios">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5zm5 3l7 4-7 4V8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Ejercicios</span>
+                            </a>
+
+                            <a href="#" id="reserveBtn" aria-label="Reservar sesion">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 18H5V9h14v11z"/>
+                                </svg>
+                                <span>Reservar</span>
+                            </a>
+
+                            <a href="#" id="manageBtn" aria-label="Gestionar reserva">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.03-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.03 7.03 0 0 0-1.7-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.5.42l-.38 2.65c-.63.23-1.23.54-1.7.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46c.14.24.42.33.66.22l2.49-1c.47.44 1.07.75 1.7.98l.38 2.65c.04.25.25.42.5.42h4c.25 0 .46-.17.5-.42l.38-2.65c.63-.23 1.23-.54 1.7-.98l2.49 1c.24.11.52.02.66-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/>
+                                </svg>
+                                <span>Gestion</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="experienceLayout">
+                <div id="chatWorkspaceInner">
+                    <div id="chatPanelBar">
+                        <div class="chat-panel-copy">
+                            <div class="chat-panel-main">
+                                <span class="workspace-kicker">Conversacion activa</span>
+                                <h2>Habla con tu coach</h2>
+                                <p>
+                                    Cuanto mas claro seas con objetivo, nivel, tiempo y material, mejor sera la respuesta.
+                                </p>
+                            </div>
+
+                            <div class="workspace-status">
+                                <span class="workspace-status-pill" id="workspaceLiveStatus">Listo para ayudarte</span>
+                                <div class="workspace-mini-stats">
+                                    <span>Entrenamiento</span>
+                                    <span>Visuales</span>
+                                    <span>Agenda</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <section class="prompt-dock" aria-labelledby="promptDockTitle">
+                        <div class="prompt-dock-head">
+                            <div>
+                                <span class="dock-kicker">Accesos rapidos</span>
+                                <h3 id="promptDockTitle">Prueba con uno de estos ejemplos</h3>
+                            </div>
+                            <p>Toca una opcion y sigue desde ahi.</p>
+                        </div>
+
+                        <div id="promptTray">
+                            <button type="button" class="prompt-chip" data-prompt="Quiero una rutina de 4 dias para ganar musculo, nivel intermedio, 60 minutos por sesion y gimnasio completo.">Rutina 4 dias</button>
+                            <button type="button" class="prompt-chip" data-prompt="Explicame la sentadilla paso a paso con errores comunes y variantes.">Tecnica de sentadilla</button>
+                            <button type="button" class="prompt-chip" data-prompt="Quiero un plan para perder grasa entrenando 3 dias por semana en casa con mancuernas.">Perder grasa en casa</button>
+                            <button type="button" class="prompt-chip" data-prompt="Ensename ejercicios de espalda, gluteo y core con ejemplos visuales.">Ejercicios visuales</button>
+                        </div>
+                    </section>
+
+                    <div class="chat-container" id="chatContainer" role="log" aria-live="polite" aria-label="Conversacion con el asistente"></div>
+
+                    <div class="input-container">
+                        <div class="composer-head">
+                            <div>
+                                <div class="composer-title">Escribe o usa un ejemplo</div>
+                                <div class="composer-hint">Pide una rutina, una explicacion tecnica o ejercicios con imagenes. Si quieres seguimiento personal, tambien puedes reservar.</div>
+                            </div>
+
+                            <div class="composer-status" id="composerStatus">Listo para responder</div>
+                        </div>
+
+                        <div class="composer-controls">
+                            <input type="text" id="userInput" placeholder="Ej.: quiero una rutina de 3 dias para ganar musculo">
+                            <button type="button" id="sendBtn">Enviar</button>
+                            <button type="button" id="clearBtn">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <aside id="insightSidebar" aria-label="Panel de ayuda y acceso rapido">
+                    <section class="sidebar-card sidebar-featured" id="overviewSection">
+                        <span class="sidebar-kicker">Que puedes pedir</span>
+                        <h3>Usa el chat para resolver justo esto</h3>
+
+                        <div class="quick-use-list">
+                            <article class="quick-use-item">
+                                <strong>Rutinas</strong>
+                                <p>Dime objetivo, dias, nivel y tiempo.</p>
+                            </article>
+                            <article class="quick-use-item">
+                                <strong>Ejercicios</strong>
+                                <p>Pide tecnica, variantes o apoyo visual.</p>
+                            </article>
+                            <article class="quick-use-item">
+                                <strong>Reservas</strong>
+                                <p>Si buscas atencion 1 a 1, agenda, modifica o cancela una sesion.</p>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="sidebar-card" id="exercisesSection">
+                        <div class="sidebar-head">
+                            <div>
+                                <span class="sidebar-kicker">Ejercicios</span>
+                                <h3>Consulta ejercicios visuales</h3>
+                            </div>
+
+                            <button type="button" class="panel-action panel-action-ghost" data-trigger-message="Ensename ejercicios de pecho, espalda, pierna y core con ejemplos visuales.">Pedir ejercicios</button>
+                        </div>
+
+                        <div class="exercise-showcase-grid">
+                            <article class="exercise-preview-card">
+                                <img src="/agents/gym/pictures/fitness/sentadilla.svg" alt="Sentadilla">
+                                <div class="exercise-preview-copy">
+                                    <strong>Sentadilla</strong>
+                                    <span>Pierna y fuerza</span>
+                                </div>
+                            </article>
+
+                            <article class="exercise-preview-card">
+                                <img src="/agents/gym/pictures/fitness/press-banca.svg" alt="Press de banca">
+                                <div class="exercise-preview-copy">
+                                    <strong>Press banca</strong>
+                                    <span>Pecho y empuje</span>
+                                </div>
+                            </article>
+
+                            <article class="exercise-preview-card">
+                                <img src="/agents/gym/pictures/fitness/hip-thrust.svg" alt="Hip thrust">
+                                <div class="exercise-preview-copy">
+                                    <strong>Hip thrust</strong>
+                                    <span>Gluteo y cadera</span>
+                                </div>
+                            </article>
+
+                            <article class="exercise-preview-card">
+                                <img src="/agents/gym/pictures/fitness/jalon-pecho.svg" alt="Jalon al pecho">
+                                <div class="exercise-preview-copy">
+                                    <strong>Jalon al pecho</strong>
+                                    <span>Espalda y traccion</span>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="sidebar-card" id="classesSection">
+                        <div class="sidebar-head">
+                            <div>
+                                <span class="sidebar-kicker">Reservas</span>
+                                <h3>Reserva en pocos pasos</h3>
+                            </div>
+                        </div>
+
+                        <div class="booking-overview">
+                            <article class="booking-preview-card">
+                                <span class="booking-preview-label">Nueva sesion</span>
+                                <strong>Reserva entrenamiento personal o clase guiada</strong>
+                                <p>Elige servicio, fecha, hora y contacto en un flujo claro y rapido.</p>
+                                <button type="button" class="panel-action panel-action-primary" data-open-modal="booking">Reservar ahora</button>
+                            </article>
+
+                            <article class="booking-preview-card booking-preview-secondary">
+                                <span class="booking-preview-label">Gestion de agenda</span>
+                                <strong>Actualiza o cancela una reserva existente</strong>
+                                <p>Modifica fecha u hora usando tu identificador y el contacto asociado.</p>
+                                <button type="button" class="panel-action panel-action-secondary" data-open-modal="manage">Gestionar reserva</button>
+                            </article>
+                        </div>
+
+                        <div class="booking-steps" aria-label="Pasos de reserva">
+                            <div class="booking-step">
+                                <span>1</span>
+                                <p>Selecciona el tipo de sesion</p>
+                            </div>
+                            <div class="booking-step">
+                                <span>2</span>
+                                <p>Elige fecha y disponibilidad</p>
+                            </div>
+                            <div class="booking-step">
+                                <span>3</span>
+                                <p>Confirma o gestiona tu agenda</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="sidebar-card" id="helpSection">
+                        <div class="sidebar-head">
+                            <div>
+                                <span class="sidebar-kicker">Ayuda</span>
+                                <h3>Como sacar mejores respuestas</h3>
+                            </div>
+                        </div>
+
+                        <div class="help-list">
+                            <article class="help-item">
+                                <strong>Objetivo</strong>
+                                <p>Explica si quieres ganar musculo, perder grasa, mejorar tecnica o reservar una sesion.</p>
+                            </article>
+                            <article class="help-item">
+                                <strong>Contexto</strong>
+                                <p>Indica nivel, dias de entrenamiento, material disponible y tiempo por sesion.</p>
+                            </article>
+                            <article class="help-item">
+                                <strong>Accion</strong>
+                                <p>Pide ejercicios visuales, variantes, correcciones tecnicas o cambios en tu agenda.</p>
+                            </article>
+                        </div>
+
+                        <div class="tip-chip-row">
+                            <button type="button" class="tip-chip" data-trigger-message="Quiero una rutina full body de 3 dias para empezar en gimnasio.">Full body 3 dias</button>
+                            <button type="button" class="tip-chip" data-trigger-message="Explicame el hip thrust con errores comunes y puntos clave de tecnica.">Tecnica de hip thrust</button>
+                            <button type="button" class="tip-chip" data-trigger-message="Quiero reservar una valoracion inicial para esta semana.">Reservar valoracion</button>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        </section>
+    </div>
+
+    <div id="bookingModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-kicker">Nueva reserva</span>
+                <h2 id="bookingModalTitle">Reservar sesion</h2>
+                <p class="modal-note">Agenda una clase o una sesion personal con un flujo claro, rapido y profesional.</p>
+            </div>
+
+            <div class="modal-summary">
+                <article>
+                    <span>Servicios</span>
+                    <strong>Personal, guiada, valoracion o movilidad</strong>
+                </article>
+                <article>
+                    <span>Tiempo</span>
+                    <strong>Menos de un minuto</strong>
+                </article>
+            </div>
+
+            <form id="bookingForm">
+                <div class="field-group">
+                    <label for="bookingName">Nombre completo</label>
+                    <input type="text" id="bookingName" name="name" placeholder="Nombre completo" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="bookingService">Tipo de sesion</label>
+                    <select id="bookingService" name="service" required>
+                        <option value="">Tipo de sesion</option>
+                        <option value="Entrenamiento personal">Entrenamiento personal</option>
+                        <option value="Clase guiada">Clase guiada</option>
+                        <option value="Valoracion inicial">Valoracion inicial</option>
+                        <option value="Sesion de movilidad">Sesion de movilidad</option>
+                    </select>
+                </div>
+
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label for="bookingDate">Fecha</label>
+                        <input type="date" id="bookingDate" name="date" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="timeSelect">Horario disponible</label>
+                        <select name="time" id="timeSelect" required>
+                            <option value="">Selecciona una hora</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="bookingContact">Telefono o email</label>
+                    <input type="text" id="bookingContact" name="contact" placeholder="Telefono o email" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit">Confirmar sesion</button>
+                    <button type="button" id="closeModal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="manageBookingModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="manageModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-kicker">Gestion de reserva</span>
+                <h2 id="manageModalTitle">Modificar o cancelar</h2>
+                <p class="modal-note">Actualiza fecha u hora, o cancela tu reserva cuando lo necesites.</p>
+            </div>
+
+            <div class="modal-summary">
+                <article>
+                    <span>Necesitaras</span>
+                    <strong>ID de reserva y contacto asociado</strong>
+                </article>
+                <article>
+                    <span>Opciones</span>
+                    <strong>Modificar fecha, hora o cancelar</strong>
+                </article>
+            </div>
+
+            <form id="manageBookingForm">
+                <div class="field-group">
+                    <label for="bookingId">ID de reserva</label>
+                    <input type="text" id="bookingId" name="booking_uuid" placeholder="ID de reserva" required>
+                </div>
+
+                <div class="field-group">
+                    <label for="manageContact">Telefono o email</label>
+                    <input type="text" id="manageContact" name="contact" placeholder="Telefono o email" required>
+                </div>
+
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label for="manageDate">Nueva fecha</label>
+                        <input type="date" id="manageDate" name="new_date">
+                    </div>
+
+                    <div class="field-group">
+                        <label for="manageTimeSelect">Nueva hora</label>
+                        <select name="new_time" id="manageTimeSelect">
+                            <option value="">Selecciona una hora</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions manage-actions">
+                    <button type="submit" id="modifyBtn">Modificar sesion</button>
+                    <button type="button" id="cancelBtn">Cancelar reserva</button>
+                    <button type="button" id="closeManageModal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="imageViewer" class="hidden img-viewer">
+        <span id="closeViewer">X</span>
+        <button id="viewerLeft" class="nav left">&lt;</button>
+        <img id="viewerImg" alt="Vista ampliada">
+        <button id="viewerRight" class="nav right">&gt;</button>
+    </div>
+
+    <script type="module" src="/agents/gym/js/main.js"></script>
+    <script src="/agents/gym/js/booking.js"></script>
+</body>
+</html>

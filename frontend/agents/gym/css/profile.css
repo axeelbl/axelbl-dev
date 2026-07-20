@@ -1,0 +1,78 @@
+/* =========================
+ACTIONS / HERO LINKS
+========================= */
+#profileLinks {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+#profileLinks a {
+    position: relative;
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    color: #f8fbff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 36px rgba(4, 12, 20, 0.15);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+#profileLinks a::after {
+    content: "";
+    position: absolute;
+    inset: auto 16px 10px;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+#profileLinks a:nth-child(1) {
+    background:
+        linear-gradient(135deg, rgba(255, 122, 26, 0.22), rgba(255, 122, 26, 0.06)),
+        rgba(255, 255, 255, 0.08);
+}
+
+#profileLinks a:nth-child(2) {
+    background:
+        linear-gradient(135deg, rgba(60, 141, 255, 0.22), rgba(60, 141, 255, 0.06)),
+        rgba(255, 255, 255, 0.08);
+}
+
+#profileLinks a:nth-child(3) {
+    background:
+        linear-gradient(135deg, rgba(20, 197, 139, 0.22), rgba(20, 197, 139, 0.06)),
+        rgba(255, 255, 255, 0.08);
+}
+
+#profileLinks a:nth-child(4) {
+    background:
+        linear-gradient(135deg, rgba(255, 164, 80, 0.18), rgba(255, 255, 255, 0.04)),
+        rgba(255, 255, 255, 0.08);
+}
+
+#profileLinks a:hover,
+#profileLinks a:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.26);
+    background-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 22px 48px rgba(4, 12, 20, 0.2);
+    outline: none;
+}
+
+#profileLinks svg {
+    width: 22px;
+    height: 22px;
+    flex: none;
+    fill: currentColor;
+}
+
+#profileLinks span {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+}

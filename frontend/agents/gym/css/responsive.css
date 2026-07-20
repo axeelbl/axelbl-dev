@@ -1,0 +1,253 @@
+/* =========================
+RESPONSIVE
+========================= */
+@media (max-width: 1280px) {
+    #heroGrid {
+        grid-template-columns: 180px minmax(0, 1fr);
+    }
+
+    #profileLinks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1120px) {
+    body {
+        overflow: auto;
+    }
+
+    .page-shell {
+        min-height: auto;
+    }
+
+    .topbar {
+        grid-template-columns: 1fr;
+        justify-items: start;
+        border-radius: 28px;
+    }
+
+    .topnav {
+        justify-content: flex-start;
+    }
+
+    .topbar-meta {
+        justify-self: start;
+    }
+
+    #insightSidebar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chat-container {
+        min-height: 520px;
+    }
+}
+
+@media (max-width: 900px) {
+    body {
+        padding: 12px;
+    }
+
+    .page-shell {
+        gap: 14px;
+    }
+
+    #chatWorkspace {
+        border-radius: 28px;
+    }
+
+    #avatarContainer {
+        padding: 20px 18px;
+    }
+
+    #heroGrid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    #avatarColumn {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .coach-presence {
+        align-items: flex-start;
+    }
+
+    #heroSubtitle {
+        max-width: 60ch;
+    }
+
+    #heroStats {
+        grid-template-columns: 1fr;
+    }
+
+    #profileLinks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chat-panel-copy {
+        grid-template-columns: 1fr;
+    }
+
+    .workspace-status {
+        align-items: flex-start;
+    }
+
+    .workspace-mini-stats {
+        justify-content: flex-start;
+    }
+
+    .prompt-dock-head,
+    .sidebar-head,
+    .composer-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #insightSidebar,
+    .exercise-showcase-grid,
+    .booking-steps,
+    .modal-summary,
+    .field-grid,
+    .quick-use-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .brandmark-copy strong {
+        font-size: 18px;
+    }
+
+    .topnav {
+        gap: 6px;
+    }
+
+    .topnav a {
+        padding: 9px 13px;
+        font-size: 13px;
+    }
+
+    #avatar {
+        width: 156px;
+        height: 156px;
+    }
+
+    #avatarName {
+        font-size: 24px;
+    }
+
+    .heroCard,
+    .sidebar-card,
+    .prompt-dock,
+    .input-container,
+    .chat-panel-copy {
+        padding: 18px;
+    }
+
+    .input-container {
+        position: static;
+    }
+
+    .heroCard h1 {
+        font-size: clamp(1.8rem, 7vw, 2.5rem);
+    }
+
+    .chat-panel-main h2,
+    .prompt-dock-head h3,
+    .sidebar-card h3 {
+        font-size: 22px;
+    }
+
+    .sidebar-card h2,
+    .composer-title {
+        font-size: 24px;
+    }
+
+    .message {
+        width: 100%;
+    }
+
+    .composer-controls {
+        grid-template-columns: 1fr;
+    }
+
+    #sendBtn,
+    #clearBtn {
+        width: 100%;
+    }
+
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-content {
+        padding: 22px 18px;
+        border-radius: 24px;
+    }
+}
+
+@media (max-width: 520px) {
+    body {
+        padding: 8px;
+    }
+
+    .topbar {
+        padding: 14px;
+    }
+
+    .topbar-pill {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+
+    #avatar {
+        width: 138px;
+        height: 138px;
+    }
+
+    #avatarName {
+        font-size: 22px;
+    }
+
+    #heroSubtitle {
+        font-size: 13px;
+    }
+
+    #profileLinks {
+        grid-template-columns: 1fr;
+    }
+
+    #profileLinks a {
+        min-height: 68px;
+    }
+
+    .chat-container {
+        padding: 14px;
+        min-height: 420px;
+    }
+
+    .message {
+        padding: 14px 14px 16px;
+        border-radius: 20px;
+    }
+
+    .plan-day-title {
+        font-size: 19px;
+    }
+
+    .nav {
+        width: 46px;
+        height: 46px;
+    }
+
+    .left {
+        left: 12px;
+    }
+
+    .right {
+        right: 12px;
+    }
+}

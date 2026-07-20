@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base href="/agents/jesucristo/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente Jesucristo | Chat cristiano</title>
+    <link rel="icon" type="image/png" href="/agents/jesucristo/pictures/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/agents/jesucristo/css/main.css">
+
+<style id="portfolio-back-style">
+.portfolio-back{position:fixed;top:18px;left:18px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(8,10,14,.78);backdrop-filter:blur(12px);color:#fff!important;text-decoration:none!important;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.01em;box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.portfolio-back:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.34)}
+@media(max-width:640px){.portfolio-back{top:12px;left:12px;padding:9px 12px;font-size:13px}}
+</style>
+</head>
+<body>
+<a class="portfolio-back" href="/" aria-label="Volver al portfolio principal">← Volver a axelbl.dev</a>
+
+    <div class="app-shell">
+        <header class="app-header">
+            <span class="app-kicker">Asistente cristiano</span>
+            <h1>Agente Jesucristo</h1>
+            <p>Un chat sencillo para preguntas sobre la Biblia, la fe cristiana y para encontrar una iglesia cercana.</p>
+            <div class="header-actions">
+                <button type="button" class="quick-chip" data-prompt="Explicame Juan 3:16 de forma sencilla">Juan 3:16</button>
+                <button type="button" class="quick-chip" data-prompt="Quien es Jesucristo segun la fe cristiana">Quien es Jesus</button>
+                <button type="button" class="quick-chip" data-prompt="Que diferencia hay entre el Antiguo y el Nuevo Testamento">Antiguo y Nuevo</button>
+            </div>
+        </header>
+
+        <main class="chat-card">
+            <div class="chat-toolbar">
+                <div class="chat-activity" id="chatActivity">
+                    <span class="activity-dot" aria-hidden="true"></span>
+                    <span id="chatActivityText">Listo para ayudarte</span>
+                </div>
+
+                <button type="button" id="nearbyChurchBtn" class="toolbar-btn">
+                    Iglesia cerca de mi
+                </button>
+            </div>
+
+            <section class="chat-surface">
+                <div class="chat-empty" id="chatEmpty">
+                    <h2>Hazme una pregunta</h2>
+                    <p>Puedes preguntar por un versiculo, una historia biblica, Jesucristo, una duda de fe o pedir una iglesia cercana.</p>
+                    <div class="example-list">
+                        <button type="button" class="example-chip" data-prompt="Explicame el significado de Mateo 5:9">Explicame Mateo 5:9</button>
+                        <button type="button" class="example-chip" data-prompt="Me siento con ansiedad, dame una respuesta cristiana sencilla">Me siento con ansiedad</button>
+                        <button type="button" class="example-chip" data-prompt="Busca iglesias cristianas en Madrid centro">Buscar iglesias en Madrid</button>
+                    </div>
+                </div>
+
+                <div class="chat-container" id="chatContainer" aria-live="polite"></div>
+            </section>
+
+            <footer class="composer">
+                <div class="composer-quick-actions">
+                    <button type="button" class="quick-action" data-prompt="Dame una explicacion sencilla sobre la fe cristiana">Fe cristiana</button>
+                    <button type="button" class="quick-action" data-prompt="Hablame del perdon cristiano de forma clara">Perdon</button>
+                    <button type="button" class="quick-action" data-prompt="Dame una respuesta cristiana sobre la esperanza">Esperanza</button>
+                    <button type="button" class="quick-action" data-prompt="Busca la iglesia mas cercana">Iglesia cercana</button>
+                </div>
+
+                <div class="input-container">
+                    <input
+                        type="text"
+                        id="userInput"
+                        placeholder="Escribe tu pregunta o una direccion para buscar una iglesia"
+                        autocomplete="off"
+                    >
+                    <button type="button" id="sendBtn">Enviar</button>
+                    <button type="button" id="clearBtn">Borrar</button>
+                </div>
+
+                <p class="composer-help">
+                    Si quieres una iglesia, puedes escribir una direccion o pulsar <strong>Iglesia cerca de mi</strong>.
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <script type="module" src="/agents/jesucristo/js/main.js"></script>
+</body>
+</html>

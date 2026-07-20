@@ -1,0 +1,134 @@
+@media (max-width: 1180px) {
+    body {
+        padding: 10px;
+    }
+
+    .app-shell {
+        min-height: calc(100vh - 20px);
+        padding: 14px;
+    }
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: auto auto;
+        overflow: visible;
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 760px) {
+    body {
+        padding: 0;
+    }
+
+    .app-shell {
+        min-height: 100vh;
+        border-radius: 0;
+        border: 0;
+        padding: 12px;
+    }
+
+    .app-header,
+    .chat-panel,
+    .sidebar-card,
+    .modal-content {
+        padding: 14px;
+    }
+
+    .app-header,
+    .chat-panel-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-actions,
+    .panel-actions,
+    .external-links {
+        width: 100%;
+    }
+
+    .header-actions > *,
+    .panel-actions > *,
+    .external-links > * {
+        flex: 1 1 0;
+    }
+
+    .chat-panel-copy h2 {
+        font-size: 2.1rem;
+    }
+
+    .chat-panel-note {
+        white-space: normal;
+    }
+
+    .chat-container {
+        min-height: 180px;
+        max-height: min(46vh, 460px);
+    }
+
+    .sidebar {
+        display: grid;
+        gap: 12px;
+    }
+
+    .quick-actions,
+    #profileLinks {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .look-item {
+        grid-template-columns: 50px 1fr;
+    }
+
+    .look-thumb {
+        width: 50px;
+        height: 50px;
+    }
+
+    .message,
+    .chat-gallery {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .input-container {
+        grid-template-columns: 1fr;
+    }
+
+    #sendBtn,
+    #clearBtn {
+        min-height: 46px;
+    }
+
+    .photo-gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-height: calc(100vh - 24px);
+        border-radius: 18px;
+    }
+
+    .viewer-close {
+        top: 14px;
+        right: 14px;
+    }
+
+    .left {
+        left: 12px;
+    }
+
+    .right {
+        right: 12px;
+    }
+}

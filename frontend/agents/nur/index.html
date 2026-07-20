@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base href="/agents/nur/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente Nur | Chat islamico</title>
+    <link rel="icon" type="image/png" href="/agents/nur/pictures/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/agents/nur/css/main.css">
+
+<style id="portfolio-back-style">
+.portfolio-back{position:fixed;top:18px;left:18px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(8,10,14,.78);backdrop-filter:blur(12px);color:#fff!important;text-decoration:none!important;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.01em;box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.portfolio-back:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.34)}
+@media(max-width:640px){.portfolio-back{top:12px;left:12px;padding:9px 12px;font-size:13px}}
+</style>
+</head>
+<body>
+<a class="portfolio-back" href="/" aria-label="Volver al portfolio principal">← Volver a axelbl.dev</a>
+
+    <div class="app-shell">
+        <header class="app-header">
+            <span class="app-kicker">Asistente islamico</span>
+            <h1>Agente Nur</h1>
+            <p>Un chat sencillo para preguntas sobre el Coran, el Islam y para encontrar una mezquita cercana.</p>
+            <div class="header-actions">
+                <button type="button" class="quick-chip" data-prompt="Explicame Coran 1 de forma sencilla">Sura Al-Fatiha</button>
+                <button type="button" class="quick-chip" data-prompt="Explicame los cinco pilares del Islam">Cinco pilares</button>
+                <button type="button" class="quick-chip" data-prompt="Que es Ramadan y como se vive">Ramadan</button>
+            </div>
+        </header>
+
+        <main class="chat-card">
+            <div class="chat-toolbar">
+                <div class="chat-activity" id="chatActivity">
+                    <span class="activity-dot" aria-hidden="true"></span>
+                    <span id="chatActivityText">Listo para ayudarte</span>
+                </div>
+
+                <button type="button" id="nearbyMosqueBtn" class="toolbar-btn">
+                    Mezquita cerca de mi
+                </button>
+            </div>
+
+            <section class="chat-surface">
+                <div class="chat-empty" id="chatEmpty">
+                    <h2>Hazme una pregunta</h2>
+                    <p>Puedes preguntar por una aleya, una sura, conceptos del Islam, una duda de fe o pedir una mezquita cercana.</p>
+                    <div class="example-list">
+                        <button type="button" class="example-chip" data-prompt="Explicame el significado de Coran 94:5-6">Explicame Coran 94:5-6</button>
+                        <button type="button" class="example-chip" data-prompt="Me siento con ansiedad, dame una respuesta islamica sencilla">Me siento con ansiedad</button>
+                        <button type="button" class="example-chip" data-prompt="Busca mezquitas en Madrid centro">Buscar mezquitas en Madrid</button>
+                    </div>
+                </div>
+
+                <div class="chat-container" id="chatContainer" aria-live="polite"></div>
+            </section>
+
+            <footer class="composer">
+                <div class="composer-quick-actions">
+                    <button type="button" class="quick-action" data-prompt="Dame una explicacion sencilla de los cinco pilares del Islam">Cinco pilares</button>
+                    <button type="button" class="quick-action" data-prompt="Hablame de Ramadan de forma clara">Ramadan</button>
+                    <button type="button" class="quick-action" data-prompt="Dame indicaciones basicas sobre como rezar en el Islam">Como rezar</button>
+                    <button type="button" class="quick-action" data-prompt="Calcula la qibla desde mi ubicacion">Qibla</button>
+                </div>
+
+                <div class="input-container">
+                    <input
+                        type="text"
+                        id="userInput"
+                        placeholder="Escribe tu pregunta o una direccion para buscar una mezquita"
+                        autocomplete="off"
+                    >
+                    <button type="button" id="sendBtn">Enviar</button>
+                    <button type="button" id="clearBtn">Borrar</button>
+                </div>
+
+                <p class="composer-help">
+                    Si quieres una mezquita, puedes escribir una direccion o pulsar <strong>Mezquita cerca de mi</strong>.
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <script type="module" src="/agents/nur/js/main.js"></script>
+</body>
+</html>

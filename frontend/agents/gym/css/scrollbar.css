@@ -1,0 +1,29 @@
+/* =========================
+SCROLLBAR
+========================= */
+.chat-container,
+#insightSidebar,
+#promptTray {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(109, 126, 142, 0.56) transparent;
+}
+
+.chat-container::-webkit-scrollbar,
+#insightSidebar::-webkit-scrollbar,
+#promptTray::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.chat-container::-webkit-scrollbar-thumb,
+#insightSidebar::-webkit-scrollbar-thumb,
+#promptTray::-webkit-scrollbar-thumb {
+    background: rgba(109, 126, 142, 0.56);
+    border-radius: 999px;
+}
+
+.chat-container::-webkit-scrollbar-track,
+#insightSidebar::-webkit-scrollbar-track,
+#promptTray::-webkit-scrollbar-track {
+    background: transparent;
+}

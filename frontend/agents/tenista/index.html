@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base href="/agents/tenista/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente Apuestas Tenis | Chatbot IA de tenis</title>
+    <link rel="icon" type="image/png" href="/agents/tenista/pictures/favicon.png">
+    <link rel="stylesheet" href="/agents/tenista/css/main.css">
+
+<style id="portfolio-back-style">
+.portfolio-back{position:fixed;top:18px;left:18px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(8,10,14,.78);backdrop-filter:blur(12px);color:#fff!important;text-decoration:none!important;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.01em;box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.portfolio-back:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.34)}
+@media(max-width:640px){.portfolio-back{top:12px;left:12px;padding:9px 12px;font-size:13px}}
+</style>
+</head>
+<body>
+<a class="portfolio-back" href="/" aria-label="Volver al portfolio principal">← Volver a axelbl.dev</a>
+
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-mark">AT</div>
+                <div class="brand-copy">
+                    <span class="brand-kicker">Analista IA de tenis</span>
+                    <h1>Agente Apuestas Tenis</h1>
+                    <p>Chat experto en tenis, partidos vivos y predicciones pre-partido orientativas con ML.</p>
+                </div>
+            </div>
+            <span class="live-pill">
+                <span class="live-dot" aria-hidden="true"></span>
+                Radar ATP/WTA
+            </span>
+        </header>
+
+        <main class="tennis-layout">
+            <section class="chat-card" id="chatSection">
+                <div class="chat-panel-heading">
+                    <div class="chat-panel-copy">
+                        <span class="section-kicker">Chat principal</span>
+                        <h2>Pregunta por jugadores, partidos, torneos o riesgo de una apuesta</h2>
+                        <p>El agente responde en español y usa el predictor del backend cuando detecta un partido entre dos tenistas.</p>
+                    </div>
+                    <span class="chat-surface-status">Juego responsable</span>
+                </div>
+
+                <div class="chat-surface">
+                    <div class="chat-empty" id="chatEmpty">
+                        <span class="chat-empty-kicker">Ejemplos</span>
+                        <h3>Empieza con una pregunta concreta.</h3>
+                        <p>Prueba: “Predice Alcaraz vs Sinner en Clay”, “Partidos ATP de hoy”, “Noticias de tenis” o “Qué factores usa el modelo”.</p>
+                    </div>
+                    <div class="chat-container" id="chatContainer" aria-live="polite"></div>
+                </div>
+
+                <div class="composer-panel">
+                    <div class="chat-activity" id="chatActivity">
+                        <span class="activity-dot" aria-hidden="true"></span>
+                        <span id="chatActivityText">Pregunta por un partido, jugador o torneo</span>
+                    </div>
+
+                    <div class="input-container">
+                        <input type="text" id="userInput" placeholder="Ejemplo: predice Medvedev vs Zverev en hard">
+                        <button type="button" id="sendBtn">Enviar</button>
+                        <button type="button" id="clearBtn">Borrar</button>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="side-panel">
+                <section class="panel-card hero-panel">
+                    <span class="section-kicker">Panel vivo</span>
+                    <div class="stage-screen">
+                        <div id="featuredChart" class="featured-chart hidden" aria-hidden="true"></div>
+                        <a id="featuredImageLink" class="featured-image-link hidden" href="#" target="_blank" rel="noreferrer">
+                            <img id="featuredImage" class="featured-image hidden" src="" alt="Imagen de noticia de tenis" referrerpolicy="no-referrer">
+                        </a>
+                        <div id="featuredPlaceholder" class="featured-placeholder" aria-hidden="true"></div>
+                        <button type="button" id="channelPrevBtn" class="channel-nav channel-nav-left" aria-label="Panel anterior">&#10094;</button>
+                        <button type="button" id="channelNextBtn" class="channel-nav channel-nav-right" aria-label="Panel siguiente">&#10095;</button>
+                        <div class="screen-overlay">
+                            <div id="screenCopy" class="screen-copy">
+                                <div class="screen-copy-head">
+                                    <span id="featuredEyebrow" class="screen-eyebrow">Tenis</span>
+                                    <strong id="channelCounter">1 / 1</strong>
+                                </div>
+                                <strong id="featuredTitle" class="screen-copy-title">Cargando partidos y noticias</strong>
+                                <div id="featuredStats" class="featured-stats hidden" aria-live="polite"></div>
+                                <div id="screenLoadingRail" class="screen-loading-rail hidden" aria-hidden="true"><span></span><span></span><span></span></div>
+                                <div id="featuredBody" class="screen-body"></div>
+                                <div class="screen-actions">
+                                    <a id="featuredLink" class="screen-action-link hidden" href="#" target="_blank" rel="noreferrer">Abrir fuente</a>
+                                    <button type="button" id="featuredResetBtn" class="screen-reset-btn">Radar de tenis</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel-card prediction-card">
+                    <span class="section-kicker">Predicción rápida</span>
+                    <form id="predictionForm" class="prediction-form">
+                        <label>Jugador 1<input id="player1Input" type="text" placeholder="Alcaraz"></label>
+                        <label>Jugador 2<input id="player2Input" type="text" placeholder="Sinner"></label>
+                        <label>Superficie
+                            <select id="surfaceInput">
+                                <option value="">No indicada</option>
+                                <option value="Hard">Hard</option>
+                                <option value="Clay">Clay</option>
+                                <option value="Grass">Grass</option>
+                            </select>
+                        </label>
+                        <div class="form-row">
+                            <label>Nivel<input id="levelInput" type="text" placeholder="G, M, A"></label>
+                            <label>Best of
+                                <select id="bestOfInput">
+                                    <option value="">-</option>
+                                    <option value="3">3</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </label>
+                        </div>
+                        <label>Ronda<input id="roundInput" type="text" placeholder="Final, QF, R16"></label>
+                        <button type="submit">Predecir partido</button>
+                    </form>
+                    <div id="predictionResult" class="prediction-result"></div>
+                </section>
+
+                <section class="panel-card disclaimer-card">
+                    <span class="section-kicker">Aviso de riesgo</span>
+                    <p>Las predicciones son orientativas: no garantizan resultados, no son asesoramiento financiero ni recomendación profesional de apuestas. Apostar implica riesgo; usa gestión responsable del bankroll.</p>
+                </section>
+
+                <section class="quick-actions panel-card">
+                    <span class="section-kicker">Atajos</span>
+                    <button type="button" class="quick-action" data-prompt="Predice Alcaraz vs Sinner en Clay">Alcaraz vs Sinner</button>
+                    <button type="button" class="quick-action" data-prompt="Partidos ATP de hoy">Partidos ATP</button>
+                    <button type="button" class="quick-action" data-prompt="Noticias de tenis">Noticias</button>
+                    <button type="button" class="quick-action" data-prompt="Que factores usa el modelo de prediccion">Factores del modelo</button>
+                    <button type="button" class="quick-action" data-prompt="Que pick seria mas conservador y que riesgo tiene">Pick conservador</button>
+                </section>
+            </aside>
+        </main>
+    </div>
+
+    <div id="imageViewer" class="hidden img-viewer">
+        <button type="button" id="closeViewer" class="viewer-close" aria-label="Cerrar visor">Cerrar</button>
+        <button type="button" id="viewerLeft" class="nav left" aria-label="Imagen anterior">&#10094;</button>
+        <img id="viewerImg" alt="Vista ampliada de noticia de tenis" referrerpolicy="no-referrer">
+        <button type="button" id="viewerRight" class="nav right" aria-label="Imagen siguiente">&#10095;</button>
+    </div>
+
+    <script type="module" src="/agents/tenista/js/main.js"></script>
+</body>
+</html>

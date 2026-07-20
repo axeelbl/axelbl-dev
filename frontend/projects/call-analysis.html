@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0d10" />
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css?v=20260720-projects" />
+  <title>Sistema de análisis de llamadas con IA — Axel Berral López</title>
+  <meta name="description" content="Caso de estudio técnico: sistema de análisis de llamadas con Whisper, LLMs locales, APIs backend, GPU y despliegue en producción." />
+  <meta property="og:title" content="Sistema de análisis de llamadas con IA — Axel Berral López" />
+  <meta property="og:description" content="Pipeline end-to-end de audio, transcripción, análisis NLP/LLM y backend productivo." />
+</head>
+<body class="project-page">
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true"><span data-parallax-layer="0.14"></span><span data-parallax-layer="-0.10"></span></div>
+
+  <header class="nav">
+    <a class="mark" href="/">Axel Berral</a>
+    <nav aria-label="Principal">
+      <a href="/#experience">Experiencia</a>
+      <a href="/#agents">Agentes</a>
+      <a href="/#work">Proyectos</a>
+      <a href="/#contact">Contacto</a>
+    </nav>
+    <a class="project-back" href="/#work">Volver</a>
+  </header>
+
+  <main>
+    <section class="project-hero" data-reveal>
+      <div class="project-eyebrow">Caso de estudio · IA en producción</div>
+      <div class="project-hero-grid">
+        <h1>Sistema de análisis de llamadas con IA</h1>
+        <div class="project-summary" data-parallax-layer="-0.05">
+          <p>Pipeline end-to-end para procesar audios reales, transcribirlos con Whisper y analizarlos con LLMs locales mediante servicios backend preparados para producción.</p>
+          <div class="project-actions">
+            <a class="button primary" href="/">Portfolio</a>
+            <a class="button" href="/agents/cv/">Hablar con mi CV</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-content" data-reveal>
+      <article class="project-card large">
+        <span class="kicker">Arquitectura</span>
+        <h2>De audio a evaluación automatizada</h2>
+        <p>El sistema cubre ingesta de audio, normalización, transcripción con Whisper, análisis NLP/LLM, orquestación backend y exposición mediante APIs. El foco está en rendimiento, escalabilidad y despliegue robusto en entornos con GPU.</p>
+      </article>
+      <article class="project-card">
+        <span class="kicker">Stack</span>
+        <div class="tag-list"><span>Python</span><span>Whisper</span><span>LLMs locales</span><span>vLLM</span><span>FastAPI</span><span>Docker</span><span>GPU</span></div>
+      </article>
+      <article class="project-card">
+        <span class="kicker">Producción</span>
+        <p>Trabajo orientado a servidores on-premise, APIs backend, control de rendimiento y despliegues mantenibles sin exponer datos sensibles.</p>
+      </article>
+      <article class="project-card muted-card">
+        <span class="kicker">Confidencialidad</span>
+        <p>No se publican repositorio, datos, métricas internas, prompts privados ni detalles de infraestructura por confidencialidad profesional.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
+  
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealItems = [...document.querySelectorAll('[data-reveal]')];
+    if ('IntersectionObserver' in window && !reduced) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+      revealItems.forEach((el) => observer.observe(el));
+    } else {
+      revealItems.forEach((el) => el.classList.add('is-visible'));
+    }
+    if (!reduced) {
+      const layers = [...document.querySelectorAll('[data-parallax-layer]')];
+      let ticking = false;
+      const render = () => {
+        const y = window.scrollY || window.pageYOffset || 0;
+        const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        document.documentElement.style.setProperty('--scroll-y', `${y}px`);
+        document.documentElement.style.setProperty('--scroll-progress', String(Math.min(Math.max(y / max, 0), 1)));
+        if (window.innerWidth > 760) {
+          const center = y + window.innerHeight / 2;
+          layers.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            const elCenter = y + rect.top + rect.height / 2;
+            const depth = Number(el.dataset.parallaxLayer || 0.08);
+            const offset = Math.min(Math.max((center - elCenter) * depth, -80), 80);
+            el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
+          });
+        }
+        ticking = false;
+      };
+      const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } };
+      render();
+      window.addEventListener('scroll', request, { passive: true });
+      window.addEventListener('resize', request, { passive: true });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+/* =========================
+PROMPTS + INPUT
+========================= */
+.prompt-dock {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(246, 250, 253, 0.94));
+    border: 1px solid rgba(16, 33, 49, 0.08);
+    box-shadow: var(--shadow-soft);
+}
+
+.prompt-dock-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.prompt-dock-head h3 {
+    margin: 6px 0 0;
+    color: var(--text-strong);
+    font-family: var(--font-heading);
+    font-size: 20px;
+    line-height: 1.05;
+}
+
+.prompt-dock-head p {
+    margin: 0;
+    max-width: 28ch;
+    color: var(--text-base);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.dock-kicker {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(16, 33, 49, 0.05);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+#promptTray {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow: visible;
+}
+
+#promptTray::-webkit-scrollbar {
+    display: none;
+}
+
+.prompt-chip {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(16, 33, 49, 0.1);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--text-strong);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(7, 17, 27, 0.06);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.prompt-chip:hover,
+.prompt-chip:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(255, 122, 26, 0.24);
+    background: rgba(255, 255, 255, 1);
+    outline: none;
+}
+
+.input-container {
+    position: sticky;
+    bottom: 16px;
+    z-index: 6;
+    padding: 16px 18px 18px;
+    border-radius: 22px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(246, 250, 253, 0.98)),
+        rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(16, 33, 49, 0.08);
+    box-shadow: 0 20px 46px rgba(7, 17, 27, 0.12);
+    backdrop-filter: blur(16px);
+}
+
+.composer-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 14px;
+}
+
+.composer-title {
+    color: var(--text-strong);
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+.composer-hint {
+    margin-top: 6px;
+    max-width: 62ch;
+    color: var(--text-base);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.composer-status {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: rgba(16, 33, 49, 0.06);
+    color: var(--text-strong);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.composer-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 138px 112px;
+    gap: 10px;
+}
+
+#userInput {
+    min-height: 56px;
+    padding: 0 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(16, 33, 49, 0.12);
+    background: rgba(255, 255, 255, 0.98);
+    color: var(--text-strong);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#userInput::placeholder {
+    color: #7b8999;
+}
+
+#userInput:focus {
+    border-color: rgba(255, 122, 26, 0.34);
+    box-shadow: 0 0 0 5px rgba(255, 122, 26, 0.12);
+}
+
+#sendBtn,
+#clearBtn {
+    min-height: 56px;
+    padding: 0 22px;
+    border-radius: 18px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+#sendBtn {
+    color: #fffaf5;
+    background: linear-gradient(135deg, var(--accent-main), #ff9950);
+    box-shadow: 0 18px 32px rgba(218, 90, 0, 0.22);
+}
+
+#clearBtn {
+    border: 1px solid rgba(16, 33, 49, 0.12);
+    color: var(--text-strong);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+#sendBtn:hover,
+#clearBtn:hover,
+#sendBtn:focus-visible,
+#clearBtn:focus-visible {
+    transform: translateY(-1px);
+    outline: none;
+}
+
+#sendBtn:disabled,
+#clearBtn:disabled,
+#userInput:disabled {
+    opacity: 0.66;
+    cursor: not-allowed;
+}

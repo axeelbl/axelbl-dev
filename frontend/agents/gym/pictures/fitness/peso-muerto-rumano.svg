@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#fde68a"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="40" fill="url(#bg)"/>
+  <text x="40" y="72" font-size="38" font-family="Verdana, sans-serif" fill="#78350f">Peso Muerto Rumano</text>
+  <text x="40" y="112" font-size="22" font-family="Verdana, sans-serif" fill="#b45309">Isquios | Gluteo | Espalda baja</text>
+  <circle cx="280" cy="210" r="28" fill="#0f172a"/>
+  <line x1="280" y1="238" x2="345" y2="342" stroke="#0f172a" stroke-width="18" stroke-linecap="round"/>
+  <line x1="332" y1="320" x2="245" y2="370" stroke="#0f172a" stroke-width="16" stroke-linecap="round"/>
+  <line x1="338" y1="330" x2="424" y2="390" stroke="#0f172a" stroke-width="16" stroke-linecap="round"/>
+  <line x1="345" y1="342" x2="295" y2="475" stroke="#0f172a" stroke-width="18" stroke-linecap="round"/>
+  <line x1="345" y1="342" x2="400" y2="482" stroke="#0f172a" stroke-width="18" stroke-linecap="round"/>
+  <line x1="210" y1="392" x2="500" y2="430" stroke="#92400e" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="222" cy="394" r="24" fill="#b45309"/>
+  <circle cx="488" cy="428" r="24" fill="#b45309"/>
+  <line x1="170" y1="525" x2="470" y2="525" stroke="#92400e" stroke-width="8" stroke-linecap="round"/>
+</svg>

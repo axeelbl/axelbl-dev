@@ -1,0 +1,136 @@
+:root {
+    color-scheme: dark;
+    --bg: #0b1018;
+    --surface: #111823;
+    --surface-soft: #182232;
+    --surface-muted: #1c283b;
+    --line: rgba(255, 255, 255, 0.08);
+    --text: #f5f7fb;
+    --text-soft: #b8c2d3;
+    --text-muted: #8e99ac;
+    --accent: #cfa35a;
+    --accent-soft: #f1d7a7;
+    --success: #91c7a3;
+    --danger: #e09a90;
+    --shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+    --shell-width: 920px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at top left, rgba(207, 163, 90, 0.16), transparent 24%),
+        radial-gradient(circle at top right, rgba(117, 153, 201, 0.16), transparent 24%),
+        linear-gradient(180deg, #080c12 0%, #0c121b 100%);
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.app-shell {
+    width: min(var(--shell-width), calc(100% - 24px));
+    margin: 0 auto;
+    padding: 28px 0 40px;
+}
+
+.app-header {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.app-kicker {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+}
+
+.app-header h1 {
+    margin: 0;
+    font-family: "Newsreader", "Georgia", serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 600;
+    line-height: 0.96;
+}
+
+.app-header p {
+    width: min(100%, 680px);
+    margin: 0 auto;
+    color: var(--text-soft);
+    line-height: 1.6;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.quick-chip,
+.example-chip,
+.quick-action,
+.toolbar-btn,
+.result-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    color: var(--text);
+    text-decoration: none;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.quick-chip:hover,
+.example-chip:hover,
+.quick-action:hover,
+.toolbar-btn:hover,
+.result-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.chat-card {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: rgba(17, 24, 35, 0.92);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}

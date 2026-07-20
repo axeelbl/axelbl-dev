@@ -1,0 +1,27 @@
+/* =========================
+ANIMACIONES
+========================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(255, 122, 26, 0.14);
+    }
+
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 0 16px rgba(255, 122, 26, 0.08);
+    }
+}

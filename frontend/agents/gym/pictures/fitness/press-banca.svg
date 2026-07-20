@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#bfdbfe"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="40" fill="url(#bg)"/>
+  <text x="40" y="72" font-size="38" font-family="Verdana, sans-serif" fill="#0f172a">Press Banca</text>
+  <text x="40" y="112" font-size="22" font-family="Verdana, sans-serif" fill="#1d4ed8">Pecho | Triceps | Hombro anterior</text>
+  <line x1="100" y1="260" x2="540" y2="260" stroke="#1e3a8a" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="120" cy="260" r="30" fill="#1e40af"/>
+  <circle cx="520" cy="260" r="30" fill="#1e40af"/>
+  <rect x="180" y="372" width="280" height="24" rx="12" fill="#334155"/>
+  <rect x="296" y="320" width="48" height="60" rx="18" fill="#64748b"/>
+  <circle cx="275" cy="330" r="26" fill="#0f172a"/>
+  <line x1="275" y1="356" x2="275" y2="410" stroke="#0f172a" stroke-width="18" stroke-linecap="round"/>
+  <line x1="275" y1="372" x2="232" y2="300" stroke="#0f172a" stroke-width="16" stroke-linecap="round"/>
+  <line x1="275" y1="372" x2="318" y2="300" stroke="#0f172a" stroke-width="16" stroke-linecap="round"/>
+  <line x1="275" y1="410" x2="232" y2="452" stroke="#0f172a" stroke-width="16" stroke-linecap="round"/>
+  <line x1="275" y1="410" x2="318" y2="452" stroke="#0f172a" stroke-width="16" stroke-linecap="round"/>
+  <path d="M232 300 Q275 244 318 300" fill="none" stroke="#2563eb" stroke-width="10" stroke-linecap="round"/>
+</svg>

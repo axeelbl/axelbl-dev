@@ -1,0 +1,36 @@
+#profileLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+#profileLinks a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(231, 217, 201, 0.98);
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 10px 24px rgba(78, 52, 31, 0.05);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+#profileLinks svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--accent);
+}
+
+#profileLinks a:hover {
+    transform: translateY(-2px);
+    border-color: rgba(181, 95, 58, 0.24);
+    background: rgba(255, 255, 255, 0.96);
+}

@@ -1,0 +1,190 @@
+/* =========================
+BOOKING MODALS
+========================= */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background: rgba(5, 12, 20, 0.64);
+    backdrop-filter: blur(12px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    width: min(560px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    border-radius: 30px;
+    color: var(--text-strong);
+    background:
+        radial-gradient(circle at top right, rgba(255, 122, 26, 0.08), transparent 22%),
+        radial-gradient(circle at bottom left, rgba(20, 197, 139, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 249, 252, 0.98));
+    border: 1px solid rgba(16, 33, 49, 0.1);
+    box-shadow: 0 32px 80px rgba(4, 12, 20, 0.24);
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-kicker {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(16, 33, 49, 0.06);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.modal-content h2 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 34px;
+    line-height: 1;
+}
+
+.modal-note {
+    margin: 0;
+    color: var(--text-base);
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.modal-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.modal-summary article {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(16, 33, 49, 0.08);
+}
+
+.modal-summary span {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.modal-summary strong {
+    color: var(--text-strong);
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.modal-content form {
+    display: grid;
+    gap: 14px;
+}
+
+.field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.field-group {
+    display: grid;
+    gap: 8px;
+}
+
+.field-group label {
+    color: var(--text-base);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    min-height: 54px;
+    padding: 0 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(16, 33, 49, 0.12);
+    background: rgba(255, 255, 255, 0.98);
+    color: var(--text-strong);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    border-color: rgba(255, 122, 26, 0.34);
+    box-shadow: 0 0 0 5px rgba(255, 122, 26, 0.12);
+}
+
+.modal-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.manage-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.manage-actions #closeManageModal {
+    grid-column: 1 / -1;
+}
+
+.modal-actions button {
+    min-height: 52px;
+    padding: 0 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.modal-actions button:hover,
+.modal-actions button:focus-visible {
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.modal-actions button[type="submit"],
+#modifyBtn {
+    color: #fffaf5;
+    background: linear-gradient(135deg, var(--accent-main), #ff9950);
+    box-shadow: 0 16px 28px rgba(218, 90, 0, 0.18);
+}
+
+#closeModal,
+#closeManageModal {
+    color: var(--text-strong);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(16, 33, 49, 0.12);
+}
+
+#cancelBtn {
+    color: var(--text-strong);
+    background: rgba(16, 33, 49, 0.08);
+    border: 1px solid rgba(16, 33, 49, 0.1);
+}

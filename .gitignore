@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+venv311/
+
+# Secrets / environment
+.env
+*.env
+!.env.example
+.env.*
+*.pem
+*.key
+*.crt
+
+# Runtime data / private leads
+*.log
+nohup.out
+uvicorn.log
+uvicorn.pid
+*.sqlite
+*.sqlite3
+*.db
+leads.csv
+leads_export.zip
+leads_by_agent/
+leads_send_state.json
+agent_data.sqlite3
+
+# Temporary backups
+*.bak
+*.bak-*
+*.tmp
+.DS_Store
+Thumbs.db
