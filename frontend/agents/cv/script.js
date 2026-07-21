@@ -130,8 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mensaje de bienvenida automático
     setTimeout(() => {
         addBotMessageTyping(
-            "¡Hola! 👋 Soy AxelBot, un chatbot que actúa como mi clon profesional.\n\n" +
-            "Puedes preguntarme sobre mi experiencia, proyectos, estudios, habilidades técnicas o cualquier otra cosa que quieras saber sobre mí."
+            "¡Hola! 👋 Soy el Agente CV de Axel Berral López.\n\n" +
+            "Puedes preguntarme sobre su experiencia como Ingeniero Informático y AI Engineer, sus proyectos de IA aplicada, agentes LLM, backend, estudios y habilidades técnicas."
         );
     }, 300);
 

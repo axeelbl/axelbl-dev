@@ -4,22 +4,30 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Axel Berral López — Ingeniero Informático & AI Engineer</title>
-  <meta name="description" content="Portfolio profesional de Axel Berral López: Ingeniero Informático y AI Engineer especializado en agentes IA, LLMs, backend y despliegue de sistemas end-to-end." />
+  <meta name="description" content="Diseño y despliego sistemas de IA aplicada: agentes LLM, pipelines de audio, APIs, automatización y demos full-stack seguras y mantenibles." />
   <meta property="og:title" content="Axel Berral López — Ingeniero Informático & AI Engineer" />
-  <meta property="og:description" content="IA aplicada, agentes LLM, backend, cloud y proyectos full-stack." />
+  <meta property="og:description" content="Ingeniero Informático y AI Engineer especializado en agentes LLM, pipelines de audio, APIs, automatización y sistemas de IA aplicada." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://axelbl.dev" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:image" content="https://axelbl.dev/assets/axel-hero.jpg" />
+  <meta property="og:image:alt" content="Axel Berral López, Ingeniero Informático y AI Engineer" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Axel Berral López — Ingeniero Informático & AI Engineer" />
+  <meta name="twitter:description" content="Diseño y despliego sistemas de IA aplicada: agentes LLM, pipelines de audio, APIs, automatización y demos full-stack." />
+  <meta name="twitter:image" content="https://axelbl.dev/assets/axel-hero.jpg" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Axel Berral López","jobTitle":["Ingeniero Informático","AI Engineer","AI Software Engineer"],"url":"https://axelbl.dev","image":"https://axelbl.dev/assets/axel-hero.jpg","description":"Diseño y despliego sistemas de IA aplicada: agentes LLM, pipelines de audio, APIs, automatización y demos full-stack seguras, mantenibles y orientadas a producción.","sameAs":["https://github.com/axeelbl","https://www.linkedin.com/in/axelbl/"],"knowsAbout":["Artificial Intelligence","LLM Agents","Machine Learning","Python","FastAPI","Whisper","LangChain","Ollama","Docker","Backend Engineering","APIs"]}</script>
   <meta name="theme-color" content="#0b0d10" />
   <link rel="canonical" href="https://axelbl.dev" />
-  <link rel="icon" href="/favicon.png" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260720-dark-particles" />
+  <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
+  <link rel="stylesheet" href="/styles.css?v=20260721-credentials-final" />
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
   <div class="ambient" aria-hidden="true"><span></span><span></span></div>
   <canvas class="particle-canvas" id="particleCanvas" aria-hidden="true"></canvas>
   <header class="nav">
-    <a class="mark" href="#top">Axel Berral</a>
+    <a class="mark" href="/" aria-label="Ir al inicio">Axel Berral</a>
     <nav aria-label="Principal" data-i18n-attr="aria-label:navAria">
       <a href="#experience" data-i18n="nav.experience">Experiencia</a>
       <a href="#agents" data-i18n="nav.agents">Agentes</a>
@@ -82,27 +90,51 @@
         <p data-i18n="agents.copy">Cada agente tiene su propia página pública. Los backends se conectan progresivamente con límites seguros, aislamiento de entorno y sin secretos expuestos.</p>
       </div>
       <div class="agent-board">
-        <a href="/agents/restaurante/" class="agent-row featured"><span>01</span><strong data-i18n="agent.restaurant.title">Agente Restaurante</strong><em data-i18n="agent.restaurant.copy">Reservas, menú y recomendaciones</em></a>
-        <a href="/agents/tenista/" class="agent-row featured"><span>02</span><strong data-i18n="agent.tennis.title">Agente Tenista</strong><em data-i18n="agent.tennis.copy">Análisis responsable de partidos y predicciones</em></a>
-        <a href="/agents/peluquero/" class="agent-row"><span>03</span><strong data-i18n="agent.barber.title">Agente Peluquero</strong><em data-i18n="agent.barber.copy">Estilos, reservas y flujos de clientes</em></a>
-        <a href="/agents/cv/" class="agent-row"><span>04</span><strong data-i18n="agent.cv.title">Agente CV</strong><em data-i18n="agent.cv.copy">Chatbot profesional basado en mi perfil</em></a>
-        <a href="/agents/gym/" class="agent-row"><span>05</span><strong data-i18n="agent.gym.title">Asistente Gym</strong><em data-i18n="agent.gym.copy">Entrenamiento, reservas y captación de leads</em></a>
-        <a href="/agents/inversionista/" class="agent-row"><span>06</span><strong data-i18n="agent.investor.title">Agente Inversionista</strong><em data-i18n="agent.investor.copy">Planificación educativa de inversión</em></a>
-        <a href="/agents/noticiero/" class="agent-row"><span>07</span><strong data-i18n="agent.news.title">Agente Noticiero</strong><em data-i18n="agent.news.copy">Presentador IA y resúmenes de noticias</em></a>
-        <a href="/agents/jesucristo/" class="agent-row"><span>08</span><strong data-i18n="agent.christian.title">Agente Cristiano</strong><em data-i18n="agent.christian.copy">Conversación espiritual y búsqueda local</em></a>
-        <a href="/agents/nur/" class="agent-row"><span>09</span><strong data-i18n="agent.nur.title">Agente Nur</strong><em data-i18n="agent.nur.copy">Asistente islámico y búsqueda de mezquitas</em></a>
+        <a href="/agents/restaurante/" class="agent-row featured" data-open-label="Abrir"><span>01</span><strong data-i18n="agent.restaurant.title">Agente Restaurante</strong><em data-i18n="agent.restaurant.copy">Reservas, menú y recomendaciones</em></a>
+        <a href="/agents/tenista/" class="agent-row featured" data-open-label="Abrir"><span>02</span><strong data-i18n="agent.tennis.title">Agente Tenista</strong><em data-i18n="agent.tennis.copy">Análisis responsable de partidos y predicciones</em></a>
+        <a href="/agents/peluquero/" class="agent-row" data-open-label="Abrir"><span>03</span><strong data-i18n="agent.barber.title">Agente Peluquero</strong><em data-i18n="agent.barber.copy">Estilos, reservas y flujos de clientes</em></a>
+        <a href="/agents/cv/" class="agent-row" data-open-label="Abrir"><span>04</span><strong data-i18n="agent.cv.title">Agente CV</strong><em data-i18n="agent.cv.copy">Chatbot profesional basado en mi perfil</em></a>
+        <a href="/agents/gym/" class="agent-row" data-open-label="Abrir"><span>05</span><strong data-i18n="agent.gym.title">Asistente Gym</strong><em data-i18n="agent.gym.copy">Entrenamiento, reservas y captación de leads</em></a>
+        <a href="/agents/inversionista/" class="agent-row" data-open-label="Abrir"><span>06</span><strong data-i18n="agent.investor.title">Agente Inversionista</strong><em data-i18n="agent.investor.copy">Planificación educativa de inversión</em></a>
+        <a href="/agents/noticiero/" class="agent-row" data-open-label="Abrir"><span>07</span><strong data-i18n="agent.news.title">Agente Noticiero</strong><em data-i18n="agent.news.copy">Presentador IA y resúmenes de noticias</em></a>
+        <a href="/agents/jesucristo/" class="agent-row" data-open-label="Abrir"><span>08</span><strong data-i18n="agent.christian.title">Agente Cristiano</strong><em data-i18n="agent.christian.copy">Conversación espiritual y búsqueda local</em></a>
+        <a href="/agents/nur/" class="agent-row" data-open-label="Abrir"><span>09</span><strong data-i18n="agent.nur.title">Agente Nur</strong><em data-i18n="agent.nur.copy">Asistente islámico y búsqueda de mezquitas</em></a>
       </div>
     </section>
 
     <section class="section" id="work" data-reveal>
       <div class="section-label" data-i18n="sections.work">04 / Proyectos destacados</div>
       <div class="work-grid">
-        <article class="work-item large" data-parallax="0.08">
-          <div><span class="kicker" data-i18n="work.call.kicker">IA en producción</span><h3 data-i18n="work.call.title">Sistema de análisis de llamadas con IA</h3><p data-i18n="work.call.copy">Ingesta de audio, transcripción con Whisper, análisis con LLMs locales y servicios backend para evaluación operativa. Caso público sin datos confidenciales.</p></div>
-          <a href="/projects/call-analysis.html" data-i18n="work.caseStudy">Leer caso</a>
+        <article class="work-item large call-case-card" data-parallax="0.08">
+          <div>
+            <span class="kicker" data-i18n="work.call.kicker">IA en producción</span>
+            <h3 data-i18n="work.call.title">Sistema de análisis de llamadas con IA</h3>
+            <p data-i18n="work.call.copy">Pipeline end-to-end para transformar audios reales en transcripciones, rutas y evaluaciones automáticas con Whisper, LLMs locales y backend productivo on-premise.</p>
+            <div class="case-metrics" aria-label="Métricas del sistema de análisis de llamadas" data-i18n-attr="aria-label:work.callMetrics.aria">
+              <div><strong>250k+</strong><span data-i18n="work.callMetrics.evaluatedAudio">audios evaluados automáticamente</span></div>
+              <div><strong>306/h</strong><span data-i18n="work.callMetrics.peak">Audios x hora</span></div>
+              <div><strong>End-to-end</strong><span data-i18n="work.callMetrics.pipeline">pipeline completo en producción</span></div>
+              <div><strong>On-premise</strong><span data-i18n="work.callMetrics.privateGpu">GPU local y datos privados</span></div>
+            </div>
+          </div>
+          <div class="case-card-footer">
+            <span data-i18n="work.callHardware">On-premise · 2× NVIDIA RTX PRO 6000 Blackwell · Whisper · vLLM · FastAPI</span>
+            <a href="/projects/call-analysis.html" data-i18n="work.caseStudy">Leer caso</a>
+          </div>
         </article>
         <article class="work-item"><span class="kicker" data-i18n="work.framework.kicker">Arquitectura LLM</span><h3 data-i18n="work.framework.title">Framework de agentes</h3><p data-i18n="work.framework.copy">Framework modular para crear agentes LLM locales reutilizables.</p><a href="/projects/agent-framework.html" data-i18n="work.caseStudy">Leer caso</a></article>
-        <article class="work-item"><span class="kicker" data-i18n="work.lovelink.kicker">Grafos / ML</span><h3>LoveLink</h3><p data-i18n="work.lovelink.copy">Sistema de recomendación basado en conexiones sociales indirectas.</p><a href="https://github.com/axeelbl/LoveLink">GitHub</a></article>
+        <article class="work-item lovelink-card">
+          <div>
+            <div class="lovelink-visual" aria-hidden="true"><img src="/assets/lovelink-logo.jpg" alt="" loading="lazy" /></div>
+            <span class="kicker" data-i18n="work.lovelink.kicker">Grafos / ML</span>
+            <h3>LoveLink</h3>
+            <p data-i18n="work.lovelink.copy">Sistema de recomendación basado en conexiones sociales indirectas.</p>
+          </div>
+          <div class="work-links">
+            <a href="https://lovelink-bueno.onrender.com/" target="_blank" rel="noopener noreferrer" data-i18n="work.website">Ver web</a>
+            <a href="https://github.com/axeelbl/LoveLink" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </div>
+        </article>
         <article class="work-item"><span class="kicker" data-i18n="work.dashboard.kicker">Full stack</span><h3 data-i18n="work.dashboard.title">Dashboard financiero</h3><p data-i18n="work.dashboard.copy">Dashboard de finanzas personales con Python, Flask y SQLite.</p><a href="/projects/financial-dashboard.html" data-i18n="work.caseStudy">Leer caso</a></article>
       </div>
     </section>
@@ -117,8 +149,54 @@
       </div>
     </section>
 
+
+    <section class="section credentials-section" id="credentials" data-reveal>
+      <div class="section-label" data-i18n="sections.credentials">06 / Credenciales</div>
+      <div class="section-title compact-title">
+        <h2 data-i18n="credentials.title">Formación, idiomas y resultados académicos.</h2>
+        <p data-i18n="credentials.copy">Una base universitaria sólida combinada con certificación cloud, experiencia internacional e idiomas para trabajar en entornos técnicos diversos.</p>
+      </div>
+      <div class="credentials-grid">
+        <article class="credential-card highlight">
+          <span class="kicker" data-i18n="credentials.degree.kicker">Formación</span>
+          <h3 data-i18n="credentials.degree.title">Ingeniería Informática</h3>
+          <p data-i18n="credentials.degree.copy">Universitat de Lleida · Erasmus en NTNU Gjøvik, Noruega</p>
+          <div class="grade-pill"><strong>8,03</strong><span data-i18n="credentials.degree.average">nota media final</span></div>
+        </article>
+        <article class="credential-card">
+          <span class="kicker" data-i18n="credentials.languages.kicker">Idiomas</span>
+          <ul class="language-list">
+            <li><strong data-i18n="credentials.languages.es.name">Español</strong><span data-i18n="credentials.languages.es.level">Nativo</span></li>
+            <li><strong data-i18n="credentials.languages.ca.name">Catalán</strong><span data-i18n="credentials.languages.ca.level">Nativo</span></li>
+            <li><strong data-i18n="credentials.languages.en.name">Inglés</strong><span data-i18n="credentials.languages.en.level">Profesional · Cambridge B2 First</span></li>
+            <li><strong data-i18n="credentials.languages.no.name">Noruego</strong><span data-i18n="credentials.languages.no.level">Básico / A1</span></li>
+          </ul>
+        </article>
+        <article class="credential-card certification-card">
+          <span class="kicker" data-i18n="credentials.cert.kicker">Certificación</span>
+          <h3>AWS Cloud Foundations</h3>
+          <p data-i18n="credentials.cert.copy">Fundamentos de cloud computing, arquitectura AWS, seguridad, redes, almacenamiento y servicios base.</p>
+        </article>
+        <article class="credential-card grades-card">
+          <span class="kicker" data-i18n="credentials.grades.kicker">Asignaturas destacadas</span>
+          <div class="grades-list" aria-label="Asignaturas destacadas" data-i18n-attr="aria-label:credentials.grades.aria">
+            <div><span data-i18n="credentials.grades.subjects.userDesign">Disseny centrat en l'usuari</span><strong>MH · 9,5</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.appSecurity">Seguretat d'aplicacions i comunicacions</span><strong>EX · 9,5</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.internship">Pràctiques tutelades en empresa</span><strong>EX · 9,5</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.programming2">Programació II</span><strong>MH · 9,2</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.programming1">Programació I</span><strong>MH · 9,2</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.enterpriseArchitecture">Arquitectures de programari empresarial</span><strong>EX · 9,0</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.legalSocial">Aspectes legals, socials i professionals</span><strong>EX · 9,0</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.distributedComputing">Computació distribuïda i aplicacions</span><strong>EX · 9,0</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.finalProject">Treball de fi de grau</span><strong>EX · 9,0</strong></div>
+            <div><span data-i18n="credentials.grades.subjects.algorithms">Algorítmica i complexitat</span><strong>EX · 9,0</strong></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="contact" id="contact" data-reveal>
-      <span class="section-label" data-i18n="sections.contact">06 / Contacto</span>
+      <span class="section-label" data-i18n="sections.contact">07 / Contacto</span>
       <h2 data-i18n="contact.title">Disponible para ingeniería de IA, desarrollo software y colaboraciones de IA aplicada.</h2>
       <div class="actions center">
         <a class="button primary" href="mailto:axelberrallopez@gmail.com">Email</a>
@@ -130,6 +208,6 @@
   </main>
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
-  <script src="/app.js?v=20260720-dark-particles" defer></script>
+  <script src="/app.js?v=20260721-grade-subjects" defer></script>
 </body>
 </html>

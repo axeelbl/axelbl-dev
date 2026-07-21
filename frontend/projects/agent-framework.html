@@ -4,26 +4,31 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
-  <link rel="icon" href="/favicon.png" type="image/png" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/styles.css?v=20260720-projects" />
+  <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
+  <link rel="stylesheet" href="/styles.css?v=20260721-credentials-final" />
   <title>Framework de agentes IA — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: framework modular para construir agentes IA con LLMs locales, LangChain, Ollama y arquitectura reutilizable." />
   <meta property="og:title" content="Framework de agentes IA — Axel Berral López" />
   <meta property="og:description" content="Arquitectura modular para crear agentes LLM reutilizables y escalables." />
 </head>
-<body class="project-page">
+<body class="project-page" data-project-key="agent-framework">
   <div class="scroll-progress" aria-hidden="true"></div>
   <div class="ambient" aria-hidden="true"><span data-parallax-layer="0.14"></span><span data-parallax-layer="-0.10"></span></div>
 
   <header class="nav">
-    <a class="mark" href="/">Axel Berral</a>
+    <a class="mark" href="/" aria-label="Ir al inicio">Axel Berral</a>
     <nav aria-label="Principal">
       <a href="/#experience">Experiencia</a>
       <a href="/#agents">Agentes</a>
       <a href="/#work">Proyectos</a>
       <a href="/#contact">Contacto</a>
     </nav>
+    <div class="language-switcher" role="group" aria-label="Cambiar idioma">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-lang="ca" aria-pressed="false">CA</button>
+      <button type="button" data-lang="no" aria-pressed="false">NO</button>
+    </div>
     <a class="project-back" href="/#work">Volver</a>
   </header>
 
@@ -65,6 +70,7 @@
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
   
+  <script src="/project-i18n.js?v=20260721-call-professional"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -4,109 +4,47 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
-  <link rel="icon" href="/favicon.png" type="image/png" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/styles.css?v=20260720-projects" />
-  <title>Sistema de análisis de llamadas con IA — Axel Berral López</title>
-  <meta name="description" content="Caso de estudio técnico: sistema de análisis de llamadas con Whisper, LLMs locales, APIs backend, GPU y despliegue en producción." />
-  <meta property="og:title" content="Sistema de análisis de llamadas con IA — Axel Berral López" />
-  <meta property="og:description" content="Pipeline end-to-end de audio, transcripción, análisis NLP/LLM y backend productivo." />
+  <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
+  <link rel="stylesheet" href="/styles.css?v=20260721-credentials-final" />
+  <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
+  <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
+  <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
+  <meta property="og:description" content="Más de 250.000 audios evaluados automáticamente y picos de 306 audios por hora en un pipeline IA on-premise de producción." />
+  <meta property="og:image" content="https://axelbl.dev/assets/axel-hero.jpg" />
 </head>
-<body class="project-page">
+<body class="project-page" data-project-key="call-analysis">
   <div class="scroll-progress" aria-hidden="true"></div>
   <div class="ambient" aria-hidden="true"><span data-parallax-layer="0.14"></span><span data-parallax-layer="-0.10"></span></div>
 
   <header class="nav">
-    <a class="mark" href="/">Axel Berral</a>
-    <nav aria-label="Principal">
-      <a href="/#experience">Experiencia</a>
-      <a href="/#agents">Agentes</a>
-      <a href="/#work">Proyectos</a>
-      <a href="/#contact">Contacto</a>
-    </nav>
+    <a class="mark" href="/" aria-label="Ir al inicio">Axel Berral</a>
+    <nav aria-label="Principal"><a href="/#experience">Experiencia</a><a href="/#agents">Agentes</a><a href="/#work">Proyectos</a><a href="/#contact">Contacto</a></nav>
+    <div class="language-switcher" role="group" aria-label="Cambiar idioma">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-lang="ca" aria-pressed="false">CA</button>
+      <button type="button" data-lang="no" aria-pressed="false">NO</button>
+    </div>
     <a class="project-back" href="/#work">Volver</a>
   </header>
 
   <main>
-    <section class="project-hero" data-reveal>
-      <div class="project-eyebrow">Caso de estudio · IA en producción</div>
-      <div class="project-hero-grid">
-        <h1>Sistema de análisis de llamadas con IA</h1>
-        <div class="project-summary" data-parallax-layer="-0.05">
-          <p>Pipeline end-to-end para procesar audios reales, transcribirlos con Whisper y analizarlos con LLMs locales mediante servicios backend preparados para producción.</p>
-          <div class="project-actions">
-            <a class="button primary" href="/">Portfolio</a>
-            <a class="button" href="/agents/cv/">Hablar con mi CV</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="project-content" data-reveal>
-      <article class="project-card large">
-        <span class="kicker">Arquitectura</span>
-        <h2>De audio a evaluación automatizada</h2>
-        <p>El sistema cubre ingesta de audio, normalización, transcripción con Whisper, análisis NLP/LLM, orquestación backend y exposición mediante APIs. El foco está en rendimiento, escalabilidad y despliegue robusto en entornos con GPU.</p>
-      </article>
-      <article class="project-card">
-        <span class="kicker">Stack</span>
-        <div class="tag-list"><span>Python</span><span>Whisper</span><span>LLMs locales</span><span>vLLM</span><span>FastAPI</span><span>Docker</span><span>GPU</span></div>
-      </article>
-      <article class="project-card">
-        <span class="kicker">Producción</span>
-        <p>Trabajo orientado a servidores on-premise, APIs backend, control de rendimiento y despliegues mantenibles sin exponer datos sensibles.</p>
-      </article>
-      <article class="project-card muted-card">
-        <span class="kicker">Confidencialidad</span>
-        <p>No se publican repositorio, datos, métricas internas, prompts privados ni detalles de infraestructura por confidencialidad profesional.</p>
-      </article>
-    </section>
+<section class="project-hero" data-reveal><div class="project-eyebrow">Caso de estudio · IA aplicada · On-premise GPU</div><div class="project-hero-grid"><h1>Pipeline end-to-end de IA para análisis de audio</h1><div class="project-summary" data-parallax-layer="-0.05"><p>Desarrollo y mantengo un sistema de inteligencia artificial para analizar grandes volúmenes de llamadas reales de forma automatizada, rápida y segura: transcripción con Whisper, análisis con LLMs locales, evaluación, persistencia y APIs.</p><div class="project-actions"><a class="button primary" href="/#work">Portfolio</a><a class="button" href="/agents/cv/">Hablar con mi CV</a></div></div></div></section>
+<section class="project-metrics" data-reveal><article class="metric-card accent"><strong>250k+</strong><span>audios evaluados automáticamente</span></article><article class="metric-card"><strong>306/h</strong><span>Audios x hora en pico registrado</span></article><article class="metric-card"><strong>End-to-end</strong><span>pipeline completo en producción</span></article><article class="metric-card"><strong>On-premise</strong><span>2× NVIDIA RTX PRO 6000 Blackwell</span></article></section>
+<section class="project-section" data-reveal><span class="kicker">Escala y velocidad</span><h2>Análisis automático de llamadas a gran volumen</h2><p>El sistema está diseñado para convertir audios reales en resultados estructurados que pueden ser utilizados por herramientas internas y otros sistemas de negocio. Procesa llamadas de principio a fin: ingesta, preparación, transcripción, enrutamiento, evaluación y exposición de resultados mediante APIs.</p><p>En operación ha superado los 250.000 audios evaluados automáticamente y está preparado para trabajar con lotes grandes de llamadas manteniendo trazabilidad, control de estados y tiempos de proceso optimizados.</p></section>
+<section class="project-section" data-reveal><span class="kicker">Velocidad operativa</span><h2>Muchas llamadas, procesadas rápido</h2><p>La arquitectura se ha optimizado para aumentar el número de llamadas procesadas por hora y reducir esperas en el recorrido completo. El sistema ha alcanzado picos registrados de 306 audios por hora dentro del pipeline real de producción.</p><p class="case-note">Las cifras se presentan de forma agregada y anonimizadas. No se publican audios, transcripciones, clientes ni detalles sensibles del entorno.</p></section>
+<section class="project-section" data-reveal><span class="kicker">Arquitectura</span><h2>Pipeline completo de producción</h2><div class="case-steps"><article class="case-step"><span>01</span><h3>Ingesta y validación</h3><p>Recepción, validación y preparación de cada audio antes de introducirlo en el pipeline.</p></article><article class="case-step"><span>02</span><h3>Normalización y trazabilidad</h3><p>Control de formato, disponibilidad, estado y trazabilidad de cada elemento durante todo el recorrido.</p></article><article class="case-step"><span>03</span><h3>Transcripción con Whisper</h3><p>Transcripción sobre GPU y almacenamiento estructurado de transcripciones y metadatos reutilizables.</p></article><article class="case-step"><span>04</span><h3>Enrutamiento con LLMs locales</h3><p>Análisis de transcripciones para decidir qué lógica, criterios o evaluaciones aplicar, sirviendo modelos mediante vLLM.</p></article><article class="case-step"><span>05</span><h3>Evaluación automatizada</h3><p>Generación de respuestas estructuradas siguiendo criterios de negocio, listas para almacenamiento, consulta e integración.</p></article><article class="case-step"><span>06</span><h3>APIs y control operativo</h3><p>Persistencia en base de datos, exposición mediante FastAPI, workers independientes, reintentos, estados, errores y monitorización de tiempos.</p></article></div></section>
+<section class="project-content" data-reveal><article class="project-card large"><span class="kicker">Mi responsabilidad</span><h2>Más que usar modelos</h2><p>Diseño y mantengo la infraestructura para ejecutar IA de forma fiable: servicios backend en Python, integración de Whisper y LLMs locales, pipelines distribuidos, workers especializados, procesamiento asíncrono, optimización GPU, APIs con FastAPI, Docker, persistencia, trazabilidad, control de errores y análisis de cuellos de botella.</p></article><article class="project-card"><span class="kicker">Hardware</span><p>Entorno on-premise con 2× NVIDIA RTX PRO 6000 Blackwell, orientado a mantener audios, transcripciones e información sensible dentro de la infraestructura de la organización.</p></article><article class="project-card"><span class="kicker">Stack</span><div class="tag-list"><span>Python</span><span>Whisper</span><span>LLMs locales</span><span>vLLM</span><span>FastAPI</span><span>Docker</span><span>GPU</span><span>APIs REST</span><span>Procesamiento distribuido</span><span>Backend producción</span></div></article><article class="project-card muted-card"><span class="kicker">Privacidad</span><p>Por confidencialidad profesional no se publican repositorios privados, audios, transcripciones, prompts internos, datos de clientes ni detalles sensibles de infraestructura. Las cifras se presentan agregadas y anonimizadas.</p></article></section>
   </main>
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
-  
+  <script src="/project-i18n.js?v=20260721-call-professional"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const revealItems = [...document.querySelectorAll('[data-reveal]')];
-    if ('IntersectionObserver' in window && !reduced) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
-      revealItems.forEach((el) => observer.observe(el));
-    } else {
-      revealItems.forEach((el) => el.classList.add('is-visible'));
-    }
-    if (!reduced) {
-      const layers = [...document.querySelectorAll('[data-parallax-layer]')];
-      let ticking = false;
-      const render = () => {
-        const y = window.scrollY || window.pageYOffset || 0;
-        const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-        document.documentElement.style.setProperty('--scroll-y', `${y}px`);
-        document.documentElement.style.setProperty('--scroll-progress', String(Math.min(Math.max(y / max, 0), 1)));
-        if (window.innerWidth > 760) {
-          const center = y + window.innerHeight / 2;
-          layers.forEach((el) => {
-            const rect = el.getBoundingClientRect();
-            const elCenter = y + rect.top + rect.height / 2;
-            const depth = Number(el.dataset.parallaxLayer || 0.08);
-            const offset = Math.min(Math.max((center - elCenter) * depth, -80), 80);
-            el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
-          });
-        }
-        ticking = false;
-      };
-      const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } };
-      render();
-      window.addEventListener('scroll', request, { passive: true });
-      window.addEventListener('resize', request, { passive: true });
-    }
+    if ('IntersectionObserver' in window && !reduced) { const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' }); revealItems.forEach((el) => observer.observe(el)); } else { revealItems.forEach((el) => el.classList.add('is-visible')); }
+    if (!reduced) { const layers = [...document.querySelectorAll('[data-parallax-layer]')]; let ticking = false; const render = () => { const y = window.scrollY || window.pageYOffset || 0; const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight); document.documentElement.style.setProperty('--scroll-y', `${y}px`); document.documentElement.style.setProperty('--scroll-progress', String(Math.min(Math.max(y / max, 0), 1))); if (window.innerWidth > 760) { const center = y + window.innerHeight / 2; layers.forEach((el) => { const rect = el.getBoundingClientRect(); const elCenter = y + rect.top + rect.height / 2; const depth = Number(el.dataset.parallaxLayer || 0.08); const offset = Math.min(Math.max((center - elCenter) * depth, -80), 80); el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`; }); } ticking = false; }; const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } }; render(); window.addEventListener('scroll', request, { passive: true }); window.addEventListener('resize', request, { passive: true }); }
   </script>
 </body>
 </html>

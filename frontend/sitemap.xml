@@ -1,1 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://axelbl.dev/</loc></url><url><loc>https://axelbl.dev/projects/call-analysis.html</loc></url><url><loc>https://axelbl.dev/projects/agent-framework.html</loc></url><url><loc>https://axelbl.dev/agents/gym/</loc></url><url><loc>https://axelbl.dev/agents/cv/</loc></url><url><loc>https://axelbl.dev/agents/inversionista/</loc></url><url><loc>https://axelbl.dev/agents/jesucristo/</loc></url><url><loc>https://axelbl.dev/agents/nur/</loc></url><url><loc>https://axelbl.dev/agents/noticiero/</loc></url><url><loc>https://axelbl.dev/agents/peluquero/</loc></url><url><loc>https://axelbl.dev/agents/restaurante/</loc></url><url><loc>https://axelbl.dev/agents/tenista/</loc></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://axelbl.dev/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/projects/call-analysis.html</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/projects/agent-framework.html</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/projects/financial-dashboard.html</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/gym/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/cv/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/inversionista/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/jesucristo/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/nur/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/noticiero/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/peluquero/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/restaurante/</loc><lastmod>2026-07-21</lastmod></url>
+  <url><loc>https://axelbl.dev/agents/tenista/</loc><lastmod>2026-07-21</lastmod></url>
+</urlset>
