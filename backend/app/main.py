@@ -128,7 +128,7 @@ EXPERIENCIA PROFESIONAL
 
 - Proyectos propios de agentes IA / portfolio:
   • He construido varios agentes web funcionales con frontend, backend, prompts especializados, APIs y gestión de leads.
-  • Ejemplos: agente CV, agente peluquero, restaurante, gimnasio, inversionista, noticiero, tenista y agentes conversacionales temáticos.
+  • Ejemplos: agente CV, agente peluquero, restaurante, gimnasio, inversor, noticiero, tenista y agentes conversacionales temáticos.
   • He trabajado con FastAPI, JavaScript, HTML/CSS, Groq/LLMs, Resend para emails, SQLite/CSV y despliegue en AWS con Nginx.
 
 - Experiencia en retail y logística (Caprabo, Mercadona, Loaner):
@@ -251,6 +251,8 @@ def init_db() -> None:
 def agent_from_request(request: Request, body: Optional[dict[str, Any]] = None) -> str:
     explicit = (body or {}).get("agent") or request.query_params.get("agent")
     haystack = " ".join(filter(None, [str(explicit or ""), request.headers.get("referer", ""), request.headers.get("origin", "")])).lower()
+    if "/agents/inversor" in haystack or haystack == "inversor" or "agent=inversor" in haystack:
+        return "inversionista"
     for agent in ["inversionista", "restaurante", "peluquero", "noticiero", "tenista", "jesucristo", "gym", "nur", "cv"]:
         if f"/agents/{agent}" in haystack or haystack == agent or f"agent={agent}" in haystack:
             return agent
@@ -296,6 +298,8 @@ LEAD_FIELDS = ["timestamp", "agent", "kind", "ip", "user_agent", "language", "re
 
 def infer_agent_from_referer(referer: str) -> str:
     value = (referer or "").lower()
+    if "/agents/inversor" in value:
+        return "inversionista"
     for agent in ["inversionista", "restaurante", "peluquero", "noticiero", "tenista", "jesucristo", "gym", "nur", "cv"]:
         if f"/agents/{agent}" in value:
             return agent
@@ -388,7 +392,7 @@ AGENT_LABELS = {
     "peluquero": "Agente Peluquero",
     "restaurante": "Agente Restaurante",
     "noticiero": "Agente Noticiero",
-    "inversionista": "Agente Inversionista",
+    "inversionista": "Agente Inversor",
     "tenista": "Agente Tenista",
     "jesucristo": "Agente JesuCristo",
     "nur": "Agente Nur",

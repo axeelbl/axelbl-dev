@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <base href="/agents/cv/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Agente CV de Axel Berral López: consulta su experiencia, proyectos, estudios y habilidades técnicas en IA aplicada, backend y agentes LLM." />
-    <meta name="robots" content="index,follow,max-image-preview:large" />
-    <link rel="canonical" href="https://axelbl.dev/agents/cv/" />
-    <meta property="og:title" content="Agente CV — Axel Berral López" />
-    <meta property="og:description" content="Consulta la experiencia profesional, proyectos y habilidades técnicas de Axel Berral López en IA aplicada, backend y agentes LLM." />
-    <meta property="og:image" content="https://axelbl.dev/assets/axel-hero.jpg" />
-    <title>Agente CV — Axel Berral López | Ingeniero Informático & AI Engineer</title>
+    <title>AxelBot</title>
     <link rel="icon" type="image/png" href="/agents/cv/favicon.png">
     <style>
         /* Sorry about the spaghetti code here, I'm in a hurry. Axel :) */
@@ -127,6 +120,161 @@
 
         .message {
             white-space: pre-line;
+        }
+
+
+
+        /* =========================
+        RESPUESTAS BONITAS / CV RICH
+        ========================= */
+        .message.user {
+            white-space: pre-wrap;
+        }
+
+        .message.bot {
+            white-space: normal;
+            max-width: min(760px, 78%);
+        }
+
+        .bot-rich {
+            display: grid;
+            gap: 12px;
+        }
+
+        .bot-rich p {
+            margin: 0;
+        }
+
+        .bot-rich .bot-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 2px 0 0;
+            font-size: 16px;
+            line-height: 1.25;
+            color: #0f172a;
+        }
+
+        .bot-rich .bot-title::before {
+            content: "✦";
+            display: inline-grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #2563eb, #38bdf8);
+            color: #fff;
+            font-size: 12px;
+            flex: 0 0 auto;
+        }
+
+        .bot-rich .bot-section {
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+        }
+
+        .bot-rich .bot-section-title {
+            margin: 0 0 8px;
+            color: #1d4ed8;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .bot-rich ul,
+        .bot-rich ol {
+            margin: 0;
+            padding-left: 20px;
+            display: grid;
+            gap: 7px;
+        }
+
+        .bot-rich li::marker {
+            color: #2563eb;
+        }
+
+        .bot-rich strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .bot-rich a {
+            color: #1d4ed8;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(37,99,235,.28);
+        }
+
+        .bot-rich a:hover {
+            color: #1e40af;
+            border-bottom-color: currentColor;
+        }
+
+        .bot-link-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .bot-link-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid #dbeafe;
+            background: linear-gradient(135deg, #eff6ff, #ffffff);
+            box-shadow: 0 8px 22px rgba(37,99,235,.08);
+        }
+
+        .bot-link-card .icon {
+            display: inline-grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            flex: 0 0 auto;
+        }
+
+        .bot-link-card .meta {
+            min-width: 0;
+        }
+
+        .bot-link-card .label {
+            display: block;
+            color: #0f172a;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .bot-link-card .url {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .message.bot {
+                max-width: 94%;
+            }
+
+            .bot-rich {
+                gap: 10px;
+            }
+
+            .bot-rich .bot-section {
+                padding: 10px 12px;
+            }
         }
 
         /* =========================
@@ -456,8 +604,9 @@
     </style>
 
 <style id="portfolio-back-style">
-.portfolio-back{position:fixed;top:18px;left:18px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(8,10,14,.78);backdrop-filter:blur(12px);color:#fff!important;text-decoration:none!important;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.01em;box-shadow:0 10px 30px rgba(0,0,0,.22)}
-.portfolio-back:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.34)}
+.portfolio-back{position:fixed;top:18px;left:18px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(8,10,14,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff!important;text-decoration:none!important;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.01em;box-shadow:0 10px 30px rgba(0,0,0,.22);transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.portfolio-back:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.34);transform:translateY(-1px)}
+.portfolio-back:focus-visible{outline:2px solid rgba(255,255,255,.75);outline-offset:3px}
 @media(max-width:640px){.portfolio-back{top:12px;left:12px;padding:9px 12px;font-size:13px}}
 </style>
 </head>
@@ -527,7 +676,7 @@
         <button type="button" id="clearBtn">Limpiar</button>
         
     </div>
-    <script src="/agents/cv/script.js?v=20260720-assets"></script>
+    <script src="/agents/cv/script.js?v=cv-rich-render-20260723"></script>
 </body>
 </html>
 

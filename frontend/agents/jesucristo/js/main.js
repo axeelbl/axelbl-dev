@@ -1,5 +1,5 @@
-import { ChatController } from "./chat.js";
-import { ChatUI } from "./ui.js";
+import { ChatController } from "./chat.js?v=20260723-renderfix";
+import { ChatUI } from "./ui.js?v=20260723-renderfix";
 
 document.addEventListener("DOMContentLoaded", () => {
     const ui = new ChatUI(
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("clearBtn"),
     );
 
-    const chat = new ChatController(ui, "/chat");
+    const chat = new ChatController(ui, "/agents/jesucristo/chat");
 
     document.querySelectorAll("[data-prompt]").forEach((button) => {
         button.addEventListener("click", () => {

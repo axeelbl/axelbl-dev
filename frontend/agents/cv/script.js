@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sendBtn = document.getElementById("sendBtn");
     const clearBtn = document.getElementById("clearBtn");
 
-    const API_URL = "/chat";
+    const API_URL = "/agents/cv/chat";
 
     const baseFace = document.getElementById("baseFace");
     const mouthOpenImg = document.getElementById("mouthOpenImg");
@@ -15,8 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let mouthOpen = false;
     let talkingInterval = null;
-    // Sorry about the spaghetti code here, I'm in a hurry. Axel :) 
-    // Parpadeo independiente
+
     setInterval(() => {
         if (talkingInterval) return;
 
@@ -26,15 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 200);
     }, 4000);
 
-
-    // Boca animada mientras el bot responde
     function startTalking() {
         if (talkingInterval) return;
 
-        // Mostrar halo y agrandar avatar
         avatarHalo.style.opacity = "1";
         avatar.style.transform = "scale(1.1)";
-
 
         talkingInterval = setInterval(() => {
             mouthOpen = !mouthOpen;
@@ -47,15 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
         talkingInterval = null;
         mouthOpen = false;
         mouthOpenImg.style.opacity = "0";
-
-        // Ocultar halo y volver al tamaño normal
         avatarHalo.style.opacity = "0";
         avatar.style.transform = "scale(1)";
     }
 
-    
-
-   function addUserMessage(text) {
+    function addUserMessage(text) {
         const msgDiv = document.createElement("div");
         msgDiv.classList.add("message", "user");
         msgDiv.textContent = text;
@@ -63,7 +54,180 @@ document.addEventListener("DOMContentLoaded", () => {
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    function addBotMessageTyping(text, speed = 10) {
+    function prettyUrl(url) {
+        try {
+            const u = new URL(url.startsWith("http") ? url : `https://${url}`);
+            return u.hostname.replace(/^www\./, "") + u.pathname.replace(/\/$/, "");
+        } catch (_) {
+            return url;
+        }
+    }
+
+    function linkLabel(url) {
+        const lower = url.toLowerCase();
+        if (lower.includes("github.com")) return { label: "GitHub", icon: "</>" };
+        if (lower.includes("linkedin.com")) return { label: "LinkedIn", icon: "in" };
+        if (lower.includes("axelbl.dev")) return { label: "Portfolio", icon: "★" };
+        if (lower.startsWith("mailto:") || lower.includes("@")) return { label: "Email", icon: "@" };
+        return { label: "Abrir enlace", icon: "↗" };
+    }
+
+    function addTextWithLinks(parent, text, foundLinks) {
+        const tokenRe = /(\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\))|(https?:\/\/[^\s<>)]+)|([\w.+-]+@[\w.-]+\.[A-Za-z]{2,})|(\*\*([^*]+)\*\*)/g;
+        let last = 0;
+        let match;
+
+        while ((match = tokenRe.exec(text)) !== null) {
+            if (match.index > last) {
+                parent.appendChild(document.createTextNode(text.slice(last, match.index)));
+            }
+
+            if (match[1] || match[4] || match[5]) {
+                const href = match[3] || match[4] || `mailto:${match[5]}`;
+                const label = match[2] || match[5] || prettyUrl(href);
+                const a = document.createElement("a");
+                a.href = href;
+                a.textContent = label;
+                if (!href.startsWith("mailto:")) {
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                }
+                parent.appendChild(a);
+                foundLinks.add(href);
+            } else if (match[6]) {
+                const strong = document.createElement("strong");
+                strong.textContent = match[7];
+                parent.appendChild(strong);
+            }
+
+            last = tokenRe.lastIndex;
+        }
+
+        if (last < text.length) {
+            parent.appendChild(document.createTextNode(text.slice(last)));
+        }
+    }
+
+    function cleanLine(line) {
+        return line.replace(/^[-*•]\s+/, "").replace(/^\d+[.)]\s+/, "").trim();
+    }
+
+    function renderRichMessage(text) {
+        const root = document.createElement("div");
+        root.className = "bot-rich";
+        const foundLinks = new Set();
+        const lines = String(text || "").replace(/\r\n/g, "\n").split("\n");
+        let list = null;
+        let paragraph = [];
+
+        function flushParagraph() {
+            if (!paragraph.length) return;
+            const p = document.createElement("p");
+            addTextWithLinks(p, paragraph.join(" "), foundLinks);
+            root.appendChild(p);
+            paragraph = [];
+        }
+
+        function closeList() {
+            list = null;
+        }
+
+        lines.forEach((rawLine) => {
+            const line = rawLine.trim();
+            if (!line) {
+                flushParagraph();
+                closeList();
+                return;
+            }
+
+            const heading = line.match(/^#{1,3}\s+(.+)$/) || line.match(/^\*\*([^*]{3,80})\*\*:?$/);
+            if (heading) {
+                flushParagraph();
+                closeList();
+                const section = document.createElement("div");
+                section.className = "bot-section";
+                const h = document.createElement("h3");
+                h.className = "bot-section-title";
+                h.textContent = heading[1].replace(/:$/, "");
+                section.appendChild(h);
+                root.appendChild(section);
+                list = document.createElement("ul");
+                section.appendChild(list);
+                return;
+            }
+
+            if (/^[-*•]\s+/.test(line) || /^\d+[.)]\s+/.test(line)) {
+                flushParagraph();
+                if (!list) {
+                    const section = document.createElement("div");
+                    section.className = "bot-section";
+                    root.appendChild(section);
+                    list = document.createElement("ul");
+                    section.appendChild(list);
+                }
+                const li = document.createElement("li");
+                addTextWithLinks(li, cleanLine(line), foundLinks);
+                list.appendChild(li);
+                return;
+            }
+
+            if (/^[A-ZÁÉÍÓÚÜÑ][^.!?]{2,60}:$/.test(line)) {
+                flushParagraph();
+                closeList();
+                const h = document.createElement("h3");
+                h.className = "bot-title";
+                h.textContent = line.replace(/:$/, "");
+                root.appendChild(h);
+                return;
+            }
+
+            closeList();
+            paragraph.push(line);
+        });
+
+        flushParagraph();
+
+        if (foundLinks.size) {
+            const cards = document.createElement("div");
+            cards.className = "bot-link-cards";
+            Array.from(foundLinks).slice(0, 4).forEach((href) => {
+                const info = linkLabel(href);
+                const a = document.createElement("a");
+                a.className = "bot-link-card";
+                a.href = href;
+                if (!href.startsWith("mailto:")) {
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                }
+
+                const icon = document.createElement("span");
+                icon.className = "icon";
+                icon.textContent = info.icon;
+                const meta = document.createElement("span");
+                meta.className = "meta";
+                const label = document.createElement("span");
+                label.className = "label";
+                label.textContent = info.label;
+                const url = document.createElement("span");
+                url.className = "url";
+                url.textContent = href.startsWith("mailto:") ? href.replace("mailto:", "") : prettyUrl(href);
+                meta.append(label, url);
+                a.append(icon, meta);
+                cards.appendChild(a);
+            });
+            root.appendChild(cards);
+        }
+
+        if (!root.childNodes.length) {
+            const p = document.createElement("p");
+            p.textContent = text;
+            root.appendChild(p);
+        }
+
+        return root;
+    }
+
+    function addBotMessageTyping(text, speed = 8) {
         return new Promise(resolve => {
             const msgDiv = document.createElement("div");
             msgDiv.classList.add("message", "bot");
@@ -71,15 +235,18 @@ document.addEventListener("DOMContentLoaded", () => {
             chatContainer.appendChild(msgDiv);
 
             let index = 0;
+            const safeText = String(text || "");
 
             function typeChar() {
-                if (index < text.length) {
-                    msgDiv.textContent += text[index];
+                if (index < safeText.length) {
+                    msgDiv.textContent += safeText[index];
                     index++;
                     chatContainer.scrollTop = chatContainer.scrollHeight;
-                    msgDiv.offsetHeight;
                     setTimeout(typeChar, speed);
                 } else {
+                    msgDiv.textContent = "";
+                    msgDiv.appendChild(renderRichMessage(safeText));
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
                     resolve();
                 }
             }
@@ -88,14 +255,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-
-
     async function sendMessage() {
         const text = userInput.value.trim();
         if (!text) return;
 
         addUserMessage(text);
         userInput.value = "";
+        sendBtn.disabled = true;
 
         avatarStatus.textContent = "🟡 Pensando...";
         startTalking();
@@ -107,19 +273,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ user_message: text })
             });
 
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
-            await addBotMessageTyping(data.bot_message);
-            stopTalking();
+            await addBotMessageTyping(data.bot_message || "No he recibido respuesta del servidor.");
             avatarStatus.textContent = "🟢 Online";
-
-
         } catch (err) {
-            stopTalking();
             avatarStatus.textContent = "🔴 Error";
-            addUserMessage("Error conectando con el servidor.", "bot");
+            await addBotMessageTyping("Error conectando con el servidor. Prueba otra vez en unos segundos.");
+        } finally {
+            stopTalking();
+            sendBtn.disabled = false;
+            userInput.focus();
         }
     }
-
 
     function clearChat() {
         if (!confirm("¿Seguro que quieres borrar la conversación?")) return;
@@ -127,11 +293,10 @@ document.addEventListener("DOMContentLoaded", () => {
         userInput.value = "";
     }
 
-    // Mensaje de bienvenida automático
     setTimeout(() => {
         addBotMessageTyping(
-            "¡Hola! 👋 Soy el Agente CV de Axel Berral López.\n\n" +
-            "Puedes preguntarme sobre su experiencia como Ingeniero Informático y AI Engineer, sus proyectos de IA aplicada, agentes LLM, backend, estudios y habilidades técnicas."
+            "¡Hola! 👋 Soy AxelBot, un chatbot que actúa como mi clon profesional.\n\n" +
+            "Puedes preguntarme sobre mi experiencia, proyectos, estudios, habilidades técnicas o enlaces como GitHub, LinkedIn o mi portfolio."
         );
     }, 300);
 
@@ -143,6 +308,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     clearBtn.addEventListener("click", clearChat);
-
-
 });

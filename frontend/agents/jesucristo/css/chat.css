@@ -115,6 +115,29 @@
     border-bottom-left-radius: 8px;
 }
 
+.message.loading-message .message-bubble {
+    border-color: rgba(207, 163, 90, 0.34);
+    background: rgba(60, 37, 18, 0.82);
+}
+
+.loading-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-soft);
+    font-weight: 600;
+}
+
+.loading-spinner {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    border: 2px solid rgba(248, 215, 162, 0.25);
+    border-top-color: var(--accent-soft);
+    border-radius: 50%;
+    animation: loadingSpin 0.8s linear infinite;
+}
+
 .message-bubble p,
 .message-bubble ul,
 .message-bubble ol,
@@ -248,4 +271,10 @@
     gap: 14px;
     padding: 16px 20px 20px;
     border-top: 1px solid var(--line);
+}
+
+@keyframes loadingSpin {
+    to {
+        transform: rotate(360deg);
+    }
 }

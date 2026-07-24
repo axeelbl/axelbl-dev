@@ -53,6 +53,33 @@ export class ChatUI {
         this.appendBlock(wrapper);
     }
 
+    addLoadingMessage(text) {
+        const { wrapper, bubble } = this.createMessage("bot");
+        wrapper.classList.add("loading-message");
+        bubble.classList.add("loading-bubble");
+
+        const row = document.createElement("div");
+        row.className = "loading-inline";
+
+        const spinner = document.createElement("span");
+        spinner.className = "loading-spinner";
+        spinner.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.textContent = text;
+
+        row.append(spinner, label);
+        bubble.appendChild(row);
+        this.appendBlock(wrapper);
+        return wrapper;
+    }
+
+    removeBlock(node) {
+        if (!node?.parentNode) return;
+        node.parentNode.removeChild(node);
+        this.toggleEmptyState();
+    }
+
     async addBotMessageTyping(text, speed = 4) {
         return new Promise((resolve) => {
             const { wrapper, bubble } = this.createMessage("bot");

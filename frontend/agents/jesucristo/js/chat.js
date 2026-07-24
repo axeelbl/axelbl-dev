@@ -80,6 +80,8 @@ export class ChatController {
             this.nearbyChurchBtn.disabled = true;
         }
 
+        const loadingMessage = this.ui.addLoadingMessage(this.getLoadingMessage(text, item.forceBrowserLocation));
+
         try {
             const payload = await this.buildRequestPayload(text, history, item.forceBrowserLocation);
             const res = await this.fetchWithTimeout(this.apiUrl, {
@@ -94,6 +96,7 @@ export class ChatController {
 
             const data = await res.json();
 
+            this.ui.removeBlock(loadingMessage);
             await this.ui.addBotMessageTyping(data.bot_message || "No he podido preparar una respuesta.");
 
             this.pushHistory("user", text);
@@ -101,6 +104,7 @@ export class ChatController {
 
             this.appendResponseBlocks(data);
         } catch (error) {
+            this.ui.removeBlock(loadingMessage);
             const fallback = error?.name === "AbortError"
                 ? "La busqueda esta tardando demasiado. Prueba otra vez o escribe una ciudad o direccion mas general."
                 : "No he podido responder ahora mismo. Intentalo de nuevo en unos segundos.";
@@ -119,6 +123,14 @@ export class ChatController {
             this.processing = false;
             void this.processQueue();
         }
+    }
+
+    getLoadingMessage(text, forceBrowserLocation = false) {
+        if (forceBrowserLocation || this.isChurchSearchIntent(text)) {
+            return "Buscando iglesias cercanas...";
+        }
+
+        return "Preparando una respuesta serena...";
     }
 
     async buildRequestPayload(text, history, forceBrowserLocation = false) {
