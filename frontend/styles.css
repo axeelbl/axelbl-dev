@@ -74,6 +74,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui
 
 .call-case-card{background:linear-gradient(145deg,rgba(255,255,255,.052),rgba(255,255,255,.014)),radial-gradient(circle at 86% 12%,rgba(215,255,104,.14),transparent 34%),radial-gradient(circle at 16% 86%,rgba(143,179,255,.10),transparent 30%)}
 
+.project-disclaimer{margin-top:18px;padding:13px 14px;border:1px solid rgba(215,255,104,.14);background:linear-gradient(90deg,rgba(215,255,104,.055),rgba(143,179,255,.035));color:var(--muted);font-size:.9rem;line-height:1.45;position:relative;z-index:1}
 .project-partners{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:22px;padding:12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.035);position:relative;z-index:1}
 .project-partners>span{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;white-space:nowrap}
 .partner-logos{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
