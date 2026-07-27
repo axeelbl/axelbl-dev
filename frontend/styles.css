@@ -138,3 +138,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui
 
 /* simpler upload copy spacing */
 .upload-demo-head p{font-size:.82rem!important}.upload-demo-panel{gap:12px}.upload-drop{padding:14px}.upload-report em{display:none}
+
+/* uploaded audio uses main result panel */
+.upload-result{display:none!important}
