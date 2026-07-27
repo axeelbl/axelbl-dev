@@ -135,3 +135,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui
 
 /* ensure upload panel is hidden until requested */
 .upload-demo-panel[hidden]{display:none!important}
+
+/* simpler upload copy spacing */
+.upload-demo-head p{font-size:.82rem!important}.upload-demo-panel{gap:12px}.upload-drop{padding:14px}.upload-report em{display:none}
