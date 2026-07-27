@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-short-sync" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-demo-caret-fix" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -116,6 +116,7 @@
         words.forEach((word, wi)=>{
           timers.push(setTimeout(()=>{ if(id!==runId) return; p.textContent += (wi?' ':'') + word; transcript.scrollTop=transcript.scrollHeight; }, wi*step));
         });
+        timers.push(setTimeout(()=>{ if(id!==runId) return; p.classList.add('line-done'); }, words.length*step + 120));
       }
       function finish(d, id){
         if(id!==runId) return;
