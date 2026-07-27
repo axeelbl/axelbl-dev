@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-long-lag" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-upload-safe" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -70,7 +70,7 @@
       section.className='project-section audio-demo-section stream-demo is-visible';
       section.id='audioDemo';
       section.setAttribute('data-reveal','');
-      section.innerHTML = `<div class="demo-head"><span class="kicker">Demo rápida</span><div><h2>Transcripción simulada mientras suena el audio</h2><p>Audios sintéticos: dos pruebas rápidas y una conversación más completa. Al analizar, la interfaz reproduce el audio y muestra la transcripción de forma progresiva, como lo vería un usuario en un flujo real.</p></div></div><div class="stream-demo-shell"><article class="audio-demo-player"><div class="sample-switch" role="tablist" aria-label="Audios de prueba"><button type="button" class="sample-card active" data-sample="factura"><span>Audio 01 · 7s</span><strong>Factura duplicada</strong><em>Reclamación breve y clara</em></button><button type="button" class="sample-card" data-sample="activacion"><span>Audio 02 · 5s</span><strong>Activación urgente</strong><em>Soporte con prioridad alta</em></button><button type="button" class="sample-card" data-sample="pedido"><span>Audio 03 · 37s</span><strong>Pedido / impago</strong><em>Conversación con riesgo comercial</em></button></div><div class="audio-console"><div class="sample-meta"><strong id="sampleTitle"></strong><span id="sampleDuration"></span></div><audio id="sampleAudio" controls preload="metadata"></audio><button type="button" class="button primary analyze-button" id="analyzeButton">Analizar audio</button><p class="demo-honesty">Demo pública simulada con audios sintéticos. No procesa datos reales ni llama a APIs privadas.</p></div></article><article class="audio-demo-result" aria-live="polite"><div class="demo-status-row"><span class="status-pill idle" id="analysisStatus">Listo</span><span class="status-time" id="analysisTime">≈ 3 s</span></div><div class="pipeline-status"><span data-step="0">Audio</span><span data-step="1">Transcripción</span><span data-step="2">LLM</span><span data-step="3">Analizado</span></div><div class="live-transcript"><div class="live-transcript-head"><span class="kicker">Transcripción en progreso</span><strong id="liveCounter">0 líneas</strong></div><div id="demoTranscript" class="transcript-lines"><p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p></div></div><div class="analysis-summary" id="analysisSummary" hidden><div class="insight-cards"><div><span>Intención</span><strong id="demoIntent"></strong></div><div><span>Sentimiento</span><strong id="demoSentiment"></strong></div><div><span>Prioridad</span><strong id="demoPriority"></strong></div><div><span>Confianza</span><strong id="demoScore"></strong></div></div><div class="report-box"><span class="kicker">Informe generado</span><p id="demoReport"></p><ul id="demoInsights"></ul></div></div></article></div>`;
+      section.innerHTML = `<div class="demo-head"><span class="kicker">Demo rápida</span><div><h2>Transcripción simulada mientras suena el audio</h2><p>Audios sintéticos: dos pruebas rápidas y una conversación más completa. Al analizar, la interfaz reproduce el audio y muestra la transcripción de forma progresiva, como lo vería un usuario en un flujo real.</p></div></div><div class="stream-demo-shell"><article class="audio-demo-player"><div class="sample-switch" role="tablist" aria-label="Audios de prueba"><button type="button" class="sample-card active" data-sample="factura"><span>Audio 01 · 7s</span><strong>Factura duplicada</strong><em>Reclamación breve y clara</em></button><button type="button" class="sample-card" data-sample="activacion"><span>Audio 02 · 5s</span><strong>Activación urgente</strong><em>Soporte con prioridad alta</em></button><button type="button" class="sample-card" data-sample="pedido"><span>Audio 03 · 37s</span><strong>Pedido / impago</strong><em>Conversación con riesgo comercial</em></button></div><div class="audio-console"><div class="sample-meta"><strong id="sampleTitle"></strong><span id="sampleDuration"></span></div><audio id="sampleAudio" controls preload="metadata"></audio><button type="button" class="button primary analyze-button" id="analyzeButton">Analizar audio</button><button type="button" class="button upload-toggle" id="uploadToggle">Subir mi audio</button><p class="demo-honesty">Los audios de ejemplo son sintéticos. La subida pública acepta audios cortos y no debe usarse con datos sensibles.</p></div></article><article class="audio-demo-result" aria-live="polite"><div class="demo-status-row"><span class="status-pill idle" id="analysisStatus">Listo</span><span class="status-time" id="analysisTime">≈ 3 s</span></div><div class="pipeline-status"><span data-step="0">Audio</span><span data-step="1">Transcripción</span><span data-step="2">LLM</span><span data-step="3">Analizado</span></div><div class="live-transcript"><div class="live-transcript-head"><span class="kicker">Transcripción en progreso</span><strong id="liveCounter">0 líneas</strong></div><div id="demoTranscript" class="transcript-lines"><p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p></div></div><div class="analysis-summary" id="analysisSummary" hidden><div class="insight-cards"><div><span>Intención</span><strong id="demoIntent"></strong></div><div><span>Sentimiento</span><strong id="demoSentiment"></strong></div><div><span>Prioridad</span><strong id="demoPriority"></strong></div><div><span>Confianza</span><strong id="demoScore"></strong></div></div><div class="report-box"><span class="kicker">Informe generado</span><p id="demoReport"></p><ul id="demoInsights"></ul></div></div><div class="upload-demo-panel" id="uploadPanel" hidden><div class="upload-demo-head"><span class="kicker">Prueba con tu audio</span><strong>Sube un audio corto</strong><p>Máximo 5 MB. La demo pública puede tardar algo más porque procesa bajo demanda y no está optimizada como un entorno de producción dedicado.</p></div><label class="upload-drop"><input id="uploadInput" type="file" accept="audio/*,.mp3,.wav,.m4a,.webm,.ogg" /><span>Elegir archivo de audio</span><em id="uploadFileName">MP3, WAV, M4A, WEBM u OGG</em></label><button type="button" class="button primary" id="uploadAnalyzeButton">Transcribir y analizar</button><div class="upload-progress" id="uploadProgress" hidden><span></span><p>Procesando audio. Puede tardar más que los ejemplos porque esta demo pública no está optimizada para cargas largas.</p></div><div class="upload-result" id="uploadResult" hidden></div></div></article></div>`;
       if(before) main.insertBefore(section,before); else main.appendChild(section);
 
       const audio=section.querySelector('#sampleAudio');
@@ -82,6 +82,13 @@
       const transcript=section.querySelector('#demoTranscript');
       const counter=section.querySelector('#liveCounter');
       const summary=section.querySelector('#analysisSummary');
+      const uploadPanel=section.querySelector('#uploadPanel');
+      const uploadToggle=section.querySelector('#uploadToggle');
+      const uploadInput=section.querySelector('#uploadInput');
+      const uploadAnalyzeButton=section.querySelector('#uploadAnalyzeButton');
+      const uploadProgress=section.querySelector('#uploadProgress');
+      const uploadResult=section.querySelector('#uploadResult');
+      const uploadFileName=section.querySelector('#uploadFileName');
       let current='factura';
       let timers=[];
       let runId=0;
@@ -140,8 +147,34 @@
         audio.onended=()=>{ if(id!==runId) return; timers.push(setTimeout(()=>finish(d,id), d.postAudioDelay || 260)); };
         timers.push(setTimeout(()=>finish(d,id), d.fallbackMs || 7000));
       }
+      function esc(value){ return String(value ?? '').replace(/[&<>'"]/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
+      function showUploadResult(payload){
+        const a=payload.analysis || {};
+        uploadResult.innerHTML=`<div class="upload-result-grid"><div><span>Intención</span><strong>${esc(a.intent||'—')}</strong></div><div><span>Sentimiento</span><strong>${esc(a.sentiment||'—')}</strong></div><div><span>Prioridad</span><strong>${esc(a.priority||'—')}</strong></div></div><div class="upload-transcript"><span class="kicker">Transcripción</span><p>${esc(payload.transcript||'')}</p></div><div class="upload-report"><span class="kicker">Análisis</span><p>${esc(a.summary||'Audio procesado.')}</p><ul>${(a.insights||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><em>${esc(payload.notice||'')}</em></div>`;
+        uploadResult.hidden=false;
+      }
+      async function analyzeUpload(){
+        const file=uploadInput.files && uploadInput.files[0];
+        if(!file){ uploadResult.hidden=false; uploadResult.innerHTML='<p class="upload-error">Selecciona primero un archivo de audio.</p>'; return; }
+        if(file.size > 5*1024*1024){ uploadResult.hidden=false; uploadResult.innerHTML='<p class="upload-error">Archivo demasiado grande. Máximo 5 MB para esta demo pública.</p>'; return; }
+        const fd=new FormData(); fd.append('file', file);
+        uploadAnalyzeButton.disabled=true; uploadProgress.hidden=false; uploadResult.hidden=true; uploadResult.innerHTML='';
+        try{
+          const res=await fetch('/api/audio-demo/analyze',{method:'POST',body:fd});
+          const payload=await res.json().catch(()=>({detail:'No se pudo leer la respuesta.'}));
+          if(!res.ok) throw new Error(payload.detail || 'No se ha podido procesar el audio.');
+          showUploadResult(payload);
+        }catch(err){
+          uploadResult.hidden=false; uploadResult.innerHTML=`<p class="upload-error">${esc(err.message || 'Error procesando el audio.')}</p>`;
+        }finally{
+          uploadProgress.hidden=true; uploadAnalyzeButton.disabled=false;
+        }
+      }
       section.querySelectorAll('.sample-card').forEach(btn=>btn.addEventListener('click',()=>loadSample(btn.dataset.sample)));
       button.addEventListener('click', analyze);
+      uploadToggle.addEventListener('click',()=>{ uploadPanel.hidden=!uploadPanel.hidden; if(!uploadPanel.hidden) uploadPanel.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+      uploadInput.addEventListener('change',()=>{ const f=uploadInput.files && uploadInput.files[0]; uploadFileName.textContent=f ? `${f.name} · ${(f.size/1024/1024).toFixed(2)} MB` : 'MP3, WAV, M4A, WEBM u OGG'; uploadResult.hidden=true; });
+      uploadAnalyzeButton.addEventListener('click', analyzeUpload);
       loadSample(current);
       function scrollToDemoHash(){ if(location.hash === '#audioDemo') setTimeout(()=>section.scrollIntoView({behavior:'smooth',block:'start'}),80); }
       scrollToDemoHash(); window.addEventListener('hashchange', scrollToDemoHash);
