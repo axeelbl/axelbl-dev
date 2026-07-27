@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-word-sync" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-demo-short-sync" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -43,13 +43,13 @@
   <script>
     const callDemoSamples = {
       factura: {
-        title: 'Factura duplicada', duration: '0:07', intent: 'Reclamación de facturación', sentiment: 'Neutral', priority: 'Media', score: '94%', audio: '/assets/audio-demo/demo-factura-short.wav', cues: [450, 1450], fallbackMs: 6500,
+        title: 'Factura duplicada', duration: '0:07', intent: 'Reclamación de facturación', sentiment: 'Neutral', priority: 'Media', score: '94%', audio: '/assets/audio-demo/demo-factura-short.wav', cues: [900, 4800], fallbackMs: 6900,
         transcript: ['Cliente: Hola, llamo por un cargo duplicado en mi factura.', 'Cliente: Necesito que lo revisen, por favor.'],
         insights: ['Motivo detectado: posible cargo duplicado.', 'Acción sugerida: abrir revisión de facturación.', 'Estado emocional estable; no requiere escalado inmediato.'],
         report: 'Audio clasificado como reclamación de facturación. La llamada es breve, clara y accionable: conviene validar el cargo, abrir seguimiento y confirmar resolución al cliente.'
       },
       activacion: {
-        title: 'Activación urgente', duration: '0:05', intent: 'Soporte de activación', sentiment: 'Urgencia moderada', priority: 'Alta', score: '92%', audio: '/assets/audio-demo/demo-activacion-short.wav', cues: [450, 1350], fallbackMs: 5200,
+        title: 'Activación urgente', duration: '0:05', intent: 'Soporte de activación', sentiment: 'Urgencia moderada', priority: 'Alta', score: '92%', audio: '/assets/audio-demo/demo-activacion-short.wav', cues: [850, 3200], fallbackMs: 5400,
         transcript: ['Cliente: Hola, necesito activar el servicio hoy.', 'Cliente: Me urge para esta tarde.'],
         insights: ['Motivo detectado: activación de servicio.', 'Urgencia temporal: necesita resolución hoy.', 'Acción sugerida: priorizar activación y confirmar cierre.'],
         report: 'Audio clasificado como soporte de activación con urgencia moderada. El caso requiere priorización operativa y comunicación rápida de finalización.'
