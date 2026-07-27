@@ -132,3 +132,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui
 
 /* upload UX cleanup */
 .upload-card{border-top:1px solid rgba(215,255,104,.16)!important}.upload-card.active{background:linear-gradient(90deg,rgba(215,255,104,.12),rgba(143,179,255,.045));box-shadow:inset 3px 0 0 var(--accent)}.upload-demo-panel{margin-top:0}.upload-toggle{display:none}.upload-demo-head p{max-width:420px!important}.stream-demo .demo-honesty{font-size:.76rem!important}
+
+/* ensure upload panel is hidden until requested */
+.upload-demo-panel[hidden]{display:none!important}
