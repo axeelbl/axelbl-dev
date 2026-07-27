@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-refined" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-demo-stream" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -43,36 +43,74 @@
   <script>
     const callDemoSamples = {
       factura: {
-        title: 'Consulta sobre factura', duration: '0:24', intent: 'Reclamación / facturación', sentiment: 'Neutro colaborativo', priority: 'Media', score: '91%', audio: '/assets/audio-demo/demo-factura.wav',
-        transcript: ['Cliente: Buenos días, llamo porque tengo una consulta sobre mi factura.', 'Operador: Claro, le ayudo. ¿Me confirma el motivo de la llamada?', 'Cliente: Veo un cargo duplicado y necesito entender si corresponde a este mes.', 'Operador: Lo revisamos, abrimos incidencia y le enviamos confirmación por correo.', 'Cliente: Perfecto, muchas gracias.'],
-        insights: ['Motivo principal: posible cargo duplicado en factura.', 'Resolución: incidencia abierta y confirmación por correo.', 'Riesgo bajo: cliente colaborativo, sin escalado urgente.', 'Siguiente acción recomendada: verificar cargo y cerrar seguimiento.'],
-        report: 'La llamada se clasifica como consulta de facturación con posible duplicidad de cargo. La atención es correcta: el operador confirma el motivo, abre incidencia y comunica el siguiente paso. Se recomienda priorizar comprobación administrativa y notificación al cliente.'
+        title: 'Factura duplicada', duration: '0:07', intent: 'Reclamación de facturación', sentiment: 'Neutral', priority: 'Media', score: '94%', audio: '/assets/audio-demo/demo-factura-short.wav',
+        transcript: ['Cliente: Hola, llamo por un cargo duplicado en mi factura.', 'Cliente: Necesito que lo revisen, por favor.'],
+        insights: ['Motivo detectado: posible cargo duplicado.', 'Acción sugerida: abrir revisión de facturación.', 'Estado emocional estable; no requiere escalado inmediato.'],
+        report: 'Audio clasificado como reclamación de facturación. La llamada es breve, clara y accionable: conviene validar el cargo, abrir seguimiento y confirmar resolución al cliente.'
       },
       activacion: {
-        title: 'Activación de servicio', duration: '0:23', intent: 'Soporte / activación', sentiment: 'Ligera urgencia', priority: 'Alta', score: '88%', audio: '/assets/audio-demo/demo-activacion.wav',
-        transcript: ['Cliente: Hola, estoy intentando activar el servicio y no me aparece disponible.', 'Operador: Entiendo. Vamos a comprobar el estado de la cuenta y los requisitos de activación.', 'Cliente: Me urge porque lo necesito para esta tarde.', 'Operador: La activación queda priorizada y recibirá un aviso cuando esté completada.', 'Cliente: De acuerdo, gracias por la ayuda.'],
-        insights: ['Motivo principal: activación de servicio bloqueada.', 'Urgencia detectada: necesidad del cliente para el mismo día.', 'Resolución: solicitud priorizada y comunicación pendiente.', 'Siguiente acción recomendada: monitorizar activación y confirmar cierre.'],
-        report: 'La llamada se clasifica como soporte de activación con urgencia operativa. El operador valida el contexto, prioriza la gestión y deja claro el canal de confirmación. Se recomienda seguimiento hasta completar la activación para evitar reincidencia.'
+        title: 'Activación urgente', duration: '0:05', intent: 'Soporte de activación', sentiment: 'Urgencia moderada', priority: 'Alta', score: '92%', audio: '/assets/audio-demo/demo-activacion-short.wav',
+        transcript: ['Cliente: Hola, necesito activar el servicio hoy.', 'Cliente: Me urge para esta tarde.'],
+        insights: ['Motivo detectado: activación de servicio.', 'Urgencia temporal: necesita resolución hoy.', 'Acción sugerida: priorizar activación y confirmar cierre.'],
+        report: 'Audio clasificado como soporte de activación con urgencia moderada. El caso requiere priorización operativa y comunicación rápida de finalización.'
       }
     };
+
     function ensureCallDemo(){
-      const main = document.querySelector('main'); if(!main || document.getElementById('audioDemo')) return;
+      const main = document.querySelector('main');
+      if(!main || document.getElementById('audioDemo')) return;
       const before = main.querySelector('.project-content');
-      const section = document.createElement('section'); section.className='project-section audio-demo-section is-visible'; section.id='audioDemo'; section.setAttribute('data-reveal','');
-      section.innerHTML = `<div class="demo-head"><span class="kicker">Demo prioritaria</span><div><h2>Evalúa una llamada de prueba</h2><p>Elige un audio sintético, escúchalo y lanza el análisis para ver una transcripción, señales clave e informe operativo. Es una simulación pública: no usa datos reales ni expone infraestructura interna.</p></div></div><div class="audio-demo-grid"><article class="audio-demo-player"><div class="sample-switch" role="tablist" aria-label="Audios de prueba"><button type="button" class="sample-card active" data-sample="factura"><span>Audio 01</span><strong>Factura</strong><em>Consulta con posible cargo duplicado</em></button><button type="button" class="sample-card" data-sample="activacion"><span>Audio 02</span><strong>Activación</strong><em>Soporte con ligera urgencia</em></button></div><div class="audio-console"><div class="sample-meta"><strong id="sampleTitle"></strong><span id="sampleDuration"></span></div><audio id="sampleAudio" controls preload="metadata"></audio><button type="button" class="button primary analyze-button" id="analyzeButton">Analizar audio</button></div></article><article class="audio-demo-result" aria-live="polite"><div class="analysis-empty" id="analysisEmpty"><span class="empty-badge">Listo para analizar</span><strong>Transcripción + insights + informe</strong><p>Al pulsar el botón se simula el flujo completo: validación, transcripción tipo Whisper, clasificación con LLM e informe final.</p></div><div class="analysis-output" id="analysisOutput" hidden><div class="pipeline-status"><span data-step="1">Validación</span><span data-step="2">Whisper</span><span data-step="3">LLM</span><span data-step="4">Informe</span></div><div class="insight-cards"><div><span>Intención</span><strong id="demoIntent"></strong></div><div><span>Sentimiento</span><strong id="demoSentiment"></strong></div><div><span>Prioridad</span><strong id="demoPriority"></strong></div><div><span>Calidad</span><strong id="demoScore"></strong></div></div><div class="analysis-columns"><div class="transcript-box"><span class="kicker">Transcripción</span><div id="demoTranscript"></div></div><div class="report-box"><span class="kicker">Informe generado</span><p id="demoReport"></p><ul id="demoInsights"></ul></div></div></div></article></div>`;
+      const section = document.createElement('section');
+      section.className='project-section audio-demo-section stream-demo is-visible';
+      section.id='audioDemo';
+      section.setAttribute('data-reveal','');
+      section.innerHTML = `<div class="demo-head"><span class="kicker">Demo rápida</span><div><h2>Transcripción simulada mientras suena el audio</h2><p>Audios sintéticos de pocos segundos. Al analizar, la interfaz reproduce el audio y muestra la transcripción de forma progresiva, como lo vería un usuario en un flujo real.</p></div></div><div class="stream-demo-shell"><article class="audio-demo-player"><div class="sample-switch" role="tablist" aria-label="Audios de prueba"><button type="button" class="sample-card active" data-sample="factura"><span>Audio 01 · 7s</span><strong>Factura duplicada</strong><em>Reclamación breve y clara</em></button><button type="button" class="sample-card" data-sample="activacion"><span>Audio 02 · 5s</span><strong>Activación urgente</strong><em>Soporte con prioridad alta</em></button></div><div class="audio-console"><div class="sample-meta"><strong id="sampleTitle"></strong><span id="sampleDuration"></span></div><audio id="sampleAudio" controls preload="metadata"></audio><button type="button" class="button primary analyze-button" id="analyzeButton">Analizar audio</button><p class="demo-honesty">Demo pública simulada con audios sintéticos. No procesa datos reales ni llama a APIs privadas.</p></div></article><article class="audio-demo-result" aria-live="polite"><div class="demo-status-row"><span class="status-pill idle" id="analysisStatus">Listo</span><span class="status-time" id="analysisTime">≈ 3 s</span></div><div class="pipeline-status"><span data-step="0">Audio</span><span data-step="1">Transcripción</span><span data-step="2">LLM</span><span data-step="3">Analizado</span></div><div class="live-transcript"><div class="live-transcript-head"><span class="kicker">Transcripción en progreso</span><strong id="liveCounter">0 líneas</strong></div><div id="demoTranscript" class="transcript-lines"><p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p></div></div><div class="analysis-summary" id="analysisSummary" hidden><div class="insight-cards"><div><span>Intención</span><strong id="demoIntent"></strong></div><div><span>Sentimiento</span><strong id="demoSentiment"></strong></div><div><span>Prioridad</span><strong id="demoPriority"></strong></div><div><span>Confianza</span><strong id="demoScore"></strong></div></div><div class="report-box"><span class="kicker">Informe generado</span><p id="demoReport"></p><ul id="demoInsights"></ul></div></div></article></div>`;
       if(before) main.insertBefore(section,before); else main.appendChild(section);
-      const audio=section.querySelector('#sampleAudio'), title=section.querySelector('#sampleTitle'), duration=section.querySelector('#sampleDuration'), empty=section.querySelector('#analysisEmpty'), output=section.querySelector('#analysisOutput');
+
+      const audio=section.querySelector('#sampleAudio');
+      const title=section.querySelector('#sampleTitle');
+      const duration=section.querySelector('#sampleDuration');
+      const button=section.querySelector('#analyzeButton');
+      const status=section.querySelector('#analysisStatus');
+      const time=section.querySelector('#analysisTime');
+      const transcript=section.querySelector('#demoTranscript');
+      const counter=section.querySelector('#liveCounter');
+      const summary=section.querySelector('#analysisSummary');
       let current='factura';
-      function loadSample(key){ current=key; const d=callDemoSamples[key]; title.textContent=d.title; duration.textContent=d.duration; audio.src=d.audio; output.hidden=true; empty.hidden=false; section.querySelectorAll('.sample-card').forEach(b=>b.classList.toggle('active',b.dataset.sample===key)); }
+      let timers=[];
+
+      function clearTimers(){ timers.forEach(clearTimeout); timers=[]; }
+      function setStatus(text, cls){ status.textContent=text; status.className='status-pill '+cls; }
+      function resetResult(){
+        clearTimers(); audio.pause(); audio.currentTime=0; button.disabled=false; button.textContent='Analizar audio';
+        setStatus('Listo','idle'); time.textContent='≈ 3 s'; summary.hidden=true; transcript.innerHTML='<p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p>'; counter.textContent='0 líneas';
+        section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
+      }
+      function loadSample(key){
+        current=key; const d=callDemoSamples[key]; title.textContent=d.title; duration.textContent=d.duration; audio.src=d.audio;
+        section.querySelectorAll('.sample-card').forEach(b=>b.classList.toggle('active',b.dataset.sample===key)); resetResult();
+      }
+      function markStep(i, active=false){ const step=section.querySelector(`.pipeline-status span[data-step="${i}"]`); if(step){ step.classList.add('done'); step.classList.toggle('active', active); } }
+      function addLine(line, i){
+        if(i===0) transcript.innerHTML='';
+        const p=document.createElement('p'); p.className='stream-line'; p.textContent=line; transcript.appendChild(p); counter.textContent=(i+1)+' línea'+(i?'s':'');
+      }
+      function finish(d){
+        markStep(2); markStep(3); setStatus('Analizado','done'); time.textContent='Completado'; button.disabled=false; button.textContent='Reanalizar audio';
+        section.querySelector('#demoIntent').textContent=d.intent; section.querySelector('#demoSentiment').textContent=d.sentiment; section.querySelector('#demoPriority').textContent=d.priority; section.querySelector('#demoScore').textContent=d.score;
+        section.querySelector('#demoReport').textContent=d.report; section.querySelector('#demoInsights').innerHTML=d.insights.map(x=>`<li>${x}</li>`).join(''); summary.hidden=false; summary.classList.add('ready');
+      }
+      function analyze(){
+        const d=callDemoSamples[current]; clearTimers(); summary.hidden=true; summary.classList.remove('ready'); transcript.innerHTML=''; counter.textContent='0 líneas'; button.disabled=true; button.textContent='Analizando…'; setStatus('Procesando','running'); time.textContent='Streaming';
+        section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
+        markStep(0,true); audio.currentTime=0; audio.play().catch(()=>{});
+        timers.push(setTimeout(()=>{ markStep(1,true); addLine(d.transcript[0],0); },450));
+        timers.push(setTimeout(()=>{ addLine(d.transcript[1],1); },1350));
+        timers.push(setTimeout(()=>{ markStep(2,true); setStatus('Evaluando','running'); time.textContent='LLM local'; },2100));
+        timers.push(setTimeout(()=>finish(d),2900));
+      }
       section.querySelectorAll('.sample-card').forEach(btn=>btn.addEventListener('click',()=>loadSample(btn.dataset.sample)));
-      section.querySelector('#analyzeButton').addEventListener('click',()=>{
-        const d=callDemoSamples[current]; empty.hidden=true; output.hidden=false; output.classList.remove('ready');
-        section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done'));
-        ['demoIntent','demoSentiment','demoPriority','demoScore'].forEach(id=>section.querySelector('#'+id).textContent='…');
-        section.querySelector('#demoTranscript').innerHTML=''; section.querySelector('#demoReport').textContent='Analizando audio…'; section.querySelector('#demoInsights').innerHTML='';
-        const steps=[...section.querySelectorAll('.pipeline-status span')]; steps.forEach((st,i)=>setTimeout(()=>st.classList.add('done'),220+i*260));
-        setTimeout(()=>{ section.querySelector('#demoIntent').textContent=d.intent; section.querySelector('#demoSentiment').textContent=d.sentiment; section.querySelector('#demoPriority').textContent=d.priority; section.querySelector('#demoScore').textContent=d.score; section.querySelector('#demoTranscript').innerHTML=d.transcript.map(line=>`<p>${line}</p>`).join(''); section.querySelector('#demoReport').textContent=d.report; section.querySelector('#demoInsights').innerHTML=d.insights.map(x=>`<li>${x}</li>`).join(''); output.classList.add('ready'); },1300);
-      });
+      button.addEventListener('click', analyze);
       loadSample(current);
       function scrollToDemoHash(){ if(location.hash === '#audioDemo') setTimeout(()=>section.scrollIntoView({behavior:'smooth',block:'start'}),80); }
       scrollToDemoHash(); window.addEventListener('hashchange', scrollToDemoHash);
