@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0d10" />
+  <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-gnn-refined" />
+  <title>Do We Need GNN Edge? — Proyecto de investigación | Axel Berral López</title>
+  <meta name="description" content="Proyecto de investigación experimental sobre Graph Neural Networks, MLPs, Tiny-GNN y PINNs aplicados a predicción térmica sobre grafos." />
+  <meta property="og:title" content="Do We Need GNN Edge? — Axel Berral López" />
+  <meta property="og:description" content="Investigación experimental en Graph ML para evaluar cuándo las GNN aportan valor real frente a modelos más simples y ligeros." />
+</head>
+<body class="project-page">
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true"><span data-parallax-layer="0.14"></span><span data-parallax-layer="-0.10"></span></div>
+  <header class="nav"><a class="mark" href="/" aria-label="Ir al inicio">Axel Berral</a><nav aria-label="Principal"><a href="/#experience">Experiencia</a><a href="/#agents">Agentes</a><a href="/#work">Proyectos</a><a href="/#contact">Contacto</a></nav><a class="project-back" href="/#work">Volver</a></header>
+  <main>
+    <section class="project-hero" data-reveal><div class="project-eyebrow">Proyecto de investigación · Graph Neural Networks · ML experimental</div><div class="project-hero-grid"><h1>Do We Need GNN Edge?</h1><div class="project-summary" data-parallax-layer="-0.05"><p>Investigación experimental para analizar cuándo las Graph Neural Networks realmente aportan valor frente a modelos más simples en predicción térmica sobre estructuras representadas como grafos.</p><div class="project-actions"><a class="button primary" href="https://github.com/axeelbl/Do-we-need-GNN-edge" target="_blank" rel="noopener noreferrer">Ver GitHub</a><a class="button" href="/#work">Portfolio</a></div></div></div></section>
+    <section class="project-metrics" data-reveal><article class="metric-card accent"><strong>2.970</strong><span>resultados experimentales comparables</span></article><article class="metric-card"><strong>4</strong><span>familias de modelos evaluadas</span></article><article class="metric-card"><strong>11</strong><span>seeds por configuración</span></article><article class="metric-card"><strong>Graph ML</strong><span>MLP · Full-GNN · Tiny-GNN · PINN</span></article></section>
+    <section class="project-section" data-reveal><span class="kicker">Pregunta de investigación</span><h2>¿Cuándo merece la pena usar una GNN?</h2><p>El proyecto estudia la predicción térmica sobre una cuadrícula modelada como grafo y compara arquitecturas con distintos niveles de complejidad: desde un MLP como baseline hasta Full-GNN, Tiny-GNN y Tiny-GNN con regularización física mediante PINN.</p><p>La idea no es vender la arquitectura más compleja por defecto, sino medir con rigor cuándo la estructura de grafo aporta señal útil, cuándo un modelo simple compite mejor y qué coste existe en precisión, parámetros y robustez ante ruido.</p></section>
+    <section class="project-section" data-reveal><span class="kicker">Metodología</span><h2>Experimentos reproducibles, comparables y orientados a conclusiones</h2><p>El repositorio incluye código de simulación, entrenamiento, sweep experimental, resultados finales, informes, figuras y tablas. Las configuraciones comparan checkpoints, dimensiones ocultas, fracciones de datos, niveles de ruido y valores de lambda para PINN.</p><div class="research-stat"><div><strong>40 – 50</strong><span>rango de seeds usado</span></div><div><strong>0.125 – 1.0</strong><span>fracciones de datos</span></div><div><strong>0 – 0.20</strong><span>niveles de ruido evaluados</span></div></div></section>
+
+
+    <section class="project-section research-results-section" data-reveal>
+      <span class="kicker">Resultados visuales</span>
+      <h2>Comparativa experimental clara y defendible</h2>
+      <p>El resultado principal es sólido: Full-GNN lidera el MSE medio global. Pero el análisis también muestra matices importantes: MLP sigue siendo competitivo en escenarios limpios o simples, y Tiny-GNN + PINN aporta mejora frente a Tiny-GNN cuando hay ruido.</p>
+      <div class="research-results-grid">
+        <article class="result-panel ranking-panel">
+          <div class="result-panel-head"><span>Ranking por MSE medio</span><small>Test MSE · menor es mejor</small></div>
+          <div class="model-bars" aria-label="Ranking de MSE medio por modelo">
+            <div class="model-bar best" style="--bar:55%"><strong>Full-GNN</strong><span><i></i></span><em>0.0146</em></div>
+            <div class="model-bar" style="--bar:87%"><strong>Tiny-GNN + PINN</strong><span><i></i></span><em>0.0233</em></div>
+            <div class="model-bar" style="--bar:88%"><strong>Tiny-GNN</strong><span><i></i></span><em>0.0234</em></div>
+            <div class="model-bar muted" style="--bar:100%"><strong>MLP</strong><span><i></i></span><em>0.0267</em></div>
+          </div>
+        </article>
+        <article class="result-panel wins-panel">
+          <div class="result-panel-head"><span>Configuraciones ganadas</span><small>330 comparaciones completas</small></div>
+          <div class="wins-list" aria-label="Configuraciones ganadas por modelo">
+            <div><strong>144</strong><span>Full-GNN</span></div>
+            <div><strong>85</strong><span>MLP</span></div>
+            <div><strong>61</strong><span>Tiny-GNN + PINN</span></div>
+            <div><strong>40</strong><span>Tiny-GNN</span></div>
+          </div>
+        </article>
+      </div>
+      <div class="research-takeaway">
+        <strong>Lectura técnica:</strong>
+        <span>La estructura de grafo aporta ventaja global, pero no sustituye el criterio experimental: comparar contra baselines simples es lo que hace que la conclusión sea defendible.</span>
+      </div>
+    </section>
+    <section class="project-content" data-reveal><article class="project-card large"><span class="kicker">Resultado</span><h2>Una evaluación honesta de complejidad frente a rendimiento</h2><p>Los resultados muestran que Full-GNN obtiene el mejor MSE medio global, mientras que MLP gana muchas configuraciones individuales, especialmente en escenarios limpios o simples. Tiny-GNN actúa como alternativa ligera con muchos menos parámetros, y Tiny-GNN + PINN mejora de forma clara sobre Tiny-GNN, especialmente con ruido.</p></article><article class="project-card"><span class="kicker">Stack</span><div class="tag-list"><span>Python</span><span>PyTorch</span><span>Graph Neural Networks</span><span>PINN</span><span>NumPy</span><span>Pandas</span><span>CUDA</span><span>Excel/CSV analysis</span></div></article><article class="project-card"><span class="kicker">Repositorio</span><p>Código, resultados finales, figuras y tablas publicados en GitHub con una estructura limpia para revisión técnica.</p><a class="button" href="https://github.com/axeelbl/Do-we-need-GNN-edge" target="_blank" rel="noopener noreferrer">Abrir repositorio</a></article><article class="project-card muted-card"><span class="kicker">Valor profesional</span><p>Demuestra criterio de investigación aplicada: diseño experimental, comparación de baselines, análisis de resultados, reproducibilidad y comunicación técnica orientada a decisiones.</p></article></section>
+  </main>
+  <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear();const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const revealItems=[...document.querySelectorAll('[data-reveal]')];if('IntersectionObserver'in window&&!reduced){const observer=new IntersectionObserver((entries)=>{entries.forEach((entry)=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}})},{threshold:.14,rootMargin:'0px 0px -8% 0px'});revealItems.forEach((el)=>observer.observe(el))}else{revealItems.forEach((el)=>el.classList.add('is-visible'))}if(!reduced){const layers=[...document.querySelectorAll('[data-parallax-layer]')];let ticking=false;const render=()=>{const y=window.scrollY||window.pageYOffset||0;const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);document.documentElement.style.setProperty('--scroll-progress',String(Math.min(Math.max(y/max,0),1)));if(window.innerWidth>760){const center=y+window.innerHeight/2;layers.forEach((el)=>{const rect=el.getBoundingClientRect();const elCenter=y+rect.top+rect.height/2;const depth=Number(el.dataset.parallaxLayer||.08);const offset=Math.min(Math.max((center-elCenter)*depth,-80),80);el.style.transform=`translate3d(0, ${offset.toFixed(1)}px, 0)`})}ticking=false};const request=()=>{if(!ticking){ticking=true;requestAnimationFrame(render)}};render();window.addEventListener('scroll',request,{passive:true});window.addEventListener('resize',request,{passive:true})}</script>
+</body>
+</html>
