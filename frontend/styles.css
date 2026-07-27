@@ -120,3 +120,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui
 
 /* conversation sample polish */
 .stream-demo .sample-switch{max-height:none}.stream-demo .sample-card{min-height:86px}.stream-demo .sample-card[data-sample="pedido"]{background:linear-gradient(90deg,rgba(255,255,255,.018),rgba(255,255,255,.006))}.stream-demo .sample-card[data-sample="pedido"].active{background:linear-gradient(90deg,rgba(215,255,104,.12),rgba(143,179,255,.045))}.stream-demo .transcript-lines{max-height:250px;overflow:auto;padding-right:4px;scrollbar-width:thin}.stream-demo .transcript-lines p{font-size:.94rem!important}.stream-demo .report-box ul{grid-template-columns:repeat(2,minmax(0,1fr))}.stream-demo .report-box li{font-size:.84rem}@media(max-width:900px){.stream-demo .transcript-lines{max-height:none}.stream-demo .report-box ul{grid-template-columns:1fr}}
+
+/* word-level transcript sync */
+.typing-line{min-height:1.42em}.typing-line:after{content:"";display:inline-block;width:2px;height:1em;margin-left:4px;background:var(--accent);vertical-align:-.12em;animation:typingCaret .85s steps(1,end) infinite}.analysis-summary.ready .typing-line:after{display:none}@keyframes typingCaret{50%{opacity:0}}

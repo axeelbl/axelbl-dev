@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-conversation" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-demo-word-sync" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -107,9 +107,15 @@
         section.querySelectorAll('.sample-card').forEach(b=>b.classList.toggle('active',b.dataset.sample===key)); resetResult();
       }
       function markStep(i, active=false){ const step=section.querySelector(`.pipeline-status span[data-step="${i}"]`); if(step){ step.classList.add('done'); step.classList.toggle('active', active); } }
-      function addLine(line, i){
+      function addLine(line, i, id, wordDuration=1200){
+        if(id!==runId) return;
         if(i===0) transcript.innerHTML='';
-        const p=document.createElement('p'); p.className='stream-line'; p.textContent=line; transcript.appendChild(p); counter.textContent=(i+1)+' línea'+(i?'s':'');
+        const p=document.createElement('p'); p.className='stream-line typing-line'; transcript.appendChild(p); counter.textContent=(i+1)+' línea'+(i?'s':'');
+        const words=line.split(' ');
+        const step=Math.max(115, Math.min(360, wordDuration / Math.max(words.length,1)));
+        words.forEach((word, wi)=>{
+          timers.push(setTimeout(()=>{ if(id!==runId) return; p.textContent += (wi?' ':'') + word; transcript.scrollTop=transcript.scrollHeight; }, wi*step));
+        });
       }
       function finish(d, id){
         if(id!==runId) return;
@@ -123,9 +129,12 @@
         markStep(0,true); audio.currentTime=0; audio.play().catch(()=>{});
         const cues = d.cues || d.transcript.map((_,i)=>500+i*1200);
         d.transcript.forEach((line,i)=>{
-          timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(1,true); setStatus('Transcribiendo','running'); addLine(line,i); }, cues[i] || (500+i*1200)));
+          const at = cues[i] || (500+i*1200);
+          const next = cues[i+1] || Math.max(at+1200, (d.fallbackMs || 7000) - 900);
+          const wordDuration = Math.max(900, next - at - 350);
+          timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(1,true); setStatus('Transcribiendo','running'); addLine(line,i,id,wordDuration); }, at));
         });
-        const llmAt = Math.min(Math.max(2200, (cues[cues.length-1] || 1600) + 700), Math.max(2600, (d.fallbackMs || 7000) - 1800));
+        const llmAt = Math.min(Math.max(2200, (cues[cues.length-1] || 1600) + 1200), Math.max(2600, (d.fallbackMs || 7000) - 1800));
         timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(2,true); setStatus('Analizando','running'); time.textContent='Esperando fin de audio'; }, llmAt));
         audio.onended=()=>{ if(id!==runId) return; timers.push(setTimeout(()=>finish(d,id),260)); };
         timers.push(setTimeout(()=>finish(d,id), d.fallbackMs || 7000));
