@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-timing" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-demo-conversation" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -43,16 +43,22 @@
   <script>
     const callDemoSamples = {
       factura: {
-        title: 'Factura duplicada', duration: '0:07', intent: 'Reclamación de facturación', sentiment: 'Neutral', priority: 'Media', score: '94%', audio: '/assets/audio-demo/demo-factura-short.wav',
+        title: 'Factura duplicada', duration: '0:07', intent: 'Reclamación de facturación', sentiment: 'Neutral', priority: 'Media', score: '94%', audio: '/assets/audio-demo/demo-factura-short.wav', cues: [450, 1450], fallbackMs: 6500,
         transcript: ['Cliente: Hola, llamo por un cargo duplicado en mi factura.', 'Cliente: Necesito que lo revisen, por favor.'],
         insights: ['Motivo detectado: posible cargo duplicado.', 'Acción sugerida: abrir revisión de facturación.', 'Estado emocional estable; no requiere escalado inmediato.'],
         report: 'Audio clasificado como reclamación de facturación. La llamada es breve, clara y accionable: conviene validar el cargo, abrir seguimiento y confirmar resolución al cliente.'
       },
       activacion: {
-        title: 'Activación urgente', duration: '0:05', intent: 'Soporte de activación', sentiment: 'Urgencia moderada', priority: 'Alta', score: '92%', audio: '/assets/audio-demo/demo-activacion-short.wav',
+        title: 'Activación urgente', duration: '0:05', intent: 'Soporte de activación', sentiment: 'Urgencia moderada', priority: 'Alta', score: '92%', audio: '/assets/audio-demo/demo-activacion-short.wav', cues: [450, 1350], fallbackMs: 5200,
         transcript: ['Cliente: Hola, necesito activar el servicio hoy.', 'Cliente: Me urge para esta tarde.'],
         insights: ['Motivo detectado: activación de servicio.', 'Urgencia temporal: necesita resolución hoy.', 'Acción sugerida: priorizar activación y confirmar cierre.'],
         report: 'Audio clasificado como soporte de activación con urgencia moderada. El caso requiere priorización operativa y comunicación rápida de finalización.'
+      },
+      pedido: {
+        title: 'Pedido con riesgo de impago', duration: '0:37', intent: 'Disputa de pedido / cobro', sentiment: 'Tensión moderada', priority: 'Alta', score: '89%', audio: '/assets/audio-demo/demo-pedido-impago.wav', cues: [700, 6800, 12600, 17600, 26000, 31000], fallbackMs: 38000,
+        transcript: ['Cliente: Hola, llamo por el pedido de ayer. Me han cobrado dos veces y el producto todavía no ha llegado.', 'Agente: Entiendo. Voy a revisar el pedido y los cargos asociados a su cuenta.', 'Cliente: Si no lo solucionan hoy, no voy a pagar el segundo cargo y voy a devolver el recibo.', 'Agente: Tiene razón en pedir una revisión. Abro una incidencia urgente y solicito el bloqueo del cargo duplicado.', 'Cliente: De acuerdo, pero necesito una confirmación por escrito antes de esta tarde.', 'Agente: Queda priorizado. Le enviaremos la confirmación por correo y haremos seguimiento del envío.'],
+        insights: ['Conversación entre dos personas: cliente y agente.', 'Motivo principal: pedido no recibido con posible cargo duplicado.', 'Riesgo detectado: amenaza de devolución del recibo / impago.', 'Prioridad alta por límite temporal: resolución antes de la tarde.', 'Acción recomendada: bloquear cargo duplicado, enviar confirmación escrita y hacer seguimiento del envío.'],
+        report: 'La llamada contiene una discusión moderada entre cliente y agente por un pedido no recibido y un posible cargo duplicado. El cliente expresa intención de no pagar o devolver el recibo si no obtiene respuesta el mismo día. El agente reconduce la conversación, abre incidencia urgente y promete confirmación escrita. Se recomienda tratar el caso como prioridad alta por riesgo de impago, reclamación y pérdida de confianza.'
       }
     };
 
@@ -64,7 +70,7 @@
       section.className='project-section audio-demo-section stream-demo is-visible';
       section.id='audioDemo';
       section.setAttribute('data-reveal','');
-      section.innerHTML = `<div class="demo-head"><span class="kicker">Demo rápida</span><div><h2>Transcripción simulada mientras suena el audio</h2><p>Audios sintéticos de pocos segundos. Al analizar, la interfaz reproduce el audio y muestra la transcripción de forma progresiva, como lo vería un usuario en un flujo real.</p></div></div><div class="stream-demo-shell"><article class="audio-demo-player"><div class="sample-switch" role="tablist" aria-label="Audios de prueba"><button type="button" class="sample-card active" data-sample="factura"><span>Audio 01 · 7s</span><strong>Factura duplicada</strong><em>Reclamación breve y clara</em></button><button type="button" class="sample-card" data-sample="activacion"><span>Audio 02 · 5s</span><strong>Activación urgente</strong><em>Soporte con prioridad alta</em></button></div><div class="audio-console"><div class="sample-meta"><strong id="sampleTitle"></strong><span id="sampleDuration"></span></div><audio id="sampleAudio" controls preload="metadata"></audio><button type="button" class="button primary analyze-button" id="analyzeButton">Analizar audio</button><p class="demo-honesty">Demo pública simulada con audios sintéticos. No procesa datos reales ni llama a APIs privadas.</p></div></article><article class="audio-demo-result" aria-live="polite"><div class="demo-status-row"><span class="status-pill idle" id="analysisStatus">Listo</span><span class="status-time" id="analysisTime">≈ 3 s</span></div><div class="pipeline-status"><span data-step="0">Audio</span><span data-step="1">Transcripción</span><span data-step="2">LLM</span><span data-step="3">Analizado</span></div><div class="live-transcript"><div class="live-transcript-head"><span class="kicker">Transcripción en progreso</span><strong id="liveCounter">0 líneas</strong></div><div id="demoTranscript" class="transcript-lines"><p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p></div></div><div class="analysis-summary" id="analysisSummary" hidden><div class="insight-cards"><div><span>Intención</span><strong id="demoIntent"></strong></div><div><span>Sentimiento</span><strong id="demoSentiment"></strong></div><div><span>Prioridad</span><strong id="demoPriority"></strong></div><div><span>Confianza</span><strong id="demoScore"></strong></div></div><div class="report-box"><span class="kicker">Informe generado</span><p id="demoReport"></p><ul id="demoInsights"></ul></div></div></article></div>`;
+      section.innerHTML = `<div class="demo-head"><span class="kicker">Demo rápida</span><div><h2>Transcripción simulada mientras suena el audio</h2><p>Audios sintéticos: dos pruebas rápidas y una conversación más completa. Al analizar, la interfaz reproduce el audio y muestra la transcripción de forma progresiva, como lo vería un usuario en un flujo real.</p></div></div><div class="stream-demo-shell"><article class="audio-demo-player"><div class="sample-switch" role="tablist" aria-label="Audios de prueba"><button type="button" class="sample-card active" data-sample="factura"><span>Audio 01 · 7s</span><strong>Factura duplicada</strong><em>Reclamación breve y clara</em></button><button type="button" class="sample-card" data-sample="activacion"><span>Audio 02 · 5s</span><strong>Activación urgente</strong><em>Soporte con prioridad alta</em></button><button type="button" class="sample-card" data-sample="pedido"><span>Audio 03 · 37s</span><strong>Pedido / impago</strong><em>Conversación con riesgo comercial</em></button></div><div class="audio-console"><div class="sample-meta"><strong id="sampleTitle"></strong><span id="sampleDuration"></span></div><audio id="sampleAudio" controls preload="metadata"></audio><button type="button" class="button primary analyze-button" id="analyzeButton">Analizar audio</button><p class="demo-honesty">Demo pública simulada con audios sintéticos. No procesa datos reales ni llama a APIs privadas.</p></div></article><article class="audio-demo-result" aria-live="polite"><div class="demo-status-row"><span class="status-pill idle" id="analysisStatus">Listo</span><span class="status-time" id="analysisTime">≈ 3 s</span></div><div class="pipeline-status"><span data-step="0">Audio</span><span data-step="1">Transcripción</span><span data-step="2">LLM</span><span data-step="3">Analizado</span></div><div class="live-transcript"><div class="live-transcript-head"><span class="kicker">Transcripción en progreso</span><strong id="liveCounter">0 líneas</strong></div><div id="demoTranscript" class="transcript-lines"><p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p></div></div><div class="analysis-summary" id="analysisSummary" hidden><div class="insight-cards"><div><span>Intención</span><strong id="demoIntent"></strong></div><div><span>Sentimiento</span><strong id="demoSentiment"></strong></div><div><span>Prioridad</span><strong id="demoPriority"></strong></div><div><span>Confianza</span><strong id="demoScore"></strong></div></div><div class="report-box"><span class="kicker">Informe generado</span><p id="demoReport"></p><ul id="demoInsights"></ul></div></div></article></div>`;
       if(before) main.insertBefore(section,before); else main.appendChild(section);
 
       const audio=section.querySelector('#sampleAudio');
@@ -115,12 +121,14 @@
         const d=callDemoSamples[current]; const id=++runId; clearTimers(); setLoadingSummary(); transcript.innerHTML=''; counter.textContent='0 líneas'; button.disabled=true; button.textContent='Analizando…'; setStatus('Transcribiendo','running'); time.textContent='Audio en curso';
         section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
         markStep(0,true); audio.currentTime=0; audio.play().catch(()=>{});
-        timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(1,true); setStatus('Transcribiendo','running'); addLine(d.transcript[0],0); },450));
-        timers.push(setTimeout(()=>{ if(id!==runId) return; addLine(d.transcript[1],1); markStep(1,true); },1450));
-        timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(2,true); setStatus('Analizando','running'); time.textContent='Esperando fin de audio'; },2300));
+        const cues = d.cues || d.transcript.map((_,i)=>500+i*1200);
+        d.transcript.forEach((line,i)=>{
+          timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(1,true); setStatus('Transcribiendo','running'); addLine(line,i); }, cues[i] || (500+i*1200)));
+        });
+        const llmAt = Math.min(Math.max(2200, (cues[cues.length-1] || 1600) + 700), Math.max(2600, (d.fallbackMs || 7000) - 1800));
+        timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(2,true); setStatus('Analizando','running'); time.textContent='Esperando fin de audio'; }, llmAt));
         audio.onended=()=>{ if(id!==runId) return; timers.push(setTimeout(()=>finish(d,id),260)); };
-        const fallbackMs = (current==='factura' ? 6500 : 5200);
-        timers.push(setTimeout(()=>finish(d,id), fallbackMs));
+        timers.push(setTimeout(()=>finish(d,id), d.fallbackMs || 7000));
       }
       section.querySelectorAll('.sample-card').forEach(btn=>btn.addEventListener('click',()=>loadSample(btn.dataset.sample)));
       button.addEventListener('click', analyze);
