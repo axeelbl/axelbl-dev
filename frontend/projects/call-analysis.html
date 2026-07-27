@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-long-sync" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-demo-long-lag" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -55,7 +55,7 @@
         report: 'Audio clasificado como soporte de activación con urgencia moderada. El caso requiere priorización operativa y comunicación rápida de finalización.'
       },
       pedido: {
-        title: 'Pedido con riesgo de impago', duration: '0:37', intent: 'Disputa de pedido / cobro', sentiment: 'Tensión moderada', priority: 'Alta', score: '89%', audio: '/assets/audio-demo/demo-pedido-impago-v2.mp3', cues: [1250, 7700, 13900, 19500, 27900, 33000], fallbackMs: 38600,
+        title: 'Pedido con riesgo de impago', duration: '0:37', intent: 'Disputa de pedido / cobro', sentiment: 'Tensión moderada', priority: 'Alta', score: '89%', audio: '/assets/audio-demo/demo-pedido-impago-v2.mp3', cues: [1600, 8500, 15000, 21000, 29500, 34200], fallbackMs: 40500, postAudioDelay: 1500,
         transcript: ['Cliente: Hola, llamo por el pedido de ayer. Me han cobrado dos veces y el producto todavía no ha llegado.', 'Agente: Entiendo. Voy a revisar el pedido y los cargos asociados a su cuenta.', 'Cliente: Si no lo solucionan hoy, no voy a pagar el segundo cargo y voy a devolver el recibo.', 'Agente: Tiene razón en pedir una revisión. Abro una incidencia urgente y solicito el bloqueo del cargo duplicado.', 'Cliente: De acuerdo, pero necesito una confirmación por escrito antes de esta tarde.', 'Agente: Queda priorizado. Le enviaremos la confirmación por correo y haremos seguimiento del envío.'],
         insights: ['Conversación entre dos personas: cliente y agente.', 'Motivo principal: pedido no recibido con posible cargo duplicado.', 'Riesgo detectado: amenaza de devolución del recibo / impago.', 'Prioridad alta por límite temporal: resolución antes de la tarde.', 'Acción recomendada: bloquear cargo duplicado, enviar confirmación escrita y hacer seguimiento del envío.'],
         report: 'La llamada contiene una discusión moderada entre cliente y agente por un pedido no recibido y un posible cargo duplicado. El cliente expresa intención de no pagar o devolver el recibo si no obtiene respuesta el mismo día. El agente reconduce la conversación, abre incidencia urgente y promete confirmación escrita. Se recomienda tratar el caso como prioridad alta por riesgo de impago, reclamación y pérdida de confianza.'
@@ -137,7 +137,7 @@
         });
         const llmAt = Math.min(Math.max(2200, (cues[cues.length-1] || 1600) + 1200), Math.max(2600, (d.fallbackMs || 7000) - 1800));
         timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(2,true); setStatus('Analizando','running'); time.textContent='Esperando fin de audio'; }, llmAt));
-        audio.onended=()=>{ if(id!==runId) return; timers.push(setTimeout(()=>finish(d,id),260)); };
+        audio.onended=()=>{ if(id!==runId) return; timers.push(setTimeout(()=>finish(d,id), d.postAudioDelay || 260)); };
         timers.push(setTimeout(()=>finish(d,id), d.fallbackMs || 7000));
       }
       section.querySelectorAll('.sample-card').forEach(btn=>btn.addEventListener('click',()=>loadSample(btn.dataset.sample)));
