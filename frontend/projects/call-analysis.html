@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b0d10" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260727-demo-stream" />
+  <link rel="stylesheet" href="/styles.css?v=20260727-demo-timing" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
@@ -78,12 +78,22 @@
       const summary=section.querySelector('#analysisSummary');
       let current='factura';
       let timers=[];
+      let runId=0;
 
-      function clearTimers(){ timers.forEach(clearTimeout); timers=[]; }
+      function clearTimers(){ timers.forEach(clearTimeout); timers=[]; audio.onended=null; }
       function setStatus(text, cls){ status.textContent=text; status.className='status-pill '+cls; }
+      function clearFinalData(){
+        ['demoIntent','demoSentiment','demoPriority','demoScore'].forEach(id=>section.querySelector('#'+id).textContent='—');
+        section.querySelector('#demoReport').textContent='Esperando a que finalice el audio…';
+        section.querySelector('#demoInsights').innerHTML='<li>Transcribiendo audio</li><li>Preparando análisis</li><li>Generando informe al finalizar</li>';
+      }
+      function setLoadingSummary(){
+        summary.hidden=false; summary.classList.remove('ready'); summary.classList.add('loading'); clearFinalData();
+      }
       function resetResult(){
-        clearTimers(); audio.pause(); audio.currentTime=0; button.disabled=false; button.textContent='Analizar audio';
-        setStatus('Listo','idle'); time.textContent='≈ 3 s'; summary.hidden=true; transcript.innerHTML='<p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p>'; counter.textContent='0 líneas';
+        runId++; clearTimers(); audio.pause(); audio.currentTime=0; button.disabled=false; button.textContent='Analizar audio';
+        setStatus('Listo','idle'); time.textContent='≈ audio corto'; summary.hidden=true; summary.classList.remove('ready','loading'); clearFinalData();
+        transcript.innerHTML='<p class="placeholder-line">Pulsa “Analizar audio” para iniciar la demo.</p>'; counter.textContent='0 líneas';
         section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
       }
       function loadSample(key){
@@ -95,19 +105,22 @@
         if(i===0) transcript.innerHTML='';
         const p=document.createElement('p'); p.className='stream-line'; p.textContent=line; transcript.appendChild(p); counter.textContent=(i+1)+' línea'+(i?'s':'');
       }
-      function finish(d){
-        markStep(2); markStep(3); setStatus('Analizado','done'); time.textContent='Completado'; button.disabled=false; button.textContent='Reanalizar audio';
+      function finish(d, id){
+        if(id!==runId) return;
+        markStep(2); markStep(3); setStatus('Analizado','done'); time.textContent='Audio finalizado'; button.disabled=false; button.textContent='Reanalizar audio';
         section.querySelector('#demoIntent').textContent=d.intent; section.querySelector('#demoSentiment').textContent=d.sentiment; section.querySelector('#demoPriority').textContent=d.priority; section.querySelector('#demoScore').textContent=d.score;
-        section.querySelector('#demoReport').textContent=d.report; section.querySelector('#demoInsights').innerHTML=d.insights.map(x=>`<li>${x}</li>`).join(''); summary.hidden=false; summary.classList.add('ready');
+        section.querySelector('#demoReport').textContent=d.report; section.querySelector('#demoInsights').innerHTML=d.insights.map(x=>`<li>${x}</li>`).join(''); summary.hidden=false; summary.classList.remove('loading'); summary.classList.add('ready');
       }
       function analyze(){
-        const d=callDemoSamples[current]; clearTimers(); summary.hidden=true; summary.classList.remove('ready'); transcript.innerHTML=''; counter.textContent='0 líneas'; button.disabled=true; button.textContent='Analizando…'; setStatus('Procesando','running'); time.textContent='Streaming';
+        const d=callDemoSamples[current]; const id=++runId; clearTimers(); setLoadingSummary(); transcript.innerHTML=''; counter.textContent='0 líneas'; button.disabled=true; button.textContent='Analizando…'; setStatus('Transcribiendo','running'); time.textContent='Audio en curso';
         section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
         markStep(0,true); audio.currentTime=0; audio.play().catch(()=>{});
-        timers.push(setTimeout(()=>{ markStep(1,true); addLine(d.transcript[0],0); },450));
-        timers.push(setTimeout(()=>{ addLine(d.transcript[1],1); },1350));
-        timers.push(setTimeout(()=>{ markStep(2,true); setStatus('Evaluando','running'); time.textContent='LLM local'; },2100));
-        timers.push(setTimeout(()=>finish(d),2900));
+        timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(1,true); setStatus('Transcribiendo','running'); addLine(d.transcript[0],0); },450));
+        timers.push(setTimeout(()=>{ if(id!==runId) return; addLine(d.transcript[1],1); markStep(1,true); },1450));
+        timers.push(setTimeout(()=>{ if(id!==runId) return; markStep(2,true); setStatus('Analizando','running'); time.textContent='Esperando fin de audio'; },2300));
+        audio.onended=()=>{ if(id!==runId) return; timers.push(setTimeout(()=>finish(d,id),260)); };
+        const fallbackMs = (current==='factura' ? 6500 : 5200);
+        timers.push(setTimeout(()=>finish(d,id), fallbackMs));
       }
       section.querySelectorAll('.sample-card').forEach(btn=>btn.addEventListener('click',()=>loadSample(btn.dataset.sample)));
       button.addEventListener('click', analyze);
