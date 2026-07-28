@@ -81,6 +81,18 @@ class MessageRequest(BaseModel):
     user_message: str
     history: list[dict[str, Any]] | None = None
 
+class AgentStudioRequest(BaseModel):
+    sector: str = "restaurante"
+    tools: list[str] = []
+    instructions: str = ""
+    user_message: str = ""
+    agent_name: str = ""
+    tone: str = "profesional"
+    template: str = "reservas"
+    goals: str = ""
+    forbidden: str = ""
+    history: list[dict[str, Any]] | None = None
+
 PROMPTS: dict[str, str] = {
     "cv": """Eres Axel Berral López actuando como su clon profesional en su web/portfolio.
 Tu función es representar a Axel de forma profesional ante reclutadores, empresas, visitantes de la web o personas interesadas en su perfil.
@@ -293,6 +305,127 @@ def ask_llm(agent: str, user_text: str, history: list[dict[str, Any]] | None = N
         return FALLBACKS.get(agent, FALLBACKS["cv"])
 
 
+STUDIO_SECTORS: dict[str, dict[str, Any]] = {
+    "restaurante": {"label": "Agente Restaurante", "intent": "reserva_mesa", "memory": ["horario_cenas: 20:30-23:00", "capacidad_demo: mesas de 2, 4 y 6", "política: confirmar antes de reservar"]},
+    "clinica": {"label": "Agente Clínica", "intent": "solicitud_cita", "memory": ["horario: lunes-viernes", "servicios: revisión, consulta general", "política: no dar diagnóstico médico"]},
+    "inmobiliaria": {"label": "Agente Inmobiliaria", "intent": "busqueda_propiedad", "memory": ["zonas_demo: centro, playa, norte", "filtros: precio, habitaciones, visitas", "política: confirmar presupuesto"]},
+    "ecommerce": {"label": "Agente E-commerce", "intent": "soporte_pedido", "memory": ["canales: email y web", "política: no inventar tracking", "SLA_demo: 24-48h"]},
+    "personalizado": {"label": "Agente Personalizado", "intent": "asistencia_personalizada", "memory": ["perfil: definido por el creador", "política: confirmar antes de acciones externas", "modo: demo segura"]},
+}
+STUDIO_TOOLS: dict[str, dict[str, str]] = {
+    "reservas": {"name": "reservas.lookup", "description": "Consulta disponibilidad o prepara una reserva pendiente de confirmación."},
+    "busqueda": {"name": "search.query", "description": "Busca información pública o catálogo simulado del negocio."},
+    "base_datos": {"name": "db.lookup", "description": "Consulta una base de datos interna simulada de clientes, pedidos o disponibilidad."},
+    "email": {"name": "email.draft", "description": "Prepara un borrador de email; no envía nada real en la demo."},
+    "calendario": {"name": "calendar.propose", "description": "Propone un evento de calendario; no crea eventos reales en la demo."},
+}
+
+
+def clean_studio_sector(value: str) -> str:
+    value = re.sub(r"[^a-zA-Z0-9_-]+", "", (value or "").lower())
+    return value if value in STUDIO_SECTORS else "restaurante"
+
+
+def clean_studio_tools(values: list[str]) -> list[str]:
+    out: list[str] = []
+    for item in values or []:
+        key = re.sub(r"[^a-zA-Z0-9_-]+", "", str(item).lower())
+        if key in STUDIO_TOOLS and key not in out:
+            out.append(key)
+    return out[:5]
+
+
+def studio_tool_calls(sector: str, tools: list[str], user_message: str) -> list[dict[str, Any]]:
+    calls: list[dict[str, Any]] = []
+    text = user_message.lower()
+    for idx, key in enumerate(tools[:4], start=1):
+        tool = STUDIO_TOOLS[key]
+        if key == "reservas":
+            args = {"sector": sector, "party_size": 4 if "4" in text or "cuatro" in text else None, "date_hint": "mañana" if "mañana" in text else "pendiente"}
+            result = {"available": True, "slots": ["19:30", "21:00"], "requires_confirmation": True}
+        elif key == "busqueda":
+            args = {"query": user_message[:120], "scope": sector}
+            result = {"matches": 3, "top_result": "Resultado demo relevante para la intención del usuario"}
+        elif key == "base_datos":
+            args = {"entity": "availability_or_profile", "sector": sector}
+            result = {"found": True, "records_used": 2}
+        elif key == "email":
+            args = {"to": "usuario@example.com", "mode": "draft_only"}
+            result = {"draft_created": True, "sent": False}
+        else:
+            args = {"calendar": "demo", "mode": "proposal_only"}
+            result = {"event_proposed": True, "created": False}
+        calls.append({"id": f"call_{idx}", "tool": tool["name"], "arguments": args, "status": "ok", "latencyMs": 35 + idx * 47, "result": result})
+    return calls
+
+
+def build_studio_prompt(sector: str, tools: list[str], instructions: str, calls: list[dict[str, Any]], agent_name: str = "", tone: str = "profesional", template: str = "", goals: str = "", forbidden: str = "") -> str:
+    info = STUDIO_SECTORS[sector]
+    tool_names = [STUDIO_TOOLS[t]["name"] for t in tools]
+    safe_instructions = (instructions or "").strip()[:1200]
+    safe_name = (agent_name or info["label"]).strip()[:80]
+    safe_tone = (tone or "profesional").strip()[:80]
+    safe_template = (template or "general").strip()[:80]
+    safe_goals = (goals or "").strip()[:800]
+    safe_forbidden = (forbidden or "").strip()[:800]
+    return f"""Eres {safe_name}, un agente creado en AI Agent Studio.
+Sector: {sector}.
+Plantilla de negocio: {safe_template}.
+Tono: {safe_tone}.
+Objetivo: resolver la intención del usuario con tono profesional, claro y útil.
+Objetivos específicos del creador: {safe_goals or 'Resolver dudas y guiar al usuario al siguiente paso.'}
+Límites / cosas prohibidas: {safe_forbidden or 'No inventar datos ni ejecutar acciones reales sin confirmación.'}
+Instrucciones del creador: {safe_instructions or 'Responde de forma breve, segura y orientada a acción.'}
+Herramientas disponibles: {', '.join(tool_names) if tool_names else 'ninguna'}.
+Resultados de herramientas simuladas ya disponibles: {json.dumps(calls, ensure_ascii=False)[:1800]}.
+Memoria disponible: {json.dumps(info['memory'], ensure_ascii=False)}.
+Reglas: no digas que has enviado emails, creado reservas o modificado calendarios reales; si una acción requiere confirmación, pídela. No devuelvas JSON visible al usuario; el JSON técnico lo genera el sistema por separado.
+Formato recomendado para asistentes personales/calendario: Resumen breve, Plan sugerido, Calendario propuesto y Siguiente paso. Usa listas cortas y claras. No uses tablas Markdown; para horarios usa bullets tipo "09:00–10:00 · Tarea — nota". Responde en español salvo que el usuario use otro idioma."""
+
+
+def studio_fallback_response(user_text: str, template: str = "", tools: list[str] | None = None) -> str:
+    lower = (user_text or "").lower()
+    tools = tools or []
+    if template == "personal" or "calendario" in tools or any(w in lower for w in ["organizar", "tareas", "mañana", "semana", "calendario"]):
+        return """Resumen
+Te propongo ordenar el día por bloques, dejando primero lo que requiere más energía y después las tareas ligeras.
+
+Plan sugerido
+- Prioridad 1: estudiar 2 horas en un bloque sin interrupciones.
+- Prioridad 2: entrenar en un hueco separado para no mezclarlo con trabajo mental.
+- Prioridad 3: comprar comida como tarea corta entre bloques.
+- Prioridad 4: responder correos al final, cuando no necesites tanta concentración.
+
+Calendario propuesto
+- 09:30–11:30 · Estudiar
+- 12:00–13:00 · Entrenar
+- 13:15–14:00 · Comprar comida
+- 17:30–18:00 · Responder correos
+
+Siguiente paso
+Si quieres, dime a qué hora empiezas mañana y te lo ajusto a tu horario real."""
+    return "Puedo ayudarte con esa solicitud. He revisado las herramientas disponibles en esta demo y te propongo el siguiente paso: confirmar los datos clave antes de ejecutar cualquier acción."
+
+
+def ask_studio_llm(prompt: str, user_text: str, history: list[dict[str, Any]] | None = None, template: str = "", tools: list[str] | None = None) -> str:
+    fallback = studio_fallback_response(user_text, template, tools)
+    if not groq_client:
+        return fallback
+    messages = [{"role": "system", "content": prompt}]
+    for item in (history or [])[-6:]:
+        role = item.get("role")
+        content = str(item.get("content") or item.get("text") or "")[:1000]
+        if role in {"user", "assistant"} and content:
+            messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": user_text})
+    try:
+        response = groq_client.chat.completions.create(model=GROQ_MODEL, messages=messages, temperature=0.55, max_tokens=650)
+        return (response.choices[0].message.content or "").strip() or fallback
+    except Exception as exc:
+        print("Groq error for agent studio:", repr(exc), flush=True)
+        return fallback
+
+
 LEAD_FIELDS = ["timestamp", "agent", "kind", "ip", "user_agent", "language", "referer", "response_time", "user_message", "bot_message"]
 
 
@@ -462,6 +595,90 @@ def send_agent_leads_email(agent: str, csv_path: Path, row_count: int, force: bo
     return False
 
 
+def send_agent_studio_config_email(config: dict[str, Any], technical: dict[str, Any], meta: dict[str, Any]) -> bool:
+    """Send one immediate email with the exact Agent Studio configuration.
+
+    Best-effort only: failures are logged and must never break the public demo.
+    """
+    api_key = (os.getenv("RESEND_API_KEY") or "").strip()
+    base_from = (os.getenv("RESEND_FROM") or os.getenv("SENDGRID_FROM") or "onboarding@resend.dev").strip()
+    to_email = (os.getenv("RESEND_TO") or os.getenv("SENDGRID_TO") or "").strip()
+    if not api_key or not base_from or not to_email:
+        print("Agent Studio config email not configured: missing API/from/to", flush=True)
+        return False
+
+    agent = str(config.get("agent_name") or config.get("agent") or "Agente Studio")[:120]
+    sector = str(config.get("sector") or "")[:80]
+    template = str(config.get("template") or "")[:80]
+    tools = config.get("tools") or []
+    tool_names = [str(t.get("name") or t.get("tool") or t) if isinstance(t, dict) else str(t) for t in tools]
+    text = f"""Nuevo agente probado en AI Agent Studio.
+
+METADATOS
+- Fecha UTC: {datetime.utcnow().isoformat()}Z
+- IP: {meta.get('ip', '')}
+- User-Agent: {meta.get('user_agent', '')}
+- Idioma: {meta.get('language', '')}
+- Referer: {meta.get('referer', '')}
+- Latencia: {technical.get('latencyMs', '')} ms
+
+CONFIGURACIÓN
+- Nombre: {agent}
+- Sector: {sector}
+- Plantilla: {template}
+- Tono: {config.get('tone', '')}
+- Herramientas: {', '.join(tool_names) if tool_names else 'ninguna'}
+
+OBJETIVO
+{config.get('goals', '')}
+
+LÍMITES / NO HACER
+{config.get('forbidden', '')}
+
+INSTRUCCIONES EXTRA
+{config.get('instructions', '')}
+
+MENSAJE DE PRUEBA
+{config.get('user_message', '')}
+
+RESPUESTA DEL AGENTE
+{config.get('answer', '')}
+
+PROMPT SANITIZADO
+{technical.get('systemPrompt', '')}
+
+TOOL CALLS
+{json.dumps(technical.get('toolCalls', []), ensure_ascii=False, indent=2)}
+
+RESPUESTA ESTRUCTURADA
+{json.dumps(technical.get('structuredResponse', {}), ensure_ascii=False, indent=2)}
+"""
+    payload = {
+        "from": parse_resend_from(base_from, "AI Agent Studio"),
+        "to": [email.strip() for email in to_email.split(",") if email.strip()],
+        "subject": f"Nuevo agente creado – {agent} ({sector}/{template})",
+        "text": text,
+        "attachments": [{
+            "filename": "agent-studio-config.json",
+            "content": base64.b64encode(json.dumps({"config": config, "technical": technical, "meta": meta}, ensure_ascii=False, indent=2).encode("utf-8")).decode(),
+        }],
+    }
+    try:
+        with httpx.Client(timeout=30) as client:
+            response = client.post(
+                "https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json=payload,
+            )
+        if 200 <= response.status_code < 300:
+            print("Agent Studio config sent via Resend:", response.status_code, response.text[:200], flush=True)
+            return True
+        print("Resend Agent Studio config error:", response.status_code, response.text[:500], flush=True)
+    except Exception as exc:
+        print("Agent Studio config email exception:", type(exc).__name__, str(exc), flush=True)
+    return False
+
+
 def send_csv_email(force: bool = False) -> bool:
     """Send leads through Resend as one email per agent.
 
@@ -531,6 +748,76 @@ async def chat_endpoint(msg: MessageRequest, request: Request):
     elif agent == "tenista":
         payload.update(tennis_payload(msg.user_message))
     return payload
+
+
+@app.post("/agent-studio/chat")
+async def agent_studio_chat(payload: AgentStudioRequest, request: Request):
+    started = time.time()
+    sector = clean_studio_sector(payload.sector)
+    tools = clean_studio_tools(payload.tools)
+    user_text = (payload.user_message or "").strip()[:1800]
+    instructions = (payload.instructions or "").strip()[:1400]
+    agent_name = (payload.agent_name or STUDIO_SECTORS[sector]["label"]).strip()[:80]
+    tone = (payload.tone or "profesional").strip()[:80]
+    template = (payload.template or "general").strip()[:80]
+    goals = (payload.goals or "").strip()[:800]
+    forbidden = (payload.forbidden or "").strip()[:800]
+    if not user_text:
+        raise HTTPException(400, "Falta el mensaje de prueba")
+    calls = studio_tool_calls(sector, tools, user_text)
+    prompt = build_studio_prompt(sector, tools, instructions, calls, agent_name, tone, template, goals, forbidden)
+    answer = ask_studio_llm(prompt, user_text, payload.history, template, tools)
+    latency_ms = round((time.time() - started) * 1000)
+    info = STUDIO_SECTORS[sector]
+    structured = {
+        "ok": True,
+        "agent": agent_name or info["label"],
+        "sector": sector,
+        "template": template,
+        "tone": tone,
+        "intent": info["intent"],
+        "answer": answer,
+        "confidence": 0.9 if groq_client else 0.62,
+        "next_action": "pedir_confirmacion" if "reservas" in tools or "calendario" in tools else "responder",
+        "latencyMs": latency_ms,
+    }
+    meta = {"ip": request.client.host if request.client else "", "user_agent": request.headers.get("user-agent", ""), "language": request.headers.get("accept-language", ""), "referer": request.headers.get("referer", ""), "response_time": round(latency_ms / 1000, 2)}
+    technical = {
+        "systemPrompt": prompt,
+        "availableTools": [{"id": key, **STUDIO_TOOLS[key]} for key in tools],
+        "toolCalls": calls,
+        "memory": info["memory"],
+        "nodes": {"input": "done", "router": "done", "tools": "done" if tools else "skipped", "memory": "done", "response": "done"},
+        "latencyMs": latency_ms,
+        "structuredResponse": structured,
+    }
+    config_email = {
+        "agent_name": agent_name or info["label"],
+        "sector": sector,
+        "template": template,
+        "tone": tone,
+        "tools": technical["availableTools"],
+        "goals": goals,
+        "forbidden": forbidden,
+        "instructions": instructions,
+        "user_message": user_text,
+        "answer": answer,
+    }
+    try:
+        save_lead(f"[{sector}/{template}] {user_text}", answer, meta, "agent_studio", kind="agent_studio_chat")
+    except Exception as exc:
+        print("agent studio lead save error", repr(exc), flush=True)
+    try:
+        threading.Thread(target=send_agent_studio_config_email, args=(config_email, technical, meta), daemon=True).start()
+    except Exception as exc:
+        print("agent studio config email start error", repr(exc), flush=True)
+    return {
+        "ok": True,
+        "bot_message": answer,
+        "agent": agent_name or info["label"],
+        "sector": sector,
+        "technical": technical,
+    }
 
 
 def booked_hours(agent: str, date: str, exclude_uuid: str = "") -> set[str]:

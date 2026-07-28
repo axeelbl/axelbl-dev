@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0d10" />
+  <link rel="canonical" href="https://axelbl.dev/projects/agent-studio.html" />
+  <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
+  <link rel="stylesheet" href="/styles.css?v=20260728-agent-studio-calendar2" />
+  <title>AI Agent Studio — Crea tu propio agente IA</title>
+  <meta name="description" content="Creador guiado de agentes IA con plantillas, herramientas, conversación real, grafo de ejecución y modo técnico." />
+  <meta property="og:title" content="AI Agent Studio — Axel Berral López" />
+  <meta property="og:description" content="Construye un agente IA personalizado por pasos y pruébalo con una conversación real." />
+</head>
+<body class="project-page agent-studio-page">
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true"><span data-parallax-layer="0.14"></span><span data-parallax-layer="-0.10"></span></div>
+
+  <header class="nav">
+    <a class="mark" href="/" aria-label="Ir al inicio">Axel Berral</a>
+    <nav aria-label="Principal">
+      <a href="/#experience">Experiencia</a>
+      <a href="/#agents">Agentes</a>
+      <a href="/#work">Proyectos</a>
+      <a href="/#contact">Contacto</a>
+    </nav>
+    <a class="project-back" href="/#agents">Volver</a>
+  </header>
+
+  <main>
+    <section class="project-hero studio-page-hero" data-reveal>
+      <div class="project-eyebrow">Demo real · Agent builder · Tool calling visible</div>
+      <div class="project-hero-grid">
+        <h1>Crea tu propio agente IA</h1>
+        <div class="project-summary" data-parallax-layer="-0.05">
+          <p>Crea un agente por pasos, personalízalo y pruébalo con una conversación real.</p>
+          <div class="project-actions">
+            <a class="button primary" href="#agent-studio-builder">Empezar</a>
+            <a class="button" href="/#agents">Volver a agentes</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-section studio-page-section" data-reveal>
+      <div class="agent-studio wizard-studio" id="agent-studio">
+        <div class="studio-hero wizard-hero">
+          <div>
+            <span class="kicker">AI Agent Studio</span>
+            <h3>Crea un agente personalizado en segundos</h3>
+            <p>Elige una base, ajusta el estilo y pruébalo en directo.</p>
+          </div>
+          <div class="studio-hero-actions">
+            <button type="button" class="button ghost studio-tech-toggle" id="studioTechToggle" aria-pressed="false">Modo técnico</button>
+          </div>
+        </div>
+
+        <div class="wizard-progress" aria-label="Progreso del creador">
+          <button type="button" class="active" data-step="0"><span>1</span>Sector</button>
+          <button type="button" data-step="1"><span>2</span>Plantilla</button>
+          <button type="button" data-step="2"><span>3</span>Personaliza</button>
+          <button type="button" data-step="3"><span>4</span>Herramientas</button>
+          <button type="button" data-step="4"><span>5</span>Prueba</button>
+        </div>
+
+        <div class="wizard-shell" id="agent-studio-builder">
+          <aside class="wizard-builder" aria-label="Creador de agente por pasos">
+            <div class="wizard-step-panel active" data-panel="0">
+              <span class="kicker">Paso 1</span>
+              <h2>¿Qué agente quieres crear?</h2>
+              <p>Elige una base para empezar.</p>
+              <div class="wizard-card-grid studio-sector-grid" role="group" aria-label="Sectores">
+                <button type="button" class="studio-sector active" data-sector="restaurante"><strong>Restaurante</strong><em>Reservas y menú</em></button>
+                <button type="button" class="studio-sector" data-sector="clinica"><strong>Clínica</strong><em>Citas y recepción</em></button>
+                <button type="button" class="studio-sector" data-sector="inmobiliaria"><strong>Inmobiliaria</strong><em>Leads y visitas</em></button>
+                <button type="button" class="studio-sector" data-sector="ecommerce"><strong>E-commerce</strong><em>Pedidos y soporte</em></button>
+                <button type="button" class="studio-sector" data-sector="personalizado"><strong>Personalizado</strong><em>Tu caso</em></button>
+              </div>
+            </div>
+
+            <div class="wizard-step-panel" data-panel="1">
+              <span class="kicker">Paso 2</span>
+              <h2>Elige una plantilla</h2>
+              <p>Elige qué debe hacer mejor.</p>
+              <div class="wizard-card-grid studio-template-grid" role="group" aria-label="Plantillas">
+                <button type="button" class="studio-template active" data-template="reservas"><strong>Reservas / citas</strong><em>Gestionar huecos</em></button>
+                <button type="button" class="studio-template" data-template="leads"><strong>Captar leads</strong><em>Conseguir contacto</em></button>
+                <button type="button" class="studio-template" data-template="soporte"><strong>Soporte cliente</strong><em>Resolver dudas</em></button>
+                <button type="button" class="studio-template" data-template="recomendador"><strong>Recomendador</strong><em>Sugerir opciones</em></button>
+                <button type="button" class="studio-template" data-template="personal"><strong>Asistente personal</strong><em>Organizar tareas</em></button>
+              </div>
+            </div>
+
+            <div class="wizard-step-panel" data-panel="2">
+              <span class="kicker">Paso 3</span>
+              <h2>Personaliza el agente</h2>
+              <p>Ajusta lo esencial.</p>
+              <label class="wizard-field"><span>Nombre del agente</span><input id="studioAgentCustomName" type="text" value="Agente Restaurante" maxlength="80" /></label>
+              <label class="wizard-field"><span>Tono</span><select id="studioTone"><option value="profesional">Profesional</option><option value="cercano">Cercano</option><option value="premium">Premium</option><option value="divertido">Divertido</option><option value="directo">Directo</option></select></label>
+              <label class="wizard-field"><span>Qué debe hacer</span><textarea id="studioGoals" rows="3">Ayudar al usuario, entender su intención y guiarlo al siguiente paso útil.</textarea></label>
+              <label class="wizard-field"><span>Qué NO debe hacer</span><textarea id="studioForbidden" rows="3">No inventar disponibilidad, precios ni datos. No confirmar acciones reales sin permiso.</textarea></label>
+              <label class="wizard-field"><span>Instrucciones extra</span><textarea id="studioInstructions" rows="4">Responde en español, con tono profesional y cercano. Prioriza resolver la intención del usuario, confirma datos antes de reservar y no inventes disponibilidad.</textarea></label>
+            </div>
+
+            <div class="wizard-step-panel" data-panel="3">
+              <span class="kicker">Paso 4</span>
+              <h2>Activa herramientas</h2>
+              <p>Activa capacidades para la prueba.</p>
+              <div class="studio-tools wizard-tools" role="group" aria-label="Herramientas disponibles">
+                <label><input type="checkbox" value="reservas" checked /> <span><strong>Reservas</strong><em>Huecos</em></span></label>
+                <label><input type="checkbox" value="busqueda" checked /> <span><strong>Búsqueda</strong><em>Contexto</em></span></label>
+                <label><input type="checkbox" value="base_datos" checked /> <span><strong>Base de datos</strong><em>Registros</em></span></label>
+                <label><input type="checkbox" value="email" /> <span><strong>Email</strong><em>Borrador</em></span></label>
+                <label><input type="checkbox" value="calendario" /> <span><strong>Calendario</strong><em>Evento</em></span></label>
+              </div>
+            </div>
+
+            <div class="wizard-step-panel" data-panel="4">
+              <span class="kicker">Paso 5</span>
+              <h2>Prueba tu agente</h2>
+              <p>Prueba una conversación real.</p>
+              <label class="wizard-field"><span>Mensaje de prueba</span><textarea id="studioUserMessage" rows="4">Quiero reservar mesa para 4 mañana por la noche. ¿Tenéis disponibilidad?</textarea></label>
+              <div class="studio-templates" aria-label="Plantillas de prueba">
+                <button type="button" data-template="reserva">Reserva</button>
+                <button type="button" data-template="cita">Cita</button>
+                <button type="button" data-template="pedido">Pedido</button>
+                <button type="button" data-template="lead">Lead</button>
+              </div>
+              <button type="button" class="button primary studio-run" id="studioRun">Probar agente real</button>
+            </div>
+
+            <div class="wizard-controls">
+              <button type="button" class="button ghost" id="studioPrev">Anterior</button>
+              <button type="button" class="button primary" id="studioNext">Siguiente</button>
+            </div>
+          </aside>
+
+          <section class="studio-runtime wizard-preview" aria-label="Vista previa y ejecución del agente">
+            <div class="agent-preview-card">
+              <span class="kicker">Vista previa</span>
+              <h3 id="studioAgentName">Agente Restaurante</h3>
+              <p id="studioAgentSummary">Agente de restaurante para reservas/citas con tono profesional.</p>
+              <div class="preview-tags" id="studioPreviewTags"><span>reservas.lookup</span><span>search.query</span><span>db.lookup</span></div>
+            </div>
+
+            <div class="studio-chat-card">
+              <div class="studio-window-head"><span></span><span></span><span></span><strong>Prueba real</strong></div>
+              <div class="studio-chat" id="studioChat">
+                <p class="user">Quiero reservar mesa para 4 mañana por la noche. ¿Tenéis disponibilidad?</p>
+                <p class="assistant">Completa los pasos y pruébalo.</p>
+              </div>
+            </div>
+
+            <div class="studio-graph" aria-label="Grafo de ejecución">
+              <div class="graph-node idle" data-node="input"><span>Input</span><em>mensaje</em></div>
+              <div class="graph-node idle" data-node="router"><span>Router</span><em>intención</em></div>
+              <div class="graph-node idle" data-node="tools"><span>Tools</span><em>acciones</em></div>
+              <div class="graph-node idle" data-node="memory"><span>Memory</span><em>contexto</em></div>
+              <div class="graph-node idle" data-node="response"><span>Response</span><em>JSON</em></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="studio-tech-panel" id="studioTechPanel" hidden>
+          <div class="tech-card"><span>Prompt sanitizado</span><pre id="studioPrompt">Completa el wizard y prueba el agente.</pre></div>
+          <div class="tech-card"><span>Herramientas</span><pre id="studioToolsOut">[]</pre></div>
+          <div class="tech-card"><span>Tool calls</span><pre id="studioCallsOut">[]</pre></div>
+          <div class="tech-card"><span>Memoria + nodos</span><pre id="studioStateOut">{}</pre></div>
+          <div class="tech-card wide"><span>Respuesta estructurada</span><pre id="studioJsonOut">{}</pre></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
+  <script src="/app.js?v=20260728-agent-studio-calendar2"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

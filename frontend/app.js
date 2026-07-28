@@ -383,3 +383,260 @@ initReveal();
 initParallax();
 initPointerDepth();
 initBackgroundParticles();
+
+function initAgentStudio() {
+  const studio = document.getElementById('agent-studio');
+  if (!studio) return;
+
+  const sectors = {
+    restaurante: { label: 'Agente Restaurante', summary: 'Agente de restaurante para reservas, menú y disponibilidad.', user: 'Quiero reservar mesa para 4 mañana por la noche. ¿Tenéis disponibilidad?' },
+    clinica: { label: 'Agente Clínica', summary: 'Agente de clínica para citas, recepción y servicios.', user: 'Necesito pedir cita esta semana por la tarde. ¿Puedes buscarme un hueco?' },
+    inmobiliaria: { label: 'Agente Inmobiliaria', summary: 'Agente inmobiliario para captar leads, filtrar propiedades y proponer visitas.', user: 'Busco un piso de alquiler de dos habitaciones cerca del centro.' },
+    ecommerce: { label: 'Agente E-commerce', summary: 'Agente de soporte y ventas para pedidos, incidencias y recomendaciones.', user: 'Mi pedido tenía que llegar hoy y aún no aparece. ¿Puedes revisar qué pasa?' },
+    personalizado: { label: 'Agente Personalizado', summary: 'Agente adaptado al caso de uso que defina el creador.', user: 'Necesito ayuda con una tarea concreta. ¿Puedes guiarme paso a paso?' }
+  };
+  const templates = {
+    reservas: { label: 'Reservas / citas', tools: ['reservas', 'base_datos', 'calendario'], goals: 'Gestionar disponibilidad, resolver dudas y pedir confirmación antes de crear una reserva o cita.', forbidden: 'No confirmar reservas reales ni inventar disponibilidad.', message: 'Quiero reservar para 4 mañana por la noche. ¿Tenéis disponibilidad?' },
+    leads: { label: 'Captar leads', tools: ['base_datos', 'email'], goals: 'Entender la necesidad del usuario, cualificarlo y pedir datos de contacto de forma natural.', forbidden: 'No presionar al usuario ni prometer resultados garantizados.', message: 'Estoy interesado pero quiero saber precios y si me podéis contactar.' },
+    soporte: { label: 'Soporte cliente', tools: ['busqueda', 'base_datos', 'email'], goals: 'Diagnosticar la incidencia, dar pasos claros y preparar seguimiento si hace falta.', forbidden: 'No inventar estados internos ni decir que se ha enviado un email real.', message: 'Mi pedido tenía que llegar hoy y aún no aparece. ¿Puedes revisarlo?' },
+    recomendador: { label: 'Recomendador', tools: ['busqueda', 'base_datos'], goals: 'Hacer preguntas útiles y recomendar opciones ajustadas a preferencias.', forbidden: 'No recomendar sin contexto suficiente.', message: 'Quiero una recomendación, pero no sé cuál elegir.' },
+    personal: { label: 'Asistente personal', tools: ['calendario', 'email', 'busqueda'], goals: 'Organizar tareas, resumir opciones y proponer próximos pasos.', forbidden: 'No crear eventos ni enviar mensajes reales sin confirmación.', message: 'Ayúdame a organizar esta semana y priorizar tareas.' }
+  };
+  const toolLabels = { reservas: 'reservas.lookup', busqueda: 'search.query', base_datos: 'db.lookup', email: 'email.draft', calendario: 'calendar.propose' };
+  const quickMessages = { reserva: templates.reservas.message, cita: 'Necesito cita para una revisión esta semana por la tarde.', pedido: templates.soporte.message, lead: templates.leads.message };
+  let activeSector = 'restaurante';
+  let activeTemplate = 'reservas';
+  let activeStep = 0;
+  let runTimer = [];
+
+  const stepButtons = Array.from(studio.querySelectorAll('.wizard-progress button'));
+  const panels = Array.from(studio.querySelectorAll('.wizard-step-panel'));
+  const sectorButtons = Array.from(studio.querySelectorAll('.studio-sector'));
+  const templateButtons = Array.from(studio.querySelectorAll('.studio-template'));
+  const toolInputs = Array.from(studio.querySelectorAll('.studio-tools input'));
+  const agentNameInput = document.getElementById('studioAgentCustomName');
+  const toneInput = document.getElementById('studioTone');
+  const goalsInput = document.getElementById('studioGoals');
+  const forbiddenInput = document.getElementById('studioForbidden');
+  const instructions = document.getElementById('studioInstructions');
+  const userMessage = document.getElementById('studioUserMessage');
+  const runButton = document.getElementById('studioRun');
+  const prevButton = document.getElementById('studioPrev');
+  const nextButton = document.getElementById('studioNext');
+  const techToggle = document.getElementById('studioTechToggle');
+  const techPanel = document.getElementById('studioTechPanel');
+  const chat = document.getElementById('studioChat');
+  const agentName = document.getElementById('studioAgentName');
+  const agentSummary = document.getElementById('studioAgentSummary');
+  const previewTags = document.getElementById('studioPreviewTags');
+  const nodes = Array.from(studio.querySelectorAll('.graph-node'));
+  const promptOut = document.getElementById('studioPrompt');
+  const toolsOut = document.getElementById('studioToolsOut');
+  const callsOut = document.getElementById('studioCallsOut');
+  const stateOut = document.getElementById('studioStateOut');
+  const jsonOut = document.getElementById('studioJsonOut');
+
+  const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[ch]));
+  const pretty = (value) => JSON.stringify(value, null, 2);
+  const selectedTools = () => toolInputs.filter((input) => input.checked).map((input) => input.value);
+  const clearTimers = () => { runTimer.forEach(clearTimeout); runTimer = []; };
+
+  function renderAssistantMessage(text) {
+    let value = String(text || '').trim();
+    if (!value) return 'Agente ejecutado correctamente.';
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed && typeof parsed === 'object') {
+        value = [parsed.summary || parsed.resumen, parsed.answer || parsed.respuesta, ...(parsed.steps || parsed.pasos || parsed.tasks || parsed.tareas || [])].filter(Boolean).join('\n');
+      }
+    } catch (_) {}
+    const lines = value.replace(/\r\n/g, '\n').split('\n').map((line) => line.trim()).filter(Boolean);
+    if (lines.length <= 1) return esc(value);
+    let html = '';
+    let listOpen = false;
+    const closeList = () => { if (listOpen) { html += '</ul>'; listOpen = false; } };
+    lines.forEach((line) => {
+      const clean = line.replace(/^#{1,4}\s*/, '').replace(/\*\*/g, '');
+      const tableCells = clean.startsWith('|') && clean.endsWith('|') ? clean.split('|').slice(1, -1).map((cell) => cell.trim()).filter(Boolean) : null;
+      if (tableCells) {
+        const joined = tableCells.join(' ').toLowerCase();
+        if (!tableCells.length || tableCells.every((cell) => /^-+$/.test(cell.replace(/\s/g, ''))) || joined.includes('hora actividad') || joined.includes('time activity')) return;
+        if (!listOpen) { html += '<ul class="schedule-list">'; listOpen = true; }
+        const [time, task, note] = tableCells;
+        html += `<li><span>${esc(time || '')}</span>${esc(task || '')}${note ? ` <em>— ${esc(note)}</em>` : ''}</li>`;
+        return;
+      }
+      const bullet = clean.match(/^[-*•]\s+(.+)/) || clean.match(/^\d+[.)]\s+(.+)/);
+      const isHeading = /^(resumen|plan|calendario|agenda|siguiente paso|prioridad|tareas?)\b/i.test(clean.replace(':', '')) || clean.endsWith(':');
+      if (bullet) {
+        if (!listOpen) { html += '<ul>'; listOpen = true; }
+        html += `<li>${esc(bullet[1])}</li>`;
+      } else if (isHeading) {
+        closeList();
+        html += `<strong>${esc(clean.replace(/:$/, ''))}</strong>`;
+      } else {
+        closeList();
+        html += `<p>${esc(clean)}</p>`;
+      }
+    });
+    closeList();
+    return html;
+  }
+
+  function setStep(step) {
+    activeStep = Math.max(0, Math.min(4, Number(step) || 0));
+    stepButtons.forEach((button, index) => {
+      button.classList.toggle('active', index === activeStep);
+      button.classList.toggle('done', index < activeStep);
+    });
+    panels.forEach((panel, index) => panel.classList.toggle('active', index === activeStep));
+    prevButton.disabled = activeStep === 0;
+    nextButton.textContent = activeStep === 4 ? 'Listo para probar' : 'Siguiente';
+    updatePreview();
+  }
+
+  function applyTemplate(key) {
+    const tpl = templates[key] || templates.reservas;
+    activeTemplate = key in templates ? key : 'reservas';
+    templateButtons.forEach((button) => button.classList.toggle('active', button.dataset.template === activeTemplate));
+    toolInputs.forEach((input) => { input.checked = tpl.tools.includes(input.value); });
+    if (goalsInput) goalsInput.value = tpl.goals;
+    if (forbiddenInput) forbiddenInput.value = tpl.forbidden;
+    if (userMessage) userMessage.value = tpl.message;
+    updatePreview();
+    renderIdle();
+  }
+
+  function updatePreview() {
+    const sector = sectors[activeSector] || sectors.restaurante;
+    const tpl = templates[activeTemplate] || templates.reservas;
+    if (agentNameInput && (!agentNameInput.value || Object.values(sectors).some((item) => item.label === agentNameInput.value))) agentNameInput.value = sector.label;
+    const displayName = (agentNameInput && agentNameInput.value.trim()) || sector.label;
+    const tone = toneInput ? toneInput.value : 'profesional';
+    agentName.textContent = displayName;
+    agentSummary.textContent = `${sector.summary} Plantilla: ${tpl.label}. Tono: ${tone}.`;
+    previewTags.innerHTML = selectedTools().map((tool) => `<span>${esc(toolLabels[tool] || tool)}</span>`).join('') || '<span>sin herramientas</span>';
+    const techDraft = {
+      agent: displayName,
+      sector: activeSector,
+      template: activeTemplate,
+      tone,
+      tools: selectedTools().map((tool) => toolLabels[tool] || tool),
+      goals: goalsInput ? goalsInput.value : '',
+      forbidden: forbiddenInput ? forbiddenInput.value : ''
+    };
+    toolsOut.textContent = pretty(techDraft.tools);
+    jsonOut.textContent = pretty({ draft: techDraft });
+  }
+
+  function renderIdle() {
+    const sector = sectors[activeSector] || sectors.restaurante;
+    chat.innerHTML = `<p class="user">${esc((userMessage && userMessage.value) || sector.user)}</p><p class="assistant">Completa los pasos y pulsa “Probar agente real”.</p>`;
+    nodes.forEach((node) => { node.classList.remove('active', 'done'); node.classList.add('idle'); });
+  }
+
+  function setNodes(activeName) {
+    const order = ['input', 'router', 'tools', 'memory', 'response'];
+    nodes.forEach((node) => {
+      const done = order.indexOf(node.dataset.node) < order.indexOf(activeName);
+      node.classList.toggle('active', node.dataset.node === activeName);
+      node.classList.toggle('done', done || (node.dataset.node === 'response' && activeName === 'response'));
+      node.classList.toggle('idle', !node.classList.contains('active') && !node.classList.contains('done'));
+    });
+  }
+
+  async function runStudio() {
+    clearTimers();
+    setStep(4);
+    const started = performance.now();
+    const message = ((userMessage && userMessage.value) || '').trim();
+    if (!message) {
+      chat.innerHTML = '<p class="error">Escribe un mensaje de prueba para ejecutar el agente.</p>';
+      return;
+    }
+    studio.classList.add('running');
+    runButton.disabled = true;
+    runButton.textContent = 'Ejecutando LLM…';
+    chat.innerHTML = `<p class="user">${esc(message)}</p><p class="system">Creando agente, compilando prompt y preparando herramientas…</p>`;
+    nodes.forEach((node) => { node.classList.remove('active', 'done'); node.classList.add('idle'); });
+    ['input', 'router', 'tools', 'memory'].forEach((nodeName, index) => {
+      runTimer.push(setTimeout(() => {
+        setNodes(nodeName);
+        if (nodeName === 'router') chat.insertAdjacentHTML('beforeend', '<p class="system">Router: sector, plantilla e intención detectados.</p>');
+        if (nodeName === 'tools') chat.insertAdjacentHTML('beforeend', `<p class="system">Herramientas activas: ${selectedTools().map((tool) => toolLabels[tool]).join(' · ') || 'ninguna'}</p>`);
+        if (nodeName === 'memory') chat.insertAdjacentHTML('beforeend', '<p class="system">Memoria base cargada y límites aplicados.</p>');
+        stateOut.textContent = pretty({ phase: nodeName, elapsedMs: Math.round(performance.now() - started) });
+        chat.scrollTop = chat.scrollHeight;
+      }, 220 + index * 360));
+    });
+    try {
+      const res = await fetch('/agent-studio/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sector: activeSector,
+          template: activeTemplate,
+          tools: selectedTools(),
+          agent_name: agentNameInput ? agentNameInput.value : '',
+          tone: toneInput ? toneInput.value : 'profesional',
+          goals: goalsInput ? goalsInput.value : '',
+          forbidden: forbiddenInput ? forbiddenInput.value : '',
+          instructions: instructions ? instructions.value : '',
+          user_message: message
+        })
+      });
+      const payload = await res.json().catch(() => ({ detail: 'No se pudo leer la respuesta del servidor.' }));
+      if (!res.ok) throw new Error(payload.detail || 'No se pudo ejecutar el agente.');
+      clearTimers();
+      setNodes('response');
+      const tech = payload.technical || {};
+      promptOut.textContent = tech.systemPrompt || 'Prompt no disponible';
+      toolsOut.textContent = pretty(tech.availableTools || []);
+      callsOut.textContent = pretty(tech.toolCalls || []);
+      stateOut.textContent = pretty({ memory: tech.memory || [], nodes: tech.nodes || {}, latencyMs: tech.latencyMs || 0 });
+      jsonOut.textContent = pretty(tech.structuredResponse || payload);
+      chat.insertAdjacentHTML('beforeend', `<div class="assistant assistant-render">${renderAssistantMessage(payload.bot_message)}</div>`);
+    } catch (err) {
+      clearTimers();
+      nodes.forEach((node) => node.classList.remove('active'));
+      chat.insertAdjacentHTML('beforeend', `<p class="error">${esc(err.message || 'Error ejecutando el agente.')}</p>`);
+    } finally {
+      runButton.disabled = false;
+      runButton.textContent = 'Probar agente real';
+      studio.classList.remove('running');
+      chat.scrollTop = chat.scrollHeight;
+    }
+  }
+
+  stepButtons.forEach((button) => button.addEventListener('click', () => setStep(button.dataset.step)));
+  prevButton.addEventListener('click', () => setStep(activeStep - 1));
+  nextButton.addEventListener('click', () => setStep(activeStep + 1));
+  sectorButtons.forEach((button) => button.addEventListener('click', () => {
+    activeSector = button.dataset.sector || 'restaurante';
+    sectorButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+    if (agentNameInput) agentNameInput.value = (sectors[activeSector] || sectors.restaurante).label;
+    if (userMessage) userMessage.value = (sectors[activeSector] || sectors.restaurante).user;
+    updatePreview();
+    renderIdle();
+  }));
+  templateButtons.forEach((button) => button.addEventListener('click', () => applyTemplate(button.dataset.template || 'reservas')));
+  toolInputs.forEach((input) => input.addEventListener('change', updatePreview));
+  [agentNameInput, toneInput, goalsInput, forbiddenInput, instructions].forEach((input) => { if (input) input.addEventListener('input', updatePreview); if (input && input.tagName === 'SELECT') input.addEventListener('change', updatePreview); });
+  if (userMessage) userMessage.addEventListener('input', renderIdle);
+  studio.querySelectorAll('.studio-templates button').forEach((button) => button.addEventListener('click', () => {
+    if (!userMessage) return;
+    userMessage.value = quickMessages[button.dataset.template] || quickMessages.reserva;
+    renderIdle();
+  }));
+  runButton.addEventListener('click', runStudio);
+  techToggle.addEventListener('click', () => {
+    const open = techPanel.hidden;
+    techPanel.hidden = !open;
+    techToggle.setAttribute('aria-pressed', String(open));
+  });
+
+  applyTemplate(activeTemplate);
+  setStep(0);
+}
+
+initAgentStudio();
