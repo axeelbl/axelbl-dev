@@ -1,5 +1,7 @@
-import os, time, json, re
-from typing import Dict, List
+import base64, csv, os, time, json, re
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Dict, List, Any
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
 import httpx
@@ -12,6 +14,42 @@ ALLOWED_MIME = {"video/mp4", "application/octet-stream"}
 RATE_WINDOW = 3600
 RATE_MAX = 4
 _hits: Dict[str, List[float]] = {}
+BASE_DIR = Path(__file__).resolve().parent
+LEADS_CSV = BASE_DIR / "audio_upload_leads.csv"
+
+
+def load_extra_env(path: Path, override: bool = True) -> None:
+    if not path.exists():
+        return
+    raw = path.read_bytes()
+    text = ""
+    for enc in ("utf-8-sig", "utf-16"):
+        try:
+            text = raw.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    for line in text.splitlines():
+        line = line.strip().lstrip("\ufeff")
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        if line.startswith("export "):
+            line = line[7:].strip()
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip("'\"")
+        if key and (override or key not in os.environ):
+            os.environ[key] = value
+
+
+for env_path in (
+    Path(os.getenv("AUDIO_DEMO_RESEND_ENV", "")) if os.getenv("AUDIO_DEMO_RESEND_ENV") else None,
+    BASE_DIR / "resend.env",
+    BASE_DIR.parent / "AxelBot" / "resend.env",
+    Path("/home/ec2-user/AxelBot/resend.env"),
+):
+    if env_path:
+        load_extra_env(env_path, override=True)
 
 
 def client_ip(request: Request) -> str:
@@ -32,6 +70,113 @@ def ext_of(name: str) -> str:
     name = (name or "").lower()
     idx = name.rfind(".")
     return name[idx:] if idx >= 0 else ""
+
+
+def safe_filename(name: str, fallback: str = "audio-upload") -> str:
+    name = (name or fallback).strip().replace("\\", "_").replace("/", "_")
+    name = re.sub(r"[^A-Za-z0-9._ -]+", "_", name).strip(" ._")
+    return name[:120] or fallback
+
+
+def parse_resend_from(value: str, label: str) -> str:
+    value = (value or "").strip()
+    if "<" in value and ">" in value:
+        address = value.split("<", 1)[1].split(">", 1)[0].strip()
+    else:
+        address = value
+    return f"{label} <{address}>" if address else value
+
+
+def request_metadata(request: Request, file: UploadFile, size: int) -> dict[str, str | int]:
+    return {
+        "timestamp": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "ip": client_ip(request),
+        "user_agent": request.headers.get("user-agent", ""),
+        "accept_language": request.headers.get("accept-language", ""),
+        "referer": request.headers.get("referer", ""),
+        "origin": request.headers.get("origin", ""),
+        "x_forwarded_for": request.headers.get("x-forwarded-for", ""),
+        "x_real_ip": request.headers.get("x-real-ip", ""),
+        "cf_ipcountry": request.headers.get("cf-ipcountry", ""),
+        "filename": safe_filename(file.filename or "audio-upload"),
+        "content_type": file.content_type or "application/octet-stream",
+        "size_bytes": size,
+    }
+
+
+def save_audio_lead(meta: dict[str, Any], transcript: str, analysis: dict[str, Any], processing_ms: int, email_sent: bool) -> None:
+    fields = ["timestamp", "ip", "user_agent", "accept_language", "referer", "origin", "x_forwarded_for", "x_real_ip", "cf_ipcountry", "filename", "content_type", "size_bytes", "processing_ms", "email_sent", "transcript", "analysis_json"]
+    exists = LEADS_CSV.exists()
+    row = {**meta, "processing_ms": processing_ms, "email_sent": str(bool(email_sent)), "transcript": transcript, "analysis_json": json.dumps(analysis, ensure_ascii=False)}
+    with LEADS_CSV.open("a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+        if not exists:
+            writer.writeheader()
+        writer.writerow(row)
+
+
+def format_analysis_email(meta: dict[str, Any], transcript: str, analysis: dict[str, Any], processing_ms: int) -> str:
+    insights = analysis.get("insights") or []
+    insights_text = "\n".join(f"- {item}" for item in insights) if insights else "- Sin insights"
+    return f"""Nuevo audio subido en la demo de análisis de audio de axelbl.dev.
+
+METADATOS
+- Fecha UTC: {meta.get('timestamp')}
+- IP: {meta.get('ip')}
+- X-Forwarded-For: {meta.get('x_forwarded_for')}
+- X-Real-IP: {meta.get('x_real_ip')}
+- País Cloudflare: {meta.get('cf_ipcountry') or 'n/d'}
+- User-Agent: {meta.get('user_agent')}
+- Idioma navegador: {meta.get('accept_language')}
+- Referer: {meta.get('referer')}
+- Origin: {meta.get('origin')}
+- Archivo: {meta.get('filename')} ({meta.get('content_type')}, {meta.get('size_bytes')} bytes)
+- Tiempo procesamiento: {processing_ms} ms
+
+TRANSCRIPCIÓN
+{transcript}
+
+ANÁLISIS IA
+- Intención: {analysis.get('intent', '—')}
+- Sentimiento: {analysis.get('sentiment', '—')}
+- Prioridad: {analysis.get('priority', '—')}
+- Confianza: {analysis.get('confidence', '—')}
+- Resumen: {analysis.get('summary', '—')}
+
+INSIGHTS
+{insights_text}
+"""
+
+
+async def send_audio_lead_email(meta: dict[str, Any], data: bytes, transcript: str, analysis: dict[str, Any], processing_ms: int) -> bool:
+    api_key = (os.getenv("RESEND_API_KEY") or "").strip()
+    base_from = (os.getenv("RESEND_FROM") or "Audio Demo <leads@mail.axelbl.dev>").strip()
+    to_email = (os.getenv("RESEND_TO") or "").strip()
+    if not api_key or not base_from or not to_email:
+        print("Audio lead email not configured: missing RESEND_API_KEY/from/to", flush=True)
+        return False
+    filename = safe_filename(str(meta.get("filename") or "audio-upload"))
+    payload = {
+        "from": parse_resend_from(base_from, "Audio Demo"),
+        "to": [email.strip() for email in to_email.split(",") if email.strip()],
+        "subject": f"Nuevo lead audio demo – {meta.get('ip')} – {filename}",
+        "text": format_analysis_email(meta, transcript, analysis, processing_ms),
+        "attachments": [{"filename": filename, "content": base64.b64encode(data).decode()}],
+    }
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
+            response = await client.post(
+                "https://api.resend.com/emails",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json=payload,
+            )
+        if 200 <= response.status_code < 300:
+            print("Audio lead sent via Resend:", response.status_code, response.text[:200], flush=True)
+            return True
+        print("Resend audio lead error:", response.status_code, response.text[:500], flush=True)
+    except Exception as exc:
+        print("Audio lead email exception:", type(exc).__name__, str(exc), flush=True)
+    return False
 
 
 def analyze_text(text: str) -> dict:
@@ -100,10 +245,17 @@ async def analyze(request: Request, file: UploadFile = File(...)):
     if not text:
         raise HTTPException(status_code=422, detail="No se detectó voz clara en el audio.")
     analysis = analyze_text(text)
+    processing_ms = round((time.perf_counter() - started) * 1000)
+    meta = request_metadata(request, file, len(data))
+    email_sent = await send_audio_lead_email(meta, data, text, analysis, processing_ms)
+    try:
+        save_audio_lead(meta, text, analysis, processing_ms, email_sent)
+    except Exception as exc:
+        print("audio lead save error", type(exc).__name__, str(exc), flush=True)
     return JSONResponse({
         "ok": True,
         "transcript": text,
         "analysis": analysis,
-        "processingMs": round((time.perf_counter() - started) * 1000),
+        "processingMs": processing_ms,
         "notice": "Demo pública no optimizada para producción: audios cortos, máximo 5 MB y procesamiento bajo demanda. Puede tardar más que el sistema real. No subas datos sensibles."
     })

@@ -77,6 +77,7 @@
       const title=section.querySelector('#sampleTitle');
       const duration=section.querySelector('#sampleDuration');
       const button=section.querySelector('#analyzeButton');
+      const audioConsole=section.querySelector('.audio-console');
       const status=section.querySelector('#analysisStatus');
       const time=section.querySelector('#analysisTime');
       const transcript=section.querySelector('#demoTranscript');
@@ -90,10 +91,15 @@
       const uploadResult=section.querySelector('#uploadResult');
       const uploadFileName=section.querySelector('#uploadFileName');
       let current='factura';
+      let uploadedAudioUrl='';
       let timers=[];
       let runId=0;
 
       function clearTimers(){ timers.forEach(clearTimeout); timers=[]; audio.onended=null; }
+      function setUploadAnalysisVisible(visible){
+        ['.demo-status-row','.pipeline-status','.live-transcript'].forEach(sel=>{ const el=section.querySelector(sel); if(el) el.hidden=!visible; });
+        if(!visible){ summary.hidden=true; summary.classList.remove('ready','loading'); }
+      }
       function setStatus(text, cls){ status.textContent=text; status.className='status-pill '+cls; }
       function clearFinalData(){
         ['demoIntent','demoSentiment','demoPriority','demoScore'].forEach(id=>section.querySelector('#'+id).textContent='—');
@@ -110,8 +116,10 @@
         section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
       }
       function loadSample(key){
-        current=key; const d=callDemoSamples[key]; title.textContent=d.title; duration.textContent=d.duration; audio.src=d.audio;
-        section.querySelectorAll('.sample-card[data-sample]').forEach(b=>b.classList.toggle('active',b.dataset.sample===key)); uploadToggle.classList.remove('active'); uploadPanel.hidden=true; resetResult();
+        current=key; const d=callDemoSamples[key]; title.textContent=d.title; duration.textContent=d.duration;
+        if(uploadedAudioUrl){ URL.revokeObjectURL(uploadedAudioUrl); uploadedAudioUrl=''; }
+        audio.src=d.audio; button.hidden=false;
+        section.querySelectorAll('.sample-card[data-sample]').forEach(b=>b.classList.toggle('active',b.dataset.sample===key)); uploadToggle.classList.remove('active'); uploadPanel.hidden=true; audioConsole.hidden=false; setUploadAnalysisVisible(true); resetResult();
       }
       function markStep(i, active=false){ const step=section.querySelector(`.pipeline-status span[data-step="${i}"]`); if(step){ step.classList.add('done'); step.classList.toggle('active', active); } }
       function addLine(line, i, id, wordDuration=1200){
@@ -167,7 +175,7 @@
         if(!file){ uploadResult.hidden=false; uploadResult.innerHTML='<p class="upload-error">Selecciona primero un archivo de audio.</p>'; return; }
         if(file.size > 5*1024*1024){ uploadResult.hidden=false; uploadResult.innerHTML='<p class="upload-error">Archivo demasiado grande. Máximo 5 MB para esta demo pública.</p>'; return; }
         const fd=new FormData(); fd.append('file', file);
-        clearTimers(); audio.pause(); uploadAnalyzeButton.disabled=true; uploadProgress.hidden=false; uploadResult.hidden=true; uploadResult.innerHTML='';
+        clearTimers(); audio.pause(); setUploadAnalysisVisible(true); uploadAnalyzeButton.disabled=true; uploadProgress.hidden=false; uploadResult.hidden=true; uploadResult.innerHTML='';
         section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
         markStep(0,true); markStep(1,true); setStatus('Transcribiendo','running'); time.textContent='Audio propio';
         transcript.innerHTML='<p class="placeholder-line">Transcribiendo audio propio…</p>'; counter.textContent='Procesando'; setLoadingSummary();
@@ -184,8 +192,8 @@
       }
       section.querySelectorAll('.sample-card[data-sample]').forEach(btn=>btn.addEventListener('click',()=>loadSample(btn.dataset.sample)));
       button.addEventListener('click', analyze);
-      uploadToggle.addEventListener('click',()=>{ clearTimers(); audio.pause(); section.querySelectorAll('.sample-card[data-sample]').forEach(b=>b.classList.remove('active')); uploadToggle.classList.add('active'); uploadPanel.hidden=!uploadPanel.hidden; if(!uploadPanel.hidden) uploadPanel.scrollIntoView({behavior:'smooth',block:'nearest'}); });
-      uploadInput.addEventListener('change',()=>{ const f=uploadInput.files && uploadInput.files[0]; uploadFileName.textContent=f ? `${f.name} · ${(f.size/1024/1024).toFixed(2)} MB` : 'MP3, WAV, M4A, WEBM u OGG'; uploadResult.hidden=true; });
+      uploadToggle.addEventListener('click',()=>{ clearTimers(); audio.pause(); section.querySelectorAll('.sample-card[data-sample]').forEach(b=>b.classList.remove('active')); uploadToggle.classList.add('active'); audioConsole.hidden=!(uploadInput.files && uploadInput.files[0]); button.hidden=true; uploadPanel.hidden=false; setUploadAnalysisVisible(false); uploadProgress.hidden=true; uploadResult.hidden=true; uploadResult.innerHTML=''; uploadPanel.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+      uploadInput.addEventListener('change',()=>{ const f=uploadInput.files && uploadInput.files[0]; uploadFileName.textContent=f ? `${f.name} · ${(f.size/1024/1024).toFixed(2)} MB` : 'MP3, WAV, M4A, WEBM u OGG'; if(uploadedAudioUrl){ URL.revokeObjectURL(uploadedAudioUrl); uploadedAudioUrl=''; } if(f){ uploadedAudioUrl=URL.createObjectURL(f); title.textContent='Audio propio'; duration.textContent=`${(f.size/1024/1024).toFixed(2)} MB`; audio.src=uploadedAudioUrl; audio.load(); audioConsole.hidden=false; button.hidden=true; } else { audio.pause(); audio.removeAttribute('src'); audio.load(); audioConsole.hidden=true; } setUploadAnalysisVisible(false); uploadProgress.hidden=true; uploadResult.hidden=true; uploadResult.innerHTML=''; });
       uploadAnalyzeButton.addEventListener('click', analyzeUpload);
       loadSample(current);
       function scrollToDemoHash(){ if(location.hash === '#audioDemo') setTimeout(()=>section.scrollIntoView({behavior:'smooth',block:'start'}),80); }
