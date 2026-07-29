@@ -151,6 +151,13 @@ function initAmbientCanvas() {
     'rgba(143,179,255,0.28)',
     'rgba(255,255,255,0.16)'
   ];
+  const lightPalette = [
+    'rgba(111,152,0,0.42)',
+    'rgba(45,109,246,0.34)',
+    'rgba(16,24,32,0.22)'
+  ];
+
+  const isLightTheme = () => document.documentElement.dataset.theme === 'light';
 
   const resize = () => {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -171,7 +178,8 @@ function initAmbientCanvas() {
       speed: Math.random() * 0.18 + 0.045,
       drift: Math.random() * 0.28 + 0.08,
       phase: Math.random() * Math.PI * 2,
-      color: palette[i % palette.length]
+      color: palette[i % palette.length],
+      lightColor: lightPalette[i % lightPalette.length]
     }));
   };
 
@@ -192,8 +200,9 @@ function initAmbientCanvas() {
     frame += 0.01;
     ctx.clearRect(0, 0, width, height);
 
-    drawWave(frame, 0.28, 'rgba(215,255,104,0.055)', 18, 0.75);
-    drawWave(frame, 0.64, 'rgba(143,179,255,0.050)', 22, 0.55);
+    const light = isLightTheme();
+    drawWave(frame, 0.28, light ? 'rgba(111,152,0,0.11)' : 'rgba(215,255,104,0.055)', 18, 0.75);
+    drawWave(frame, 0.64, light ? 'rgba(45,109,246,0.10)' : 'rgba(143,179,255,0.050)', 22, 0.55);
 
     for (const p of particles) {
       p.x += p.speed;
@@ -202,7 +211,7 @@ function initAmbientCanvas() {
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
+      ctx.fillStyle = light ? p.lightColor : p.color;
       ctx.fill();
     }
 
@@ -235,6 +244,13 @@ function initBackgroundParticles() {
     'rgba(143,179,255,0.58)',
     'rgba(241,243,245,0.42)'
   ];
+  const lightColors = [
+    'rgba(111,152,0,0.78)',
+    'rgba(45,109,246,0.58)',
+    'rgba(16,24,32,0.34)'
+  ];
+
+  const isLightTheme = () => document.documentElement.dataset.theme === 'light';
 
   const resize = () => {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -254,7 +270,8 @@ function initBackgroundParticles() {
       vx: (Math.random() - 0.5) * 0.22,
       vy: (Math.random() - 0.5) * 0.20 - 0.025,
       pulse: Math.random() * Math.PI * 2,
-      color: colors[i % colors.length]
+      color: colors[i % colors.length],
+      lightColor: lightColors[i % lightColors.length]
     }));
   };
 
@@ -275,9 +292,10 @@ function initBackgroundParticles() {
       const radius = p.r + Math.sin(p.pulse) * 0.35;
       ctx.beginPath();
       ctx.arc(p.x + driftX, p.y + driftY, radius, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.shadowColor = p.color;
-      ctx.shadowBlur = 8;
+      const color = isLightTheme() ? p.lightColor : p.color;
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = isLightTheme() ? 5 : 8;
       ctx.fill();
     }
     ctx.shadowBlur = 0;

@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#0b0d10" />
   <link rel="canonical" href="https://axelbl.dev/projects/agent-studio.html" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
-  <link rel="stylesheet" href="/styles.css?v=20260728-agent-studio-calendar2" />
+    <script src="/theme.js?v=20260728-theme2"></script>
+<link rel="stylesheet" href="/styles.css?v=20260728-theme2" />
   <title>AI Agent Studio — Crea tu propio agente IA</title>
   <meta name="description" content="Creador guiado de agentes IA con plantillas, herramientas, conversación real, grafo de ejecución y modo técnico." />
   <meta property="og:title" content="AI Agent Studio — Axel Berral López" />
@@ -24,7 +25,7 @@
       <a href="/#work">Proyectos</a>
       <a href="/#contact">Contacto</a>
     </nav>
-    <a class="project-back" href="/#agents">Volver</a>
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Cambiar a modo luminoso" aria-pressed="false"><span data-theme-icon>☼</span><span data-theme-label>Claro</span></button><a class="project-back" href="/#agents">Volver</a>
   </header>
 
   <main>
@@ -173,7 +174,7 @@
   </main>
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
-  <script src="/app.js?v=20260728-agent-studio-calendar2"></script>
+  <script src="/app.js?v=20260728-theme2"></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
