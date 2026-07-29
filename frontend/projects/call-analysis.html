@@ -144,7 +144,7 @@
         summary.hidden=false; summary.classList.remove('ready'); summary.classList.add('loading'); clearFinalData();
       }
       function resetResult(){
-        runId++; clearTimers(); audio.pause(); audio.currentTime=0; button.disabled=false; button.textContent='Analizar audio';
+        runId++; clearTimers(); audio.pause(); audio.currentTime=0; button.disabled=false; button.textContent=ui.analyze;
         setStatus('Listo','idle'); time.textContent='≈ audio corto'; summary.hidden=true; summary.classList.remove('ready','loading'); clearFinalData();
         transcript.innerHTML=`<p class="placeholder-line">${ui.placeholder}</p>`; counter.textContent=ui.zero;
         section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
