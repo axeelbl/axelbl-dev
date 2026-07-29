@@ -25,6 +25,12 @@
       <a href="/#work">Proyectos</a>
       <a href="/#contact">Contacto</a>
     </nav>
+    <div class="language-switcher" role="group" aria-label="Cambiar idioma">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-lang="ca" aria-pressed="false">CA</button>
+      <button type="button" data-lang="no" aria-pressed="false">NO</button>
+    </div>
     <button type="button" class="theme-toggle" data-theme-toggle aria-label="Cambiar a modo luminoso" aria-pressed="false"><span data-theme-icon>☼</span><span data-theme-label>Claro</span></button><a class="project-back" href="/#agents">Volver</a>
   </header>
 
@@ -174,6 +180,87 @@
   </main>
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
+
+  <script>
+    (() => {
+      const t = {
+        es: {
+          nav:['Experiencia','Agentes','Proyectos','Contacto'], back:'Volver', lang:'Cambiar idioma', start:'Empezar', backAgents:'Volver a agentes',
+          title:'AI Agent Studio — Crea tu propio agente IA', meta:'Creador guiado de agentes IA con plantillas, herramientas, conversación real, grafo de ejecución y modo técnico.',
+          eyebrow:'Demo real · Agent builder · Tool calling visible', h1:'Crea tu propio agente IA', summary:'Crea un agente por pasos, personalízalo y pruébalo con una conversación real.',
+          heroKicker:'AI Agent Studio', heroTitle:'Crea un agente personalizado en segundos', heroCopy:'Elige una base, ajusta el estilo y pruébalo en directo.', tech:'Modo técnico',
+          progress:'Progreso del creador', steps:['Sector','Plantilla','Personaliza','Herramientas','Prueba'], stepWord:'Paso',
+          s1Title:'¿Qué agente quieres crear?', s1Copy:'Elige una base para empezar.', sectors:['Restaurante','Clínica','Inmobiliaria','E-commerce','Personalizado'], sectorEm:['Reservas y menú','Citas y recepción','Leads y visitas','Pedidos y soporte','Tu caso'],
+          s2Title:'Elige una plantilla', s2Copy:'Elige qué debe hacer mejor.', templates:['Reservas / citas','Captar leads','Soporte cliente','Recomendador','Asistente personal'], templateEm:['Gestionar huecos','Conseguir contacto','Resolver dudas','Sugerir opciones','Organizar tareas'],
+          s3Title:'Personaliza el agente', s3Copy:'Ajusta lo esencial.', fields:['Nombre del agente','Tono','Qué debe hacer','Qué NO debe hacer','Instrucciones extra'], tones:['Profesional','Cercano','Premium','Divertido','Directo'],
+          goals:'Ayudar al usuario, entender su intención y guiarlo al siguiente paso útil.', forbidden:'No inventar disponibilidad, precios ni datos. No confirmar acciones reales sin permiso.', instructions:'Responde en español, con tono profesional y cercano. Prioriza resolver la intención del usuario, confirma datos antes de reservar y no inventes disponibilidad.',
+          s4Title:'Activa herramientas', s4Copy:'Activa capacidades para la prueba.', toolsAria:'Herramientas disponibles', tools:['Reservas','Búsqueda','Base de datos','Email','Calendario'], toolEm:['Huecos','Contexto','Registros','Borrador','Evento'],
+          s5Title:'Prueba tu agente', s5Copy:'Prueba una conversación real.', testMsg:'Mensaje de prueba', test:'Quiero reservar mesa para 4 mañana por la noche. ¿Tenéis disponibilidad?', quickAria:'Plantillas de prueba', quick:['Reserva','Cita','Pedido','Lead'], run:'Probar agente real', prev:'Anterior', next:'Siguiente', ready:'Listo para probar',
+          preview:'Vista previa', previewTitle:'Agente Restaurante', previewSummary:'Agente de restaurante para reservas/citas con tono profesional.', realTest:'Prueba real', idle:'Completa los pasos y pruébalo.', graph:'Grafo de ejecución', graphEm:['mensaje','intención','acciones','contexto','JSON'], techLabels:['Prompt sanitizado','Herramientas','Tool calls','Memoria + nodos','Respuesta estructurada'], techIdle:'Completa el wizard y prueba el agente.'
+        },
+        en: {
+          nav:['Experience','Agents','Work','Contact'], back:'Back', lang:'Change language', start:'Start', backAgents:'Back to agents',
+          title:'AI Agent Studio — Create your own AI agent', meta:'Guided AI agent builder with templates, tools, real conversation, execution graph and technical mode.',
+          eyebrow:'Real demo · Agent builder · Visible tool calling', h1:'Create your own AI agent', summary:'Create an agent step by step, customize it and test it with a real conversation.',
+          heroKicker:'AI Agent Studio', heroTitle:'Create a custom agent in seconds', heroCopy:'Choose a base, adjust the style and test it live.', tech:'Technical mode',
+          progress:'Builder progress', steps:['Sector','Template','Customize','Tools','Test'], stepWord:'Step',
+          s1Title:'What agent do you want to create?', s1Copy:'Choose a base to start from.', sectors:['Restaurant','Clinic','Real estate','E-commerce','Custom'], sectorEm:['Bookings and menu','Appointments and reception','Leads and visits','Orders and support','Your case'],
+          s2Title:'Choose a template', s2Copy:'Choose what it should do best.', templates:['Bookings / appointments','Capture leads','Customer support','Recommender','Personal assistant'], templateEm:['Manage slots','Get contact details','Resolve questions','Suggest options','Organize tasks'],
+          s3Title:'Customize the agent', s3Copy:'Adjust the essentials.', fields:['Agent name','Tone','What it should do','What it must NOT do','Extra instructions'], tones:['Professional','Friendly','Premium','Playful','Direct'],
+          goals:'Help the user, understand their intent and guide them to the next useful step.', forbidden:'Do not invent availability, prices or data. Do not confirm real actions without permission.', instructions:'Reply in English with a professional, friendly tone. Prioritize solving the user intent, confirm details before booking and do not invent availability.',
+          s4Title:'Enable tools', s4Copy:'Enable capabilities for the test.', toolsAria:'Available tools', tools:['Bookings','Search','Database','Email','Calendar'], toolEm:['Slots','Context','Records','Draft','Event'],
+          s5Title:'Test your agent', s5Copy:'Try a real conversation.', testMsg:'Test message', test:'I want to book a table for 4 tomorrow night. Do you have availability?', quickAria:'Test templates', quick:['Booking','Appointment','Order','Lead'], run:'Test real agent', prev:'Previous', next:'Next', ready:'Ready to test',
+          preview:'Preview', previewTitle:'Restaurant Agent', previewSummary:'Restaurant agent for bookings/appointments with a professional tone.', realTest:'Real test', idle:'Complete the steps and test it.', graph:'Execution graph', graphEm:['message','intent','actions','context','JSON'], techLabels:['Sanitized prompt','Tools','Tool calls','Memory + nodes','Structured response'], techIdle:'Complete the wizard and test the agent.'
+        },
+        ca: {
+          nav:['Experiència','Agents','Projectes','Contacte'], back:'Tornar', lang:'Canviar idioma', start:'Començar', backAgents:'Tornar als agents',
+          title:'AI Agent Studio — Crea el teu propi agent IA', meta:'Creador guiat d’agents IA amb plantilles, eines, conversa real, graf d’execució i mode tècnic.',
+          eyebrow:'Demo real · Agent builder · Tool calling visible', h1:'Crea el teu propi agent IA', summary:'Crea un agent pas a pas, personalitza’l i prova’l amb una conversa real.',
+          heroKicker:'AI Agent Studio', heroTitle:'Crea un agent personalitzat en segons', heroCopy:'Tria una base, ajusta l’estil i prova’l en directe.', tech:'Mode tècnic',
+          progress:'Progrés del creador', steps:['Sector','Plantilla','Personalitza','Eines','Prova'], stepWord:'Pas',
+          s1Title:'Quin agent vols crear?', s1Copy:'Tria una base per començar.', sectors:['Restaurant','Clínica','Immobiliària','E-commerce','Personalitzat'], sectorEm:['Reserves i menú','Cites i recepció','Leads i visites','Comandes i suport','El teu cas'],
+          s2Title:'Tria una plantilla', s2Copy:'Tria què ha de fer millor.', templates:['Reserves / cites','Captar leads','Suport client','Recomanador','Assistent personal'], templateEm:['Gestionar franges','Aconseguir contacte','Resoldre dubtes','Suggerir opcions','Organitzar tasques'],
+          s3Title:'Personalitza l’agent', s3Copy:'Ajusta l’essencial.', fields:['Nom de l’agent','To','Què ha de fer','Què NO ha de fer','Instruccions extra'], tones:['Professional','Proper','Premium','Divertit','Directe'],
+          goals:'Ajudar l’usuari, entendre la seva intenció i guiar-lo cap al següent pas útil.', forbidden:'No inventar disponibilitat, preus ni dades. No confirmar accions reals sense permís.', instructions:'Respon en català, amb to professional i proper. Prioritza resoldre la intenció de l’usuari, confirma dades abans de reservar i no inventis disponibilitat.',
+          s4Title:'Activa eines', s4Copy:'Activa capacitats per a la prova.', toolsAria:'Eines disponibles', tools:['Reserves','Cerca','Base de dades','Email','Calendari'], toolEm:['Franges','Context','Registres','Esborrany','Esdeveniment'],
+          s5Title:'Prova el teu agent', s5Copy:'Prova una conversa real.', testMsg:'Missatge de prova', test:'Vull reservar taula per a 4 demà a la nit. Teniu disponibilitat?', quickAria:'Plantilles de prova', quick:['Reserva','Cita','Comanda','Lead'], run:'Provar agent real', prev:'Anterior', next:'Següent', ready:'Llest per provar',
+          preview:'Vista prèvia', previewTitle:'Agent Restaurant', previewSummary:'Agent de restaurant per a reserves/cites amb to professional.', realTest:'Prova real', idle:'Completa els passos i prova’l.', graph:'Graf d’execució', graphEm:['missatge','intenció','accions','context','JSON'], techLabels:['Prompt sanejat','Eines','Tool calls','Memòria + nodes','Resposta estructurada'], techIdle:'Completa el wizard i prova l’agent.'
+        },
+        no: {
+          nav:['Erfaring','Agenter','Prosjekter','Kontakt'], back:'Tilbake', lang:'Bytt språk', start:'Start', backAgents:'Tilbake til agenter',
+          title:'AI Agent Studio — Lag din egen AI-agent', meta:'Veivisert AI-agentbygger med maler, verktøy, ekte samtale, kjøringsgraf og teknisk modus.',
+          eyebrow:'Ekte demo · Agent builder · Synlig tool calling', h1:'Lag din egen AI-agent', summary:'Lag en agent steg for steg, tilpass den og test den med en ekte samtale.',
+          heroKicker:'AI Agent Studio', heroTitle:'Lag en tilpasset agent på sekunder', heroCopy:'Velg en base, juster stilen og test live.', tech:'Teknisk modus',
+          progress:'Byggerprogresjon', steps:['Sektor','Mal','Tilpass','Verktøy','Test'], stepWord:'Steg',
+          s1Title:'Hvilken agent vil du lage?', s1Copy:'Velg en base å starte med.', sectors:['Restaurant','Klinikk','Eiendom','E-commerce','Tilpasset'], sectorEm:['Reservasjoner og meny','Timer og resepsjon','Leads og visninger','Ordre og support','Din case'],
+          s2Title:'Velg en mal', s2Copy:'Velg hva den skal gjøre best.', templates:['Reservasjoner / timer','Fange leads','Kundesupport','Anbefaler','Personlig assistent'], templateEm:['Administrere tider','Hente kontakt','Løse spørsmål','Foreslå alternativer','Organisere oppgaver'],
+          s3Title:'Tilpass agenten', s3Copy:'Juster det viktigste.', fields:['Agentnavn','Tone','Hva den skal gjøre','Hva den IKKE skal gjøre','Ekstra instruksjoner'], tones:['Profesjonell','Vennlig','Premium','Morsom','Direkte'],
+          goals:'Hjelpe brukeren, forstå intensjonen og lede til neste nyttige steg.', forbidden:'Ikke finn på tilgjengelighet, priser eller data. Ikke bekreft ekte handlinger uten tillatelse.', instructions:'Svar på norsk med profesjonell og vennlig tone. Prioriter å løse brukerens intensjon, bekreft detaljer før reservasjon og ikke finn på tilgjengelighet.',
+          s4Title:'Aktiver verktøy', s4Copy:'Aktiver funksjoner for testen.', toolsAria:'Tilgjengelige verktøy', tools:['Reservasjoner','Søk','Database','Email','Kalender'], toolEm:['Tider','Kontekst','Poster','Utkast','Hendelse'],
+          s5Title:'Test agenten din', s5Copy:'Prøv en ekte samtale.', testMsg:'Testmelding', test:'Jeg vil bestille bord til 4 i morgen kveld. Har dere ledig?', quickAria:'Testmaler', quick:['Reservasjon','Time','Ordre','Lead'], run:'Test ekte agent', prev:'Forrige', next:'Neste', ready:'Klar til test',
+          preview:'Forhåndsvisning', previewTitle:'Restaurantagent', previewSummary:'Restaurantagent for reservasjoner/timer med profesjonell tone.', realTest:'Ekte test', idle:'Fullfør stegene og test den.', graph:'Kjøringsgraf', graphEm:['melding','intensjon','handlinger','kontekst','JSON'], techLabels:['Sanitisert prompt','Verktøy','Tool calls','Minne + noder','Strukturert svar'], techIdle:'Fullfør veiviseren og test agenten.'
+        }
+      };
+      function lang(){ try{const stored=localStorage.getItem('preferredLanguage'); if(t[stored]) return stored;}catch(_){} return (new URLSearchParams(location.search).get('lang') || document.documentElement.lang || 'es').slice(0,2); }
+      function setText(sel, value){ const el=document.querySelector(sel); if(el) el.textContent=value; }
+      function applyStudioLang(code){
+        const d=t[code]||t.es; document.documentElement.lang=code; document.title=d.title; document.querySelector('meta[name="description"]')?.setAttribute('content',d.meta); document.querySelector('meta[property="og:description"]')?.setAttribute('content',d.meta); document.querySelector('.language-switcher')?.setAttribute('aria-label',d.lang); document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===code))); try{localStorage.setItem('preferredLanguage',code)}catch(_){}
+        document.querySelectorAll('.nav nav a').forEach((a,i)=>{ if(d.nav[i]) a.textContent=d.nav[i]; }); setText('.project-back',d.back); setText('.project-actions .button.primary',d.start); setText('.project-actions .button:not(.primary)',d.backAgents);
+        setText('.project-eyebrow',d.eyebrow); setText('.studio-page-hero h1',d.h1); setText('.project-summary p',d.summary); setText('.wizard-hero .kicker',d.heroKicker); setText('.wizard-hero h3',d.heroTitle); setText('.wizard-hero p',d.heroCopy); setText('#studioTechToggle',d.tech);
+        document.querySelector('.wizard-progress')?.setAttribute('aria-label',d.progress); document.querySelectorAll('.wizard-progress button').forEach((b,i)=>{ b.innerHTML=`<span>${i+1}</span>${d.steps[i]}`; });
+        const panels=[...document.querySelectorAll('.wizard-step-panel')]; panels.forEach((p,i)=>setText(`.wizard-step-panel[data-panel="${i}"] .kicker`,`${d.stepWord} ${i+1}`));
+        setText('[data-panel="0"] h2',d.s1Title); setText('[data-panel="0"] p',d.s1Copy); document.querySelector('.studio-sector-grid')?.setAttribute('aria-label',d.s1Title); document.querySelectorAll('.studio-sector').forEach((b,i)=>{b.querySelector('strong').textContent=d.sectors[i]; b.querySelector('em').textContent=d.sectorEm[i];});
+        setText('[data-panel="1"] h2',d.s2Title); setText('[data-panel="1"] p',d.s2Copy); document.querySelector('.studio-template-grid')?.setAttribute('aria-label',d.s2Title); document.querySelectorAll('.studio-template').forEach((b,i)=>{b.querySelector('strong').textContent=d.templates[i]; b.querySelector('em').textContent=d.templateEm[i];});
+        setText('[data-panel="2"] h2',d.s3Title); setText('[data-panel="2"] p',d.s3Copy); document.querySelectorAll('[data-panel="2"] .wizard-field span').forEach((e,i)=>{e.textContent=d.fields[i];}); document.querySelectorAll('#studioTone option').forEach((o,i)=>{o.textContent=d.tones[i];});
+        const goals=document.getElementById('studioGoals'), forb=document.getElementById('studioForbidden'), inst=document.getElementById('studioInstructions'), msg=document.getElementById('studioUserMessage'); if(goals) goals.value=d.goals; if(forb) forb.value=d.forbidden; if(inst) inst.value=d.instructions; if(msg) msg.value=d.test;
+        setText('[data-panel="3"] h2',d.s4Title); setText('[data-panel="3"] p',d.s4Copy); document.querySelector('.studio-tools')?.setAttribute('aria-label',d.toolsAria); document.querySelectorAll('.studio-tools label').forEach((l,i)=>{l.querySelector('strong').textContent=d.tools[i]; l.querySelector('em').textContent=d.toolEm[i];});
+        setText('[data-panel="4"] h2',d.s5Title); setText('[data-panel="4"] p',d.s5Copy); setText('[data-panel="4"] .wizard-field span',d.testMsg); document.querySelector('.studio-templates')?.setAttribute('aria-label',d.quickAria); document.querySelectorAll('.studio-templates button').forEach((b,i)=>{b.textContent=d.quick[i];}); setText('#studioRun',d.run); setText('#studioPrev',d.prev); setText('#studioNext',d.next);
+        setText('.agent-preview-card .kicker',d.preview); setText('#studioAgentName',d.previewTitle); setText('#studioAgentSummary',d.previewSummary); setText('.studio-window-head strong',d.realTest); const idle=document.querySelector('#studioChat .assistant'); if(idle) idle.textContent=d.idle; document.querySelector('.studio-graph')?.setAttribute('aria-label',d.graph); document.querySelectorAll('.graph-node em').forEach((e,i)=>{e.textContent=d.graphEm[i];}); document.querySelectorAll('.tech-card > span').forEach((e,i)=>{e.textContent=d.techLabels[i];}); setText('#studioPrompt',d.techIdle);
+      }
+      window.applyAgentStudioLanguage=applyStudioLang;
+      document.addEventListener('DOMContentLoaded',()=>{ const initial=t[lang()]?lang():'es'; applyStudioLang(initial); document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setTimeout(()=>applyStudioLang(b.dataset.lang||'es'),20))); document.getElementById('agent-studio')?.addEventListener('click',()=>setTimeout(()=>applyStudioLang(lang()),25)); });
+    })();
+  </script>
   <script src="/app.js?v=20260728-theme2"></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>

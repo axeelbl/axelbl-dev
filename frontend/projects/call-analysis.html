@@ -212,7 +212,7 @@
     }
     document.addEventListener('DOMContentLoaded', ensureCallDemo);
     window.addEventListener('load', ensureCallDemo);
-    document.querySelectorAll('[data-lang]').forEach((button)=>button.addEventListener('click',()=>setTimeout(ensureCallDemo, 30)));
+    document.querySelectorAll('[data-lang]').forEach((button)=>button.addEventListener('click',()=>setTimeout(()=>{ const existing=document.getElementById('audioDemo'); if(existing) existing.remove(); ensureCallDemo(); }, 80)));
     new MutationObserver(() => ensureCallDemo()).observe(document.documentElement,{childList:true,subtree:true});
   </script>
   <script>
