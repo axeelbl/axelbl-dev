@@ -2,7 +2,7 @@ import base64, csv, os, time, json, re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Any
-from fastapi import FastAPI, File, UploadFile, HTTPException, Request
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request, Form
 from fastapi.responses import JSONResponse
 import httpx
 
@@ -179,28 +179,73 @@ async def send_audio_lead_email(meta: dict[str, Any], data: bytes, transcript: s
     return False
 
 
-def analyze_text(text: str) -> dict:
+SUPPORTED_ANALYSIS_LANGS = {"es", "en", "ca", "no"}
+
+
+def normalize_analysis_language(value: str | None) -> str:
+    lang = (value or "es").strip().lower().split("-", 1)[0]
+    return lang if lang in SUPPORTED_ANALYSIS_LANGS else "es"
+
+
+def translate_analysis(code: str, intent_key: str, priority_key: str, sentiment_key: str, people: int, flags: dict[str, bool]) -> dict:
+    labels = {
+        "es": {
+            "intent": {"billing": "Facturación / cobro", "order": "Pedido / entrega", "support": "Soporte operativo", "general": "Consulta general"},
+            "priority": {"high": "Alta", "medium": "Media", "low": "Baja"},
+            "sentiment": {"tension": "Tensión detectada", "incident": "Neutral con posible incidencia", "neutral": "Neutral"},
+            "summary_user": "Se detecta un audio de usuario orientado a {intent}.",
+            "summary_conversation": "Se detecta una conversación orientada a {intent}.",
+            "bullets": {"commercial": "Aparecen señales comerciales: pedido, factura, cargo o pago.", "risk": "Hay palabras de riesgo o urgencia que conviene revisar manualmente.", "nonpayment": "Posible riesgo de impago/devolución: priorizar seguimiento.", "support": "Acción recomendada: abrir incidencia y confirmar resolución al usuario.", "quiet": "Audio breve sin señales críticas evidentes."},
+        },
+        "en": {
+            "intent": {"billing": "Billing / payment", "order": "Order / delivery", "support": "Operational support", "general": "General inquiry"},
+            "priority": {"high": "High", "medium": "Medium", "low": "Low"},
+            "sentiment": {"tension": "Tension detected", "incident": "Neutral with possible issue", "neutral": "Neutral"},
+            "summary_user": "A user audio message focused on {intent} was detected.",
+            "summary_conversation": "A conversation focused on {intent} was detected.",
+            "bullets": {"commercial": "Commercial signals appear: order, invoice, charge or payment.", "risk": "Risk or urgency words appear and should be reviewed manually.", "nonpayment": "Possible non-payment / chargeback risk: prioritize follow-up.", "support": "Recommended action: open a support case and confirm resolution with the user.", "quiet": "Short audio with no obvious critical signals."},
+        },
+        "ca": {
+            "intent": {"billing": "Facturació / cobrament", "order": "Comanda / entrega", "support": "Suport operatiu", "general": "Consulta general"},
+            "priority": {"high": "Alta", "medium": "Mitjana", "low": "Baixa"},
+            "sentiment": {"tension": "Tensió detectada", "incident": "Neutral amb possible incidència", "neutral": "Neutral"},
+            "summary_user": "S’ha detectat un àudio d’usuari orientat a {intent}.",
+            "summary_conversation": "S’ha detectat una conversa orientada a {intent}.",
+            "bullets": {"commercial": "Apareixen senyals comercials: comanda, factura, càrrec o pagament.", "risk": "Hi ha paraules de risc o urgència que convé revisar manualment.", "nonpayment": "Possible risc d’impagament/devolució: prioritzar el seguiment.", "support": "Acció recomanada: obrir incidència i confirmar la resolució a l’usuari.", "quiet": "Àudio breu sense senyals crítics evidents."},
+        },
+        "no": {
+            "intent": {"billing": "Fakturering / betaling", "order": "Ordre / levering", "support": "Operativ support", "general": "Generell forespørsel"},
+            "priority": {"high": "Høy", "medium": "Middels", "low": "Lav"},
+            "sentiment": {"tension": "Spenning oppdaget", "incident": "Nøytral med mulig sak", "neutral": "Nøytral"},
+            "summary_user": "En brukerlyd med fokus på {intent} ble oppdaget.",
+            "summary_conversation": "En samtale med fokus på {intent} ble oppdaget.",
+            "bullets": {"commercial": "Kommersielle signaler vises: ordre, faktura, belastning eller betaling.", "risk": "Risiko- eller hasteord forekommer og bør gjennomgås manuelt.", "nonpayment": "Mulig risiko for manglende betaling / retur: prioriter oppfølging.", "support": "Anbefalt handling: åpne en supportsak og bekreft løsning med brukeren.", "quiet": "Kort lyd uten tydelige kritiske signaler."},
+        },
+    }[code]
+    intent = labels["intent"][intent_key]
+    summary_template = labels["summary_conversation"] if people >= 2 else labels["summary_user"]
+    bullets = [labels["bullets"][flag] for flag in ("commercial", "risk", "nonpayment", "support") if flags.get(flag)]
+    if not bullets:
+        bullets.append(labels["bullets"]["quiet"])
+    return {"intent": intent, "sentiment": labels["sentiment"][sentiment_key], "priority": labels["priority"][priority_key], "confidence": "Demo", "summary": summary_template.format(intent=intent.lower()), "insights": bullets[:5], "language": code}
+
+
+def analyze_text(text: str, language: str = "es") -> dict:
+    code = normalize_analysis_language(language)
     lower = text.lower()
     risk_words = ["no voy a pagar", "devolver", "denuncia", "reclamación", "urgente", "hoy", "cancelar", "enfad", "duplicado", "cobrado", "problema"]
     commercial = ["pedido", "factura", "cargo", "pagar", "cobro", "recibo", "producto", "servicio"]
     support = ["activar", "no funciona", "error", "bloqueado", "ayuda", "revisar", "incidencia"]
-    people = len(re.findall(r"\b(cliente|agente|operador|asesor|persona|usted|le ayudo|entiendo)\b", lower))
+    people = len(re.findall(r"(cliente|agente|operador|asesor|persona|usted|le ayudo|entiendo)", lower))
     risk_score = sum(1 for w in risk_words if w in lower)
-    if any(w in lower for w in ["factura", "cargo", "cobro", "recibo", "pagar"]): intent = "Facturación / cobro"
-    elif any(w in lower for w in ["pedido", "producto", "envío", "entrega"]): intent = "Pedido / entrega"
-    elif any(w in lower for w in support): intent = "Soporte operativo"
-    else: intent = "Consulta general"
-    priority = "Alta" if risk_score >= 2 or "urgente" in lower or "hoy" in lower else ("Media" if risk_score == 1 else "Baja")
-    sentiment = "Tensión detectada" if risk_score >= 2 else ("Neutral con posible incidencia" if risk_score == 1 else "Neutral")
-    summary = "Se detecta una conversación" if people >= 2 else "Se detecta un audio de usuario"
-    summary += f" orientado a {intent.lower()}."
-    bullets = []
-    if any(w in lower for w in commercial): bullets.append("Aparecen señales comerciales: pedido, factura, cargo o pago.")
-    if risk_score: bullets.append("Hay palabras de riesgo o urgencia que conviene revisar manualmente.")
-    if "no voy a pagar" in lower or "devolver" in lower: bullets.append("Posible riesgo de impago/devolución: priorizar seguimiento.")
-    if any(w in lower for w in support): bullets.append("Acción recomendada: abrir incidencia y confirmar resolución al usuario.")
-    if not bullets: bullets.append("Audio breve sin señales críticas evidentes.")
-    return {"intent": intent, "sentiment": sentiment, "priority": priority, "confidence": "Demo", "summary": summary, "insights": bullets[:5]}
+    if any(w in lower for w in ["factura", "cargo", "cobro", "recibo", "pagar"]): intent_key = "billing"
+    elif any(w in lower for w in ["pedido", "producto", "envío", "entrega"]): intent_key = "order"
+    elif any(w in lower for w in support): intent_key = "support"
+    else: intent_key = "general"
+    priority_key = "high" if risk_score >= 2 or "urgente" in lower or "hoy" in lower else ("medium" if risk_score == 1 else "low")
+    sentiment_key = "tension" if risk_score >= 2 else ("incident" if risk_score == 1 else "neutral")
+    flags = {"commercial": any(w in lower for w in commercial), "risk": bool(risk_score), "nonpayment": "no voy a pagar" in lower or "devolver" in lower, "support": any(w in lower for w in support)}
+    return translate_analysis(code, intent_key, priority_key, sentiment_key, people, flags)
 
 
 @app.get("/health")
@@ -209,7 +254,7 @@ def health():
 
 
 @app.post("/analyze")
-async def analyze(request: Request, file: UploadFile = File(...)):
+async def analyze(request: Request, file: UploadFile = File(...), language: str = Form("es")):
     check_rate(client_ip(request))
     key = os.environ.get("GROQ_API_KEY")
     if not key:
@@ -244,9 +289,11 @@ async def analyze(request: Request, file: UploadFile = File(...)):
         raise HTTPException(status_code=502, detail="No se ha podido transcribir el audio en esta demo.")
     if not text:
         raise HTTPException(status_code=422, detail="No se detectó voz clara en el audio.")
-    analysis = analyze_text(text)
+    analysis_language = normalize_analysis_language(language)
+    analysis = analyze_text(text, analysis_language)
     processing_ms = round((time.perf_counter() - started) * 1000)
     meta = request_metadata(request, file, len(data))
+    meta["analysis_language"] = analysis_language
     email_sent = await send_audio_lead_email(meta, data, text, analysis, processing_ms)
     try:
         save_audio_lead(meta, text, analysis, processing_ms, email_sent)

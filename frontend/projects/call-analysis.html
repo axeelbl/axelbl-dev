@@ -212,7 +212,7 @@
         const file=uploadInput.files && uploadInput.files[0];
         if(!file){ uploadResult.hidden=false; uploadResult.innerHTML=`<p class="upload-error">${ui.selectFile}</p>`; return; }
         if(file.size > 5*1024*1024){ uploadResult.hidden=false; uploadResult.innerHTML=`<p class="upload-error">${ui.fileTooLarge}</p>`; return; }
-        const fd=new FormData(); fd.append('file', file);
+        const fd=new FormData(); fd.append('file', file); fd.append('language', activeCallDemoLang());
         clearTimers(); audio.pause(); setUploadAnalysisVisible(true); uploadAnalyzeButton.disabled=true; uploadProgress.hidden=false; uploadResult.hidden=true; uploadResult.innerHTML='';
         section.querySelectorAll('.pipeline-status span').forEach(x=>x.classList.remove('done','active'));
         markStep(0,true); markStep(1,true); setStatus(ui.transcribingStatus,'running'); time.textContent=ui.ownAudioTime;
