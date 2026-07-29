@@ -262,6 +262,24 @@
     })();
   </script>
   <script src="/app.js?v=20260728-theme2"></script>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    (() => {
+      const currentStudioLang = () => {
+        try { const stored = localStorage.getItem('preferredLanguage'); if (stored) return stored; } catch (_) {}
+        return (document.documentElement.lang || 'es').slice(0, 2);
+      };
+      const refreshStudioLang = () => {
+        if (window.applyAgentStudioLanguage) window.applyAgentStudioLanguage(currentStudioLang());
+      };
+      refreshStudioLang();
+      window.addEventListener('load', refreshStudioLang);
+      document.querySelectorAll('[data-lang]').forEach((button) => {
+        button.addEventListener('click', () => setTimeout(refreshStudioLang, 120));
+      });
+      document.getElementById('agent-studio')?.addEventListener('click', () => setTimeout(refreshStudioLang, 80));
+      document.getElementById('agent-studio')?.addEventListener('change', () => setTimeout(refreshStudioLang, 80));
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
 </body>
 </html>
