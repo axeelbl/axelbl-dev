@@ -21,7 +21,7 @@
   <link rel="canonical" href="https://axelbl.dev" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
     <script src="/theme.js?v=20260728-theme2"></script>
-<link rel="stylesheet" href="/styles.css?v=20260728-theme2" />
+<link rel="stylesheet" href="/styles.css?v=20260731-audio-card-clean" />
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -32,6 +32,7 @@
     <nav aria-label="Principal" data-i18n-attr="aria-label:navAria">
       <a href="#experience" data-i18n="nav.experience">Experiencia</a>
       <a href="#agents" data-i18n="nav.agents">Agentes</a>
+      <a href="#ai-analysis" data-i18n="nav.analysis">Análisis IA</a>
       <a href="#work" data-i18n="nav.work">Proyectos</a>
       <a href="#contact" data-i18n="nav.contact">Contacto</a>
     </nav>
@@ -116,8 +117,59 @@
       </div>
     </section>
 
+    <section class="section ai-analysis-section" id="ai-analysis" data-reveal>
+      <div class="section-label" data-i18n="sections.analysis">04 / Análisis con IA</div>
+      <div class="section-title">
+        <h2 data-i18n="analysis.title">Analizar cualquier señal de negocio con IA.</h2>
+        <p data-i18n="analysis.copy">La IA no solo conversa: escucha audios, lee correos, resume reuniones, detecta intención y convierte información desordenada en decisiones claras, métricas y próximos pasos.</p>
+      </div>
+      <div class="ai-analysis-grid" aria-label="Demos de análisis con IA" data-i18n-attr="aria-label:analysis.examplesAria">
+        <article class="ai-analysis-card featured audio-analysis-featured">
+          <div class="audio-featured-copy">
+            <span class="kicker" data-i18n="analysis.audio.kicker">Audio / llamadas</span>
+            <h3 data-i18n="analysis.audio.title">De una llamada a un informe accionable</h3>
+            <p data-i18n="analysis.audio.copy">Transcripción, resumen, sentimiento, motivo de contacto, incidencias, cumplimiento y tareas posteriores para equipos de soporte o ventas.</p>
+          </div>
+          <div class="audio-card-visual" aria-hidden="true">
+            <div class="clean-audio-panel">
+              <div class="clean-panel-head"><span>01</span><strong>Llamada</strong></div>
+              <div class="clean-wave"><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="clean-flow-arrow"><span></span><em>IA</em><span></span></div>
+            <div class="clean-report-panel">
+              <div class="clean-panel-head"><span>02</span><strong>Informe accionable</strong></div>
+              <ul>
+                <li>Resumen claro</li>
+                <li>Urgencia y sentimiento</li>
+                <li>Próximo paso</li>
+              </ul>
+            </div>
+          </div>
+          <a class="demo-cta" href="/projects/call-analysis.html#audioDemo" data-i18n="analysis.audio.cta">Probar demo de audio</a>
+        </article>
+        <article class="ai-analysis-card">
+          <span class="kicker" data-i18n="analysis.sentiment.kicker">Sentimiento</span>
+          <h3 data-i18n="analysis.sentiment.title">Detectar tono, urgencia y riesgo</h3>
+          <p data-i18n="analysis.sentiment.copy">Clasifica conversaciones por satisfacción, frustración, prioridad y probabilidad de escalado para actuar antes de que el problema crezca.</p>
+          <a class="demo-cta" href="/projects/ai-analysis-demo.html?demo=sentiment" data-i18n="analysis.openDemo">Probar demo</a>
+        </article>
+        <article class="ai-analysis-card">
+          <span class="kicker" data-i18n="analysis.email.kicker">Correo</span>
+          <h3 data-i18n="analysis.email.title">Priorizar emails automáticamente</h3>
+          <p data-i18n="analysis.email.copy">Extrae intención, fechas, importes, entidades y respuesta sugerida para que una bandeja de entrada se convierta en una cola de trabajo.</p>
+          <a class="demo-cta" href="/projects/ai-analysis-demo.html?demo=email" data-i18n="analysis.openDemo">Probar demo</a>
+        </article>
+        <article class="ai-analysis-card">
+          <span class="kicker" data-i18n="analysis.meeting.kicker">Reuniones</span>
+          <h3 data-i18n="analysis.meeting.title">Resumir decisiones y tareas</h3>
+          <p data-i18n="analysis.meeting.copy">Convierte notas o transcripciones de reuniones en acuerdos, responsables, fechas límite, bloqueos y próximos pasos verificables.</p>
+          <a class="demo-cta" href="/projects/ai-analysis-demo.html?demo=meeting" data-i18n="analysis.openDemo">Probar demo</a>
+        </article>
+      </div>
+    </section>
+
     <section class="section" id="work" data-reveal>
-      <div class="section-label" data-i18n="sections.work">04 / Proyectos destacados</div>
+      <div class="section-label" data-i18n="sections.work">05 / Proyectos destacados</div>
       <div class="work-grid">
         <article class="work-item large call-case-card" data-parallax="0.08">
           <div>
@@ -171,7 +223,7 @@
     </section>
 
     <section class="section stack-section" data-reveal>
-      <div class="section-label" data-i18n="sections.stack">05 / Stack</div>
+      <div class="section-label" data-i18n="sections.stack">06 / Stack</div>
       <div class="stack-columns">
         <div><h3 data-i18n="stack.languages">Lenguajes</h3><p>Python, Java, JavaScript, HTML/CSS, Kotlin</p></div>
         <div><h3>AI / ML</h3><p>LangChain, LangGraph, Ollama, vLLM, Whisper, QLoRA, RAG, Hugging Face, Transformers, PyTorch, TensorFlow, Scikit-learn, Pandas, NumPy</p></div>
@@ -182,7 +234,7 @@
 
 
     <section class="section credentials-section" id="credentials" data-reveal>
-      <div class="section-label" data-i18n="sections.credentials">06 / Credenciales</div>
+      <div class="section-label" data-i18n="sections.credentials">07 / Credenciales</div>
       <div class="section-title compact-title">
         <h2 data-i18n="credentials.title">Formación, idiomas y resultados académicos.</h2>
         <p data-i18n="credentials.copy">Una base universitaria sólida combinada con certificación cloud, experiencia internacional e idiomas para trabajar en entornos técnicos diversos.</p>
@@ -227,7 +279,7 @@
     </section>
 
     <section class="contact" id="contact" data-reveal>
-      <span class="section-label" data-i18n="sections.contact">07 / Contacto</span>
+      <span class="section-label" data-i18n="sections.contact">08 / Contacto</span>
       <h2 data-i18n="contact.title">Disponible para ingeniería de IA, desarrollo software y colaboraciones de IA aplicada.</h2>
       <div class="actions center">
         <a class="button primary" href="mailto:axelberrallopez@gmail.com">Email</a>
@@ -239,6 +291,6 @@
   </main>
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
-  <script src="/app.js?v=20260728-theme2" defer></script>
+  <script src="/app.js?v=20260730-analysis-page" defer></script>
 </body>
 </html>
