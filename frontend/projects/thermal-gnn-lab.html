@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thermal GNN Lab — Demo interactiva | Axel Berral López</title>
+  <meta name="description" content="Demo visual interactiva inspirada en el TFG Do We Need GNN Edge: predicción térmica con MLP, Full-GNN, Tiny-GNN y Tiny-GNN + PINN." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://axelbl.dev/projects/thermal-gnn-lab.html" />
+  <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
+  <script src="/theme.js?v=20260728-theme2"></script>
+  <link rel="stylesheet" href="/styles.css?v=20260811-thermal-gnn-lab" />
+</head>
+<body class="project-page thermal-lab-page">
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true"><span></span><span></span></div>
+  <header class="nav">
+    <a class="mark" href="/" aria-label="Ir al inicio">Axel Berral</a>
+    <nav aria-label="Principal">
+      <a href="/#experience">Experiencia</a>
+      <a href="/#agents">Agentes</a>
+      <a href="/#ai-analysis">Análisis IA</a>
+      <a href="/#work">Proyectos</a>
+      <a href="/#contact">Contacto</a>
+    </nav>
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Cambiar a modo luminoso" aria-pressed="false"><span data-theme-icon>☼</span><span data-theme-label>Claro</span></button>
+    <a class="project-back" href="/projects/gnn-edge-research.html">Volver al caso</a>
+  </header>
+
+  <main>
+    <section class="project-hero thermal-hero" data-reveal>
+      <div>
+        <span class="project-eyebrow">Demo interactiva · Thermal GNN Lab</span>
+        <h1>Juega con una cuadrícula térmica y compara modelos.</h1>
+      </div>
+      <div class="project-summary">
+        <p>Coloca una fuente de calor, añade ruido y compara MLP, Full-GNN, Tiny-GNN y Tiny-GNN + PINN. La demo es una simulación visual inspirada en el TFG: sirve para explicar el comportamiento de los modelos, no para sustituir los experimentos reales.</p>
+        <div class="project-actions"><a class="button primary" href="#thermalLab">Probar demo</a><a class="button" href="https://github.com/axeelbl/Do-we-need-GNN-edge" target="_blank" rel="noopener noreferrer">Ver investigación</a></div>
+      </div>
+    </section>
+
+    <section class="thermal-lab-shell" id="thermalLab" aria-label="Thermal GNN Lab" data-reveal>
+      <aside class="thermal-controls">
+        <div class="thermal-panel-head"><span>Controles</span><strong>Escenario térmico</strong></div>
+        <label class="thermal-field"><span>Intensidad fuente</span><input id="heatPower" type="range" min="0.55" max="1.45" step="0.05" value="1.0"><em id="heatPowerOut">1.00×</em></label>
+        <label class="thermal-field"><span>Nivel de ruido</span><input id="noiseLevel" type="range" min="0" max="0.30" step="0.01" value="0.08"><em id="noiseOut">0.08</em></label>
+        <label class="thermal-field"><span>Modelo activo</span><select id="modelSelect"><option value="mlp">MLP</option><option value="fullgnn" selected>Full-GNN</option><option value="tinygnn">Tiny-GNN</option><option value="pinn">Tiny-GNN + PINN</option></select></label>
+        <label class="thermal-field"><span>Slider entre modelos</span><input id="modelSlider" type="range" min="0" max="3" step="1" value="1"><em id="modelSliderOut">Full-GNN</em></label>
+        <button type="button" class="button primary thermal-run" id="runPrediction">Ejecutar predicción</button>
+        <button type="button" class="button thermal-reset" id="resetLab">Restaurar escenario</button>
+        <p class="thermal-note">Haz clic en la cuadrícula real para mover la fuente de calor.</p>
+      </aside>
+
+      <section class="thermal-workspace">
+        <div class="thermal-grids">
+          <article class="thermal-grid-card"><div><span>Resultado real</span><strong id="sourceLabel">Fuente: 6, 6</strong></div><div class="thermal-grid" id="truthGrid" role="grid" aria-label="Resultado térmico real"></div></article>
+          <article class="thermal-grid-card"><div><span>Predicción</span><strong id="predictionLabel">Full-GNN</strong></div><div class="thermal-grid" id="predictionGrid" role="grid" aria-label="Predicción térmica del modelo"></div></article>
+          <article class="thermal-grid-card"><div><span>Error absoluto</span><strong id="errorLabel">|real - predicción|</strong></div><div class="thermal-grid" id="errorGrid" role="grid" aria-label="Mapa de error absoluto"></div></article>
+        </div>
+
+        <div class="thermal-metrics" aria-label="Métricas del modelo">
+          <div><small>MSE</small><strong id="mseOut">—</strong></div>
+          <div><small>Parámetros</small><strong id="paramsOut">—</strong></div>
+          <div><small>Inferencia</small><strong id="timeOut">—</strong></div>
+          <div><small>Ganador</small><strong id="winnerOut">—</strong></div>
+        </div>
+
+        <div class="thermal-model-board">
+          <div class="thermal-bars" id="modelBars"></div>
+          <div class="thermal-explainer">
+            <div class="thermal-panel-head"><span>Agente explicador</span><strong>¿Por qué ha ganado este modelo?</strong></div>
+            <p id="explanationText">Ejecuta la predicción para ver una explicación basada solo en las métricas calculadas en esta demo.</p>
+            <button type="button" class="button" id="explainButton">Explícame el resultado</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="project-section thermal-honesty" data-reveal>
+      <span class="kicker">Lectura honesta</span>
+      <h2>Una demo para entender el trade-off, no para inventar conclusiones.</h2>
+      <p>Los valores son una simulación determinista en navegador calibrada para comunicar la intuición del trabajo: la GNN completa suele aprovechar mejor la estructura espacial, el MLP puede competir en casos limpios, Tiny-GNN reduce parámetros, y la variante con PINN tiende a estabilizarse mejor cuando hay ruido. Para conclusiones formales, manda el experimento reproducible del repositorio.</p>
+    </section>
+  </main>
+  <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
+
+  <script>
+    (() => {
+      const N = 13;
+      const models = {
+        mlp: { name:'MLP', params:144, baseTime:0.34, smooth:0.42, spatial:0.72, noiseGain:1.10, bias:0.010, color:'#d7ff68' },
+        fullgnn: { name:'Full-GNN', params:144, baseTime:0.82, smooth:0.17, spatial:0.18, noiseGain:0.62, bias:0.004, color:'#8fb3ff' },
+        tinygnn: { name:'Tiny-GNN', params:40, baseTime:0.28, smooth:0.29, spatial:0.34, noiseGain:0.88, bias:0.009, color:'#78e3ff' },
+        pinn: { name:'Tiny-GNN + PINN', params:61, baseTime:0.43, smooth:0.25, spatial:0.30, noiseGain:0.55, bias:0.007, color:'#d7ff68' }
+      };
+      const order = ['mlp','fullgnn','tinygnn','pinn'];
+      let source = {x:6,y:6}, truth=[], predictions={}, metrics={}, active='fullgnn';
+      const $ = s => document.querySelector(s);
+      const els = { truth:$('#truthGrid'), pred:$('#predictionGrid'), err:$('#errorGrid'), heat:$('#heatPower'), noise:$('#noiseLevel'), model:$('#modelSelect'), slider:$('#modelSlider') };
+      const clamp = (v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+      const seeded = (x,y,k=1)=>{ const n=Math.sin((x+1)*12.9898+(y+1)*78.233+k*37.719)*43758.5453; return n-Math.floor(n); };
+      function makeGrid(el, clickable=false){ el.innerHTML=''; for(let y=0;y<N;y++) for(let x=0;x<N;x++){ const c=document.createElement('button'); c.type='button'; c.className='thermal-cell'; c.dataset.x=x; c.dataset.y=y; if(clickable) c.addEventListener('click',()=>{ source={x,y}; run(); }); el.appendChild(c); } }
+      function trueValue(x,y){ const power=Number(els.heat.value), noise=Number(els.noise.value); const d=Math.hypot(x-source.x,y-source.y); const main=Math.exp(-d*d/18)*power; const secondary=0.18*Math.exp(-(Math.hypot(x-2,y-10) ** 2)/26); const boundary=0.05*(1-y/(N-1)); const eps=(seeded(x,y,3)-.5)*noise; return clamp(main+secondary+boundary+eps); }
+      function buildTruth(){ truth=[]; for(let y=0;y<N;y++){ const row=[]; for(let x=0;x<N;x++) row.push(trueValue(x,y)); truth.push(row); } }
+      function neighborAvg(grid,x,y){ let s=0,c=0; for(let yy=-1;yy<=1;yy++) for(let xx=-1;xx<=1;xx++){ const nx=x+xx, ny=y+yy; if(nx>=0&&ny>=0&&nx<N&&ny<N){ s+=grid[ny][nx]; c++; } } return s/c; }
+      function predict(modelKey){ const m=models[modelKey], noise=Number(els.noise.value); const out=[]; for(let y=0;y<N;y++){ const row=[]; for(let x=0;x<N;x++){ const base=truth[y][x]; const avg=neighborAvg(truth,x,y); const dist=Math.hypot(x-source.x,y-source.y)/(N*1.2); const artifact=(seeded(x,y,order.indexOf(modelKey)+9)-.5)*noise*m.noiseGain; const spatialPenalty=(dist-.28)*noise*m.spatial; const v=base*(1-m.smooth)+avg*m.smooth-m.bias+artifact-spatialPenalty; row.push(clamp(v)); } out.push(row); } return out; }
+      function mse(a,b){ let s=0,c=0; for(let y=0;y<N;y++) for(let x=0;x<N;x++){ const e=a[y][x]-b[y][x]; s+=e*e; c++; } return s/c; }
+      function inferTime(key){ const m=models[key], noise=Number(els.noise.value); return m.baseTime + noise*0.42 + seeded(source.x,source.y,order.indexOf(key)+20)*0.08; }
+      function color(v){ const h=230-(clamp(v)*230); return `hsl(${h} 92% ${42+clamp(v)*14}%)`; }
+      function renderGrid(el, grid, kind='heat'){ Array.from(el.children).forEach(cell=>{ const x=+cell.dataset.x,y=+cell.dataset.y; const v=grid[y][x]; cell.style.background=kind==='error'?`rgba(255,108,108,${0.08+clamp(v*5)*0.82})`:color(v); cell.title=`${x},${y}: ${v.toFixed(3)}`; cell.classList.toggle('source', kind==='heat' && x===source.x && y===source.y); }); }
+      function compute(){ buildTruth(); predictions={}; metrics={}; order.forEach(k=>{ predictions[k]=predict(k); metrics[k]={ mse:mse(truth,predictions[k]), params:models[k].params, time:inferTime(k) }; }); }
+      function winner(){ return order.slice().sort((a,b)=>metrics[a].mse-metrics[b].mse)[0]; }
+      function renderBars(){ const max=Math.max(...order.map(k=>metrics[k].mse)); $('#modelBars').innerHTML=order.map(k=>`<div class="thermal-model-row ${k===winner()?'best':''} ${k===active?'active':''}"><strong>${models[k].name}</strong><span><i style="width:${Math.max(4,(metrics[k].mse/max)*100).toFixed(1)}%;--model-color:${models[k].color}"></i></span><em>${metrics[k].mse.toFixed(5)}</em></div>`).join(''); }
+      function explain(){ const win=winner(), noise=Number(els.noise.value), w=metrics[win]; let reason=`${models[win].name} gana en este escenario porque obtiene el MSE más bajo (${w.mse.toFixed(5)}) con ${w.params} parámetros y una inferencia estimada de ${w.time.toFixed(2)} ms. `; if(win==='fullgnn') reason+='La estructura espacial de la cuadrícula parece aportar señal suficiente para que el modelo con paso de mensajes reduzca el error frente a alternativas más simples.'; else if(win==='mlp') reason+='El escenario es suficientemente limpio o regular como para que un baseline simple pueda competir sin pagar coste extra por estructura de grafo.'; else if(win==='tinygnn') reason+='La versión ligera captura parte de la vecindad con muy pocos parámetros, así que el trade-off precisión/coste sale favorable en esta simulación.'; else reason+='La regularización física simulada ayuda a estabilizar la predicción cuando el ruido empieza a distorsionar el campo térmico.'; if(noise>0.18) reason+=' Como el ruido es alto, conviene mirar no solo el MSE sino también robustez y coste.'; reason+=' Esta explicación se basa solo en las métricas calculadas aquí; las conclusiones formales están en los experimentos reproducibles del TFG.'; $('#explanationText').textContent=reason; }
+      function render(){ const pred=predictions[active]; const err=truth.map((row,y)=>row.map((v,x)=>Math.abs(v-pred[y][x]))); renderGrid(els.truth, truth, 'heat'); renderGrid(els.pred, pred, 'heat'); renderGrid(els.err, err, 'error'); $('#sourceLabel').textContent=`Fuente: ${source.x}, ${source.y}`; $('#predictionLabel').textContent=models[active].name; $('#mseOut').textContent=metrics[active].mse.toFixed(5); $('#paramsOut').textContent=metrics[active].params.toLocaleString('es-ES'); $('#timeOut').textContent=`${metrics[active].time.toFixed(2)} ms`; $('#winnerOut').textContent=models[winner()].name; $('#heatPowerOut').textContent=`${Number(els.heat.value).toFixed(2)}×`; $('#noiseOut').textContent=Number(els.noise.value).toFixed(2); $('#modelSliderOut').textContent=models[active].name; renderBars(); }
+      function run(){ compute(); render(); explain(); }
+      function setActive(k){ active=k; els.model.value=k; els.slider.value=order.indexOf(k); render(); }
+      makeGrid(els.truth,true); makeGrid(els.pred,false); makeGrid(els.err,false); $('#year').textContent=new Date().getFullYear();
+      $('#runPrediction').addEventListener('click',run); $('#explainButton').addEventListener('click',explain); $('#resetLab').addEventListener('click',()=>{ source={x:6,y:6}; els.heat.value='1.0'; els.noise.value='0.08'; setActive('fullgnn'); run(); });
+      els.model.addEventListener('change',()=>setActive(els.model.value)); els.slider.addEventListener('input',()=>setActive(order[Number(els.slider.value)])); els.heat.addEventListener('input',run); els.noise.addEventListener('input',run); run();
+    })();
+  </script>
+</body>
+</html>
