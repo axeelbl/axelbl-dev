@@ -340,3 +340,6 @@ html[data-theme="light"] .ai-analysis-grid .lead-magnet-card{background:radial-g
 
 /* Thermal GNN Lab: flexible metric cards after RMSE addition */
 .thermal-metrics{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}
+
+/* Thermal GNN Lab: simpler, more visual UI */
+.thermal-guide{grid-template-columns:repeat(3,minmax(0,1fr))!important}.thermal-guide>div{padding:11px!important}.thermal-guide strong{font-size:.78rem!important}.thermal-guide span{font-size:.78rem!important}.thermal-graph-insight{align-items:center!important;padding:11px 13px!important}.thermal-graph-insight strong{min-width:auto!important;white-space:nowrap}.thermal-graph-insight span{font-size:.84rem!important}.thermal-academic-note div{padding:10px 12px!important}.thermal-academic-note small{margin-bottom:3px!important}.thermal-legends div{padding:8px!important}.thermal-scatter{height:200px!important}.thermal-run-status{font-size:.9rem!important;padding:10px 12px!important}@media(max-width:860px){.thermal-guide{grid-template-columns:1fr!important}.thermal-graph-insight{display:grid!important}}
