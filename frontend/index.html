@@ -21,7 +21,7 @@
   <link rel="canonical" href="https://axelbl.dev" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
     <script src="/theme.js?v=20260728-theme2"></script>
-<link rel="stylesheet" href="/styles.css?v=20260731-ai-architect-wizard" />
+<link rel="stylesheet" href="/styles.css?v=20260811-architect-card-beautify" />
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -166,10 +166,23 @@
           <a class="demo-cta" href="/projects/ai-analysis-demo.html?demo=meeting" data-i18n="analysis.openDemo">Probar demo</a>
         </article>
         <article class="ai-analysis-card lead-magnet-card">
-          <span class="kicker">AI Solution Architect</span>
-          <h3>Diseña una solución IA para tu proceso</h3>
-          <p>Responde cinco preguntas y recibe una propuesta inicial con arquitectura, componentes, riesgos, fases, diagrama y estimación de complejidad.</p>
-          <a class="demo-cta" href="/projects/ai-analysis-demo.html?demo=architect">Crear informe inicial</a>
+          <span class="kicker" data-i18n="analysis.architect.kicker">AI Solution Architect</span>
+          <h3 data-i18n="analysis.architect.title">Diseña una solución IA para tu proceso</h3>
+          <p data-i18n="analysis.architect.copy">Responde cinco preguntas y recibe una propuesta inicial con arquitectura, componentes, riesgos, fases, diagrama y estimación de complejidad.</p>
+          <div class="architect-card-visual" aria-hidden="true">
+            <div class="architect-orbit"><span></span><span></span><span></span><strong>AI</strong></div>
+            <div class="architect-flow-mini">
+              <i data-i18n="analysis.architect.visualData">Datos</i>
+              <b></b>
+              <i data-i18n="analysis.architect.visualModel">Modelo</i>
+              <b></b>
+              <i data-i18n="analysis.architect.visualReport">Informe</i>
+            </div>
+            <div class="architect-card-chips">
+              <span>RAG</span><span>API</span><span>ROI</span>
+            </div>
+          </div>
+          <a class="demo-cta" href="/projects/ai-analysis-demo.html?demo=architect" data-i18n="analysis.architect.cta">Crear informe inicial</a>
         </article>
       </div>
     </section>
@@ -297,6 +310,6 @@
   </main>
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
-  <script src="/app.js?v=20260730-analysis-page" defer></script>
+  <script src="/app.js?v=20260811-home-architect-i18n" defer></script>
 </body>
 </html>

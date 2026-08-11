@@ -93,6 +93,14 @@ class AgentStudioRequest(BaseModel):
     forbidden: str = ""
     history: list[dict[str, Any]] | None = None
 
+class AISolutionReportRequest(BaseModel):
+    email: str
+    report: str
+    headline: str = ""
+    summary: str = ""
+    config: dict[str, Any] | None = None
+    page_url: str = ""
+
 PROMPTS: dict[str, str] = {
     "cv": """Eres Axel Berral López actuando como su clon profesional en su web/portfolio.
 Tu función es representar a Axel de forma profesional ante reclutadores, empresas, visitantes de la web o personas interesadas en su perfil.
@@ -679,6 +687,106 @@ RESPUESTA ESTRUCTURADA
     return False
 
 
+
+def send_ai_solution_report_email(visitor_email: str, report: str, headline: str, summary: str, config: dict[str, Any], meta: dict[str, Any]) -> tuple[bool, bool]:
+    """Send the AI Solution Architect report to the visitor and the lead to Axel.
+
+    Returns (visitor_sent, owner_sent). Raises no exceptions: callers decide how to report failure.
+    """
+    api_key = (os.getenv("RESEND_API_KEY") or "").strip()
+    base_from = (os.getenv("RESEND_FROM") or os.getenv("SENDGRID_FROM") or "onboarding@resend.dev").strip()
+    owner_to = (os.getenv("RESEND_TO") or os.getenv("SENDGRID_TO") or "").strip()
+    if not api_key or not base_from:
+        print("AI Solution Architect email not configured: missing API/from", flush=True)
+        return False, False
+
+    visitor_email = visitor_email.strip().lower()[:254]
+    report = (report or "").strip()[:12000]
+    headline = (headline or "Informe AI Solution Architect").strip()[:180]
+    summary = (summary or "").strip()[:1500]
+    config = config or {}
+    created = datetime.utcnow().isoformat() + "Z"
+
+    visitor_text = f"""Hola,
+
+Aquí tienes el informe que has generado en axelbl.dev con AI Solution Architect.
+
+{headline}
+
+RESUMEN
+{summary}
+
+INFORME
+{report}
+
+---
+Generado en axelbl.dev el {created}.
+Si quieres adaptar esta arquitectura a datos reales, responde a este email o contacta con Axel Berral López.
+"""
+    owner_text = f"""Nuevo lead desde AI Solution Architect (axelbl.dev).
+
+LEAD
+- Email visitante: {visitor_email}
+- Fecha UTC: {created}
+- IP: {meta.get('ip', '')}
+- User-Agent: {meta.get('user_agent', '')}
+- Idioma: {meta.get('language', '')}
+- Referer: {meta.get('referer', '')}
+- Página: {meta.get('page_url', '')}
+
+HEADLINE
+{headline}
+
+RESUMEN
+{summary}
+
+CONFIGURACIÓN
+{json.dumps(config, ensure_ascii=False, indent=2)}
+
+INFORME
+{report}
+"""
+    headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    visitor_payload={
+        "from": parse_resend_from(base_from, "AI Solution Architect"),
+        "to": [visitor_email],
+        "subject": "Tu informe AI Solution Architect – axelbl.dev",
+        "text": visitor_text,
+        "attachments": [{
+            "filename": "informe-ai-solution-architect.txt",
+            "content": base64.b64encode(report.encode("utf-8")).decode(),
+        }],
+    }
+    owner_payload=None
+    if owner_to:
+        owner_payload={
+            "from": parse_resend_from(base_from, "Lead AI Solution Architect"),
+            "to": [email.strip() for email in owner_to.split(",") if email.strip()],
+            "subject": f"Nuevo lead AI Solution Architect – {visitor_email}",
+            "text": owner_text,
+            "attachments": [{
+                "filename": "ai-solution-architect-lead.json",
+                "content": base64.b64encode(json.dumps({"email": visitor_email, "headline": headline, "summary": summary, "config": config, "meta": meta, "report": report}, ensure_ascii=False, indent=2).encode("utf-8")).decode(),
+            }],
+        }
+    visitor_sent = False
+    owner_sent = False
+    try:
+        with httpx.Client(timeout=30) as client:
+            response=client.post("https://api.resend.com/emails", headers=headers, json=visitor_payload)
+            visitor_sent = 200 <= response.status_code < 300
+            if not visitor_sent:
+                print("AI Solution Architect visitor email error:", response.status_code, response.text[:500], flush=True)
+            elif owner_payload:
+                owner_response=client.post("https://api.resend.com/emails", headers=headers, json=owner_payload)
+                owner_sent = 200 <= owner_response.status_code < 300
+                if not owner_sent:
+                    print("AI Solution Architect owner lead email error:", owner_response.status_code, owner_response.text[:500], flush=True)
+    except Exception as exc:
+        print("AI Solution Architect email exception:", type(exc).__name__, str(exc), flush=True)
+    return visitor_sent, owner_sent
+
+
 def send_csv_email(force: bool = False) -> bool:
     """Send leads through Resend as one email per agent.
 
@@ -748,6 +856,41 @@ async def chat_endpoint(msg: MessageRequest, request: Request):
     elif agent == "tenista":
         payload.update(tennis_payload(msg.user_message))
     return payload
+
+
+
+@app.post("/ai-solution-architect/report-email")
+async def ai_solution_architect_report_email(payload: AISolutionReportRequest, request: Request):
+    email = (payload.email or "").strip().lower()
+    if not re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]+$", email):
+        raise HTTPException(400, "Email no válido")
+    report = (payload.report or "").strip()
+    if len(report) < 40:
+        raise HTTPException(400, "Falta el informe generado")
+    meta = {
+        "ip": request.client.host if request.client else "",
+        "user_agent": request.headers.get("user-agent", ""),
+        "language": request.headers.get("accept-language", ""),
+        "referer": request.headers.get("referer", ""),
+        "page_url": (payload.page_url or "")[:500],
+        "response_time": "",
+    }
+    config = payload.config or {}
+    try:
+        save_lead(
+            f"Email: {email}\nConfig: {json.dumps(config, ensure_ascii=False)}",
+            report[:4000],
+            meta,
+            "ai_solution_architect",
+            kind="report_email",
+        )
+        rebuild_agent_lead_csvs()
+    except Exception as exc:
+        print("AI Solution Architect lead save error", repr(exc), flush=True)
+    visitor_sent, owner_sent = send_ai_solution_report_email(email, report, payload.headline, payload.summary, config, meta)
+    if not visitor_sent:
+        raise HTTPException(502, "No se pudo enviar el informe por email")
+    return {"ok": True, "sent": True, "leadSaved": True, "ownerNotified": owner_sent}
 
 
 @app.post("/agent-studio/chat")
