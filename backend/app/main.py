@@ -5,6 +5,7 @@ import json
 import os
 import random
 import re
+import secrets
 import sqlite3
 import threading
 import time
@@ -16,10 +17,11 @@ from typing import Any, Optional
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Disposition, FileContent, FileName, FileType, Mail
@@ -69,6 +71,23 @@ DB_PATH = PROJECT_DIR / "agent_data.sqlite3"
 LAST_SENT = 0
 LEADS_SEND_STATE = PROJECT_DIR / "leads_send_state.json"
 
+ANALYTICS_SALT = os.getenv("ANALYTICS_SALT", "axelbl-analytics-v1").strip() or "axelbl-analytics-v1"
+ANALYTICS_DASHBOARD_USER = os.getenv("ANALYTICS_DASHBOARD_USER", "axel").strip() or "axel"
+ANALYTICS_DASHBOARD_PASSWORD = os.getenv("ANALYTICS_DASHBOARD_PASSWORD", "").strip()
+ANALYTICS_AUTH_FAILURE_LOG = PROJECT_DIR / "analytics_auth_failures.log"
+ANALYTICS_AUTH_ATTEMPTS: dict[str, list[float]] = {}
+ANALYTICS_AUTH_RATE_LIMIT = 12
+ANALYTICS_AUTH_WINDOW_SECONDS = 15 * 60
+analytics_security = HTTPBasic(auto_error=False)
+ALLOWED_ANALYTICS_EVENTS = {
+    "page_view", "hero_demo_clicked", "cv_downloaded", "project_opened",
+    "cta_clicked", "demo_started", "demo_completed", "demo_failed",
+    "technical_mode_opened", "external_link_clicked", "github_clicked",
+    "email_clicked", "contact_opened", "contact_submitted", "lead_submitted",
+    "report_generated", "report_emailed", "booking_started", "booking_completed",
+    "chat_started", "chat_completed", "chat_failed"
+}
+
 app = FastAPI(title="Axel Multi-Agent API", version="2.0")
 
 origins = ["http://localhost", "http://127.0.0.1", "https://axelbl.dev", "https://www.axelbl.dev"]
@@ -100,6 +119,28 @@ class AISolutionReportRequest(BaseModel):
     summary: str = ""
     config: dict[str, Any] | None = None
     page_url: str = ""
+
+class AnalyticsEventRequest(BaseModel):
+    event: str
+    page_url: str = ""
+    page_path: str = ""
+    referrer: str = ""
+    title: str = ""
+    target_text: str = ""
+    target_url: str = ""
+    demo: str = ""
+    project: str = ""
+    agent: str = ""
+    cost_estimate: float | None = None
+    error: str = ""
+    utm_source: str = ""
+    utm_medium: str = ""
+    utm_campaign: str = ""
+    utm_content: str = ""
+    session_id: str = ""
+    visitor_id: str = ""
+    extra: dict[str, Any] | None = None
+
 
 PROMPTS: dict[str, str] = {
     "cv": """Eres Axel Berral López actuando como su clon profesional en su web/portfolio.
@@ -267,6 +308,321 @@ def init_db() -> None:
         """)
         con.execute("CREATE INDEX IF NOT EXISTS idx_bookings_agent_date_time ON bookings(agent,date,time,status)")
 
+        con.execute("""
+        CREATE TABLE IF NOT EXISTS analytics_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TEXT NOT NULL,
+            event TEXT NOT NULL,
+            page_path TEXT,
+            page_url TEXT,
+            referrer TEXT,
+            title TEXT,
+            target_text TEXT,
+            target_url TEXT,
+            demo TEXT,
+            project TEXT,
+            agent TEXT,
+            utm_source TEXT,
+            utm_medium TEXT,
+            utm_campaign TEXT,
+            utm_content TEXT,
+            session_id TEXT,
+            visitor_id TEXT,
+            ip_hash TEXT,
+            user_agent TEXT,
+            language TEXT,
+            country_hint TEXT,
+            cost_estimate REAL,
+            error TEXT,
+            extra_json TEXT
+        )
+        """)
+        con.execute("CREATE INDEX IF NOT EXISTS idx_analytics_created_event ON analytics_events(created_at,event)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_analytics_page ON analytics_events(page_path)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_analytics_utm ON analytics_events(utm_source,utm_medium,utm_campaign)")
+
+
+
+def first_client_ip(request: Request) -> str:
+    forwarded = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
+    real = request.headers.get("x-real-ip") or ""
+    raw = forwarded or real or (request.client.host if request.client else "")
+    return raw[:80]
+
+
+def anonymized_ip_hash(request: Request) -> str:
+    raw = first_client_ip(request)
+    if not raw:
+        return ""
+    return hashlib.sha256(f"{ANALYTICS_SALT}|{raw}".encode("utf-8")).hexdigest()[:24]
+
+
+def safe_text(value: Any, limit: int = 500) -> str:
+    return str(value or "").replace("\x00", "").strip()[:limit]
+
+
+def save_analytics_event(payload: AnalyticsEventRequest, request: Request) -> None:
+    event = safe_text(payload.event, 80)
+    if event not in ALLOWED_ANALYTICS_EVENTS:
+        event = "page_view"
+    ua = request.headers.get("user-agent", "")[:500]
+    lang = request.headers.get("accept-language", "")[:160]
+    country_hint = request.headers.get("cf-ipcountry", "")[:12]
+    extra = payload.extra or {}
+    try:
+        extra_json = json.dumps(extra, ensure_ascii=False)[:4000]
+    except Exception:
+        extra_json = "{}"
+    with sqlite3.connect(DB_PATH) as con:
+        con.execute("""
+        INSERT INTO analytics_events(
+            created_at,event,page_path,page_url,referrer,title,target_text,target_url,demo,project,agent,
+            utm_source,utm_medium,utm_campaign,utm_content,session_id,visitor_id,ip_hash,user_agent,language,country_hint,cost_estimate,error,extra_json
+        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+            datetime.utcnow().isoformat(timespec="seconds") + "Z",
+            event,
+            safe_text(payload.page_path, 300), safe_text(payload.page_url, 900), safe_text(payload.referrer or request.headers.get("referer", ""), 900), safe_text(payload.title, 200),
+            safe_text(payload.target_text, 220), safe_text(payload.target_url, 900), safe_text(payload.demo, 80), safe_text(payload.project, 120), safe_text(payload.agent, 80),
+            safe_text(payload.utm_source, 120), safe_text(payload.utm_medium, 120), safe_text(payload.utm_campaign, 160), safe_text(payload.utm_content, 160),
+            safe_text(payload.session_id, 120), safe_text(payload.visitor_id, 120), anonymized_ip_hash(request), ua, lang, country_hint,
+            payload.cost_estimate if isinstance(payload.cost_estimate, (int, float)) else None, safe_text(payload.error, 500), extra_json,
+        ))
+
+
+def analytics_private_headers(www_authenticate: bool = False) -> dict[str, str]:
+    headers = {
+        "Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+    }
+    if www_authenticate:
+        headers["WWW-Authenticate"] = "Basic"
+    return headers
+
+
+def record_analytics_auth_failure(request: Request, username: str = "", reason: str = "") -> None:
+    try:
+        line = json.dumps({
+            "ts": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+            "ip_hash": anonymized_ip_hash(request),
+            "username": safe_text(username, 80),
+            "reason": safe_text(reason, 80),
+            "user_agent": safe_text(request.headers.get("user-agent", ""), 240),
+        }, ensure_ascii=False)
+        with ANALYTICS_AUTH_FAILURE_LOG.open("a", encoding="utf-8") as fh:
+            fh.write(line + "\n")
+    except Exception as exc:
+        print("analytics auth failure log error", repr(exc), flush=True)
+
+
+def enforce_analytics_auth_rate_limit(request: Request) -> None:
+    key = anonymized_ip_hash(request) or first_client_ip(request) or "unknown"
+    current = time.time()
+    window_start = current - ANALYTICS_AUTH_WINDOW_SECONDS
+    attempts = [t for t in ANALYTICS_AUTH_ATTEMPTS.get(key, []) if t >= window_start]
+    if len(attempts) >= ANALYTICS_AUTH_RATE_LIMIT:
+        record_analytics_auth_failure(request, reason="rate_limited")
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Too many authentication attempts", headers=analytics_private_headers(True))
+    attempts.append(current)
+    ANALYTICS_AUTH_ATTEMPTS[key] = attempts
+
+
+def clear_analytics_auth_rate_limit(request: Request) -> None:
+    key = anonymized_ip_hash(request) or first_client_ip(request) or "unknown"
+    ANALYTICS_AUTH_ATTEMPTS.pop(key, None)
+
+
+def analytics_auth(request: Request, credentials: HTTPBasicCredentials | None = Depends(analytics_security)) -> str:
+    if not ANALYTICS_DASHBOARD_PASSWORD:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Analytics dashboard password is not configured", headers=analytics_private_headers())
+    if not credentials:
+        enforce_analytics_auth_rate_limit(request)
+        record_analytics_auth_failure(request, reason="missing_credentials")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required", headers=analytics_private_headers(True))
+    ok_user = secrets.compare_digest(credentials.username, ANALYTICS_DASHBOARD_USER)
+    ok_pass = secrets.compare_digest(credentials.password, ANALYTICS_DASHBOARD_PASSWORD)
+    if not (ok_user and ok_pass):
+        enforce_analytics_auth_rate_limit(request)
+        record_analytics_auth_failure(request, username=credentials.username, reason="invalid_credentials")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials", headers=analytics_private_headers(True))
+    clear_analytics_auth_rate_limit(request)
+    return credentials.username
+
+
+def analytics_rows(days: int = 30) -> list[sqlite3.Row]:
+    days = max(1, min(int(days or 30), 365))
+    since = (datetime.utcnow() - timedelta(days=days)).isoformat(timespec="seconds") + "Z"
+    with sqlite3.connect(DB_PATH) as con:
+        con.row_factory = sqlite3.Row
+        return con.execute("SELECT * FROM analytics_events WHERE created_at >= ? ORDER BY created_at DESC LIMIT 5000", (since,)).fetchall()
+
+
+def count_by(rows: list[sqlite3.Row], key: str, limit: int = 12) -> list[dict[str, Any]]:
+    counts: dict[str, int] = {}
+    for r in rows:
+        value = (r[key] if key in r.keys() else "") or "(directo / sin dato)"
+        counts[str(value)] = counts.get(str(value), 0) + 1
+    return [{"name": k, "count": v} for k, v in sorted(counts.items(), key=lambda x: x[1], reverse=True)[:limit]]
+
+
+def analytics_summary(days: int = 30) -> dict[str, Any]:
+    rows = analytics_rows(days)
+    rows_oldest = sorted(rows, key=lambda r: r["created_at"] or "")
+    events = count_by(rows, "event", 24)
+    total = len(rows)
+
+    def visitor_key(r: sqlite3.Row) -> str:
+        return (r["visitor_id"] or r["ip_hash"] or "").strip()
+
+    visitors_set = {visitor_key(r) for r in rows if visitor_key(r)}
+    visitors = len(visitors_set)
+    sessions = len({r["session_id"] for r in rows if r["session_id"]})
+    page_views = sum(1 for r in rows if r["event"] == "page_view")
+    projects_opened = sum(1 for r in rows if r["event"] == "project_opened")
+    cta_clicks = sum(1 for r in rows if r["event"] == "cta_clicked")
+    leads = sum(1 for r in rows if r["event"] in {"lead_submitted", "contact_submitted", "report_emailed", "booking_completed"})
+    demo_started = sum(1 for r in rows if r["event"] == "demo_started")
+    demo_completed = sum(1 for r in rows if r["event"] == "demo_completed")
+    errors = [dict(r) for r in rows if r["event"] in {"demo_failed", "chat_failed"}][:40]
+    conversion = round((leads / max(visitors, 1)) * 100, 2)
+    total_cost = round(sum(float(r["cost_estimate"] or 0) for r in rows), 4)
+
+    def clean_host(url: str) -> str:
+        try:
+            from urllib.parse import urlparse
+            return (urlparse(url).netloc or "").lower().replace("www.", "")
+        except Exception:
+            return ""
+
+    def source_name(r: sqlite3.Row) -> str:
+        utm = (r["utm_source"] or "").strip().lower()
+        ref = (r["referrer"] or "").strip()
+        host = clean_host(ref)
+        if utm:
+            known = {"google": "Google", "linkedin": "LinkedIn", "github": "GitHub", "x": "X / Twitter", "twitter": "X / Twitter"}
+            return known.get(utm, utm[:1].upper() + utm[1:])
+        if host in {"axelbl.dev", "localhost", "127.0.0.1"}:
+            return "Directo / navegación interna"
+        if "google." in host:
+            return "Google"
+        if "linkedin." in host:
+            return "LinkedIn"
+        if "github." in host:
+            return "GitHub"
+        if host:
+            return host
+        return "Directo / sin dato"
+
+    acquisition_counts: dict[str, int] = {}
+    for r in rows:
+        name = source_name(r)
+        acquisition_counts[name] = acquisition_counts.get(name, 0) + 1
+    acquisition = [{"name": k, "count": v} for k, v in sorted(acquisition_counts.items(), key=lambda x: x[1], reverse=True)[:12]]
+
+    external_referrers = []
+    for item in count_by(rows, "referrer", 20):
+        host = clean_host(item["name"])
+        if host and host not in {"axelbl.dev", "localhost", "127.0.0.1"}:
+            external_referrers.append(item)
+
+    session_pages: dict[str, list[str]] = {}
+    for r in rows_oldest:
+        if r["event"] != "page_view":
+            continue
+        sid = r["session_id"] or visitor_key(r) or "unknown"
+        page = r["page_path"] or "(sin página)"
+        if not session_pages.get(sid) or session_pages[sid][-1] != page:
+            session_pages.setdefault(sid, []).append(page)
+    transitions: dict[str, int] = {}
+    for pages in session_pages.values():
+        for a, b in zip(pages, pages[1:]):
+            transitions[f"{a} → {b}"] = transitions.get(f"{a} → {b}", 0) + 1
+    internal_navigation = [{"name": k, "count": v} for k, v in sorted(transitions.items(), key=lambda x: x[1], reverse=True)[:12]]
+
+    funnel_defs = [
+        ("Visitantes", lambda r: True),
+        ("Proyecto abierto", lambda r: r["event"] == "project_opened"),
+        ("CTA pulsado", lambda r: r["event"] == "cta_clicked"),
+        ("Demo iniciada", lambda r: r["event"] == "demo_started"),
+        ("Demo completada", lambda r: r["event"] == "demo_completed"),
+        ("Contacto abierto", lambda r: r["event"] in {"contact_opened", "email_clicked"}),
+        ("Lead enviado", lambda r: r["event"] in {"lead_submitted", "contact_submitted", "report_emailed", "booking_completed"}),
+    ]
+    funnel = []
+    for label, predicate in funnel_defs:
+        ids = {visitor_key(r) for r in rows if visitor_key(r) and predicate(r)}
+        count = len(ids) if label != "Visitantes" else visitors
+        funnel.append({"name": label, "count": count, "pct": round((count / max(visitors, 1)) * 100, 2)})
+
+    weights = {
+        "page_view": 1, "project_opened": 3, "cta_clicked": 3, "cv_downloaded": 3,
+        "demo_started": 5, "demo_completed": 8, "github_clicked": 4,
+        "external_link_clicked": 3, "email_clicked": 6, "contact_opened": 8,
+        "contact_submitted": 20, "lead_submitted": 20, "booking_completed": 20,
+        "report_emailed": 18, "chat_completed": 4,
+    }
+    scores: dict[str, int] = {}
+    for r in rows:
+        vk = visitor_key(r)
+        if vk:
+            scores[vk] = scores.get(vk, 0) + weights.get(r["event"], 0)
+    interested_visitors = sum(1 for score in scores.values() if score >= 5)
+
+    recent = [dict(r) | {"source": source_name(r)} for r in rows[:80]]
+    return {
+        "days": days,
+        "total_events": total,
+        "unique_visitors": visitors,
+        "sessions": sessions,
+        "page_views": page_views,
+        "projects_opened": projects_opened,
+        "cta_clicks": cta_clicks,
+        "leads": leads,
+        "visitor_to_lead_pct": conversion,
+        "demo_started": demo_started,
+        "demo_completed": demo_completed,
+        "demo_completion_pct": round((demo_completed / max(demo_started, 1)) * 100, 2),
+        "total_cost_estimate": total_cost,
+        "interested_visitors": interested_visitors,
+        "events": events,
+        "acquisition": acquisition,
+        "external_referrers": external_referrers,
+        "internal_navigation": internal_navigation,
+        "sources": count_by(rows, "utm_source"),
+        "mediums": count_by(rows, "utm_medium"),
+        "campaigns": count_by(rows, "utm_campaign"),
+        "referrers": count_by(rows, "referrer"),
+        "pages": count_by(rows, "page_path"),
+        "demos": count_by([r for r in rows if r["demo"]], "demo"),
+        "projects": count_by([r for r in rows if r["project"]], "project"),
+        "buttons": count_by([r for r in rows if r["target_text"]], "target_text", 20),
+        "funnel": funnel,
+        "errors": errors,
+        "recent": recent,
+    }
+
+def analytics_dashboard_html(data: dict[str, Any]) -> str:
+    def esc(v: Any) -> str:
+        return str("" if v is None else v).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+    def list_block(title: str, items: list[dict[str, Any]]) -> str:
+        lis = "".join(f"<li><span>{esc(i['name'])}</span><strong>{i['count']}</strong></li>" for i in items) or "<li><span>Sin datos todavía</span><strong>0</strong></li>"
+        return f"<section class='card'><h2>{esc(title)}</h2><ul>{lis}</ul></section>"
+    def metric(label: str, value: Any) -> str:
+        return f"<div class='metric'><span>{esc(label)}</span><strong>{esc(value)}</strong></div>"
+    funnel_rows = "".join(f"<li><span>{esc(i['name'])}</span><strong>{esc(i['count'])} · {esc(i['pct'])}%</strong></li>" for i in data['funnel'])
+    recent_rows = "".join(f"<tr><td>{esc(r.get('created_at'))}</td><td>{esc(r.get('event'))}</td><td>{esc(r.get('page_path'))}</td><td>{esc(r.get('target_text') or r.get('demo') or r.get('project'))}</td><td>{esc(r.get('source'))}</td><td>{esc(r.get('error'))}</td></tr>" for r in data['recent'][:60])
+    cost_metric = metric('Coste estimado', data['total_cost_estimate']) if data.get('total_cost_estimate') else ''
+    return f"""<!doctype html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><meta name='robots' content='noindex,nofollow'><title>Axel Analytics</title><style>
+    :root{{color-scheme:dark;--bg:#090b0f;--card:#11151d;--text:#eef2f6;--muted:#9aa4b2;--line:#242b36;--accent:#d7ff68}}body{{margin:0;background:radial-gradient(circle at 20% 0,#1a2130,transparent 32%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}}main{{max-width:1180px;margin:auto;padding:32px 18px 60px}}header{{display:flex;justify-content:space-between;gap:18px;align-items:end;margin-bottom:26px}}h1{{font-size:clamp(2rem,6vw,4.2rem);letter-spacing:-.06em;margin:0}}p{{color:var(--muted)}}.grid{{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}}.metric,.card{{border:1px solid var(--line);background:rgba(255,255,255,.035);padding:18px}}.metric strong{{display:block;font-size:2rem;letter-spacing:-.05em}}.metric span,.card h2{{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.12em}}.cards{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}}.section-title{{margin:26px 0 10px;color:var(--accent);font-size:.82rem;text-transform:uppercase;letter-spacing:.14em}}ul{{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}}li{{display:flex;justify-content:space-between;gap:14px;border-top:1px solid var(--line);padding-top:8px}}li span{{overflow:hidden;text-overflow:ellipsis}}li strong{{color:var(--accent);white-space:nowrap}}.funnel li{{align-items:center}}.funnel li span:before{{content:'↓';color:var(--muted);margin-right:8px}}.funnel li:first-child span:before{{content:'';margin:0}}table{{width:100%;border-collapse:collapse;font-size:.86rem}}td,th{{border-top:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}}th{{color:var(--muted);font-weight:700}}a{{color:var(--accent)}}@media(max-width:800px){{.grid,.cards{{grid-template-columns:1fr}}header{{display:block}}}}
+    </style></head><body><main><header><div><h1>Axel Analytics</h1><p>Últimos {esc(data['days'])} días · IP anonimizada con hash · sin cookies de terceros</p></div><p><a href='/analytics/dashboard?days=7'>7d</a> · <a href='/analytics/dashboard?days=30'>30d</a> · <a href='/analytics/dashboard?days=90'>90d</a> · <a href='/analytics/data?days={esc(data['days'])}'>JSON</a></p></header>
+    <div class='section-title'>Resumen de negocio</div><div class='grid'>{metric('Visitantes', data['unique_visitors'])}{metric('Sesiones', data['sessions'])}{metric('Leads', data['leads'])}{metric('Conversión lead', str(data['visitor_to_lead_pct']) + '%')}</div>
+    <div class='section-title'>Actividad e intención</div><div class='grid'>{metric('Page views', data['page_views'])}{metric('Proyectos vistos', data['projects_opened'])}{metric('CTAs pulsados', data['cta_clicks'])}{metric('Visitantes interesados', data['interested_visitors'])}{metric('Demos iniciadas', data['demo_started'])}{metric('Demos completas', data['demo_completed'])}{metric('Ratio demo completa', str(data['demo_completion_pct']) + '%')}{metric('Eventos', data['total_events'])}{cost_metric}</div>
+    <div class='section-title'>Adquisición</div><div class='cards'>{list_block('Fuente normalizada', data['acquisition'])}{list_block('Campañas UTM', data['campaigns'])}{list_block('Referrers externos', data['external_referrers'])}{list_block('Medios UTM', data['mediums'])}</div>
+    <div class='section-title'>Comportamiento</div><div class='cards'>{list_block('Páginas', data['pages'])}{list_block('Navegación interna', data['internal_navigation'])}{list_block('Proyectos', data['projects'])}{list_block('Botones / CTAs', data['buttons'])}{list_block('Demos', data['demos'])}{list_block('Eventos', data['events'])}</div>
+    <div class='section-title'>Conversión</div><section class='card funnel'><h2>Funnel por visitantes únicos</h2><ul>{funnel_rows}</ul></section>
+    <section class='card' style='margin-top:12px'><h2>Eventos recientes / errores</h2><table><thead><tr><th>Fecha</th><th>Evento</th><th>Página</th><th>Objetivo</th><th>Fuente</th><th>Error</th></tr></thead><tbody>{recent_rows}</tbody></table></section></main></body></html>"""
 
 def agent_from_request(request: Request, body: Optional[dict[str, Any]] = None) -> str:
     explicit = (body or {}).get("agent") or request.query_params.get("agent")
@@ -488,7 +844,10 @@ def rebuild_agent_lead_csvs() -> list[Path]:
     out_dir = PROJECT_DIR / "leads_by_agent"
     out_dir.mkdir(exist_ok=True)
     for old in out_dir.glob("leads_*.csv"):
-        old.unlink()
+        try:
+            old.unlink()
+        except FileNotFoundError:
+            pass
     grouped: dict[str, list[dict[str, str]]] = {}
     for row in rows:
         grouped.setdefault((row.get("agent") or "unknown").strip() or "unknown", []).append(row)
@@ -834,6 +1193,26 @@ def startup():
     if not getattr(app.state, "mailer_started", False):
         threading.Thread(target=daily_csv_sender, daemon=True).start()
         app.state.mailer_started = True
+
+
+
+@app.post("/analytics/event")
+async def analytics_event(payload: AnalyticsEventRequest, request: Request):
+    try:
+        save_analytics_event(payload, request)
+    except Exception as exc:
+        print("analytics event save error", repr(exc), flush=True)
+    return JSONResponse({"ok": True}, headers={"Cache-Control": "no-store"})
+
+
+@app.get("/analytics/data")
+async def analytics_data(_: str = Depends(analytics_auth), days: int = 30):
+    return JSONResponse(analytics_summary(days), headers=analytics_private_headers())
+
+
+@app.get("/analytics/dashboard", response_class=HTMLResponse)
+async def analytics_dashboard(_: str = Depends(analytics_auth), days: int = 30):
+    return HTMLResponse(analytics_dashboard_html(analytics_summary(days)), headers=analytics_private_headers())
 
 
 @app.post("/chat")
