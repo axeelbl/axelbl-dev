@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://axelbl.dev/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/projects/call-analysis.html</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/projects/agent-framework.html</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/projects/financial-dashboard.html</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/gym/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/cv/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/inversionista/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/jesucristo/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/nur/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/noticiero/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/peluquero/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/restaurante/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/agents/tenista/</loc><lastmod>2026-07-21</lastmod></url>
-  <url><loc>https://axelbl.dev/projects/gnn-edge-research.html</loc></url>
+  <url><loc>https://axelbl.dev/</loc><lastmod>2026-09-01</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://axelbl.dev/projects/call-analysis.html</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://axelbl.dev/projects/agent-studio.html</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://axelbl.dev/projects/ai-analysis-demo.html</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://axelbl.dev/projects/gnn-edge-research.html</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://axelbl.dev/projects/thermal-gnn-lab.html</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://axelbl.dev/projects/agent-framework.html</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://axelbl.dev/projects/financial-dashboard.html</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://axelbl.dev/agents/cv/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://axelbl.dev/agents/gym/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://axelbl.dev/agents/inversionista/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://axelbl.dev/agents/jesucristo/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://axelbl.dev/agents/noticiero/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://axelbl.dev/agents/nur/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://axelbl.dev/agents/peluquero/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://axelbl.dev/agents/restaurante/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://axelbl.dev/agents/tenista/</loc><lastmod>2026-08-15</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

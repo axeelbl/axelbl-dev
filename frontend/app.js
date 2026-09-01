@@ -110,6 +110,7 @@ Object.assign(i18n.ca.contact, { copy: 'Vols aplicar alguna cosa similar a la te
 Object.assign(i18n.no.contact, { copy: 'Vil du bruke noe lignende i bedriften din? Fortell meg om caset, så ser vi om det gir mening å automatisere det med AI.', businessCta: 'Jeg vil ha en AI-løsning for bedriften min', businessHref: 'mailto:axelberrallopez@gmail.com?subject=Jeg%20vil%20ha%20en%20AI-l%C3%B8sning%20for%20bedriften%20min&body=Hei%20Axel%2C%0A%0AJeg%20vil%20utforske%20en%20AI-l%C3%B8sning%20for%20bedriften%20min.%20Prosessen%20jeg%20vil%20forbedre%20er%3A%0A%0A' });
 
 const getValue = (obj, path) => path.split('.').reduce((acc, part) => acc && acc[part], obj);
+const localeByLanguage = { es: 'es_ES', en: 'en_GB', ca: 'ca_ES', no: 'nb_NO' };
 
 function applyLanguage(lang) {
   const dict = i18n[lang] || i18n.es;
@@ -118,6 +119,9 @@ function applyLanguage(lang) {
   document.querySelector('meta[name="description"]')?.setAttribute('content', dict.meta.description);
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', dict.meta.title);
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', dict.meta.ogDescription);
+  document.querySelector('meta[property="og:locale"]')?.setAttribute('content', localeByLanguage[lang] || localeByLanguage.es);
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', dict.meta.title);
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', dict.meta.description);
 
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const value = getValue(dict, el.dataset.i18n);
