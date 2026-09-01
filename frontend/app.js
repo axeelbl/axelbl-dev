@@ -75,6 +75,40 @@ const i18n = {
   }
 };
 
+Object.assign(i18n.es.credentials, {
+  master: {
+    kicker: 'Máster en curso', title: 'Máster Universitario en Ciencia de Datos', university: 'Universitat Oberta de Catalunya', period: 'Sept. 2026 — Jun. 2027',
+    copy: 'Máster Universitario en Ciencia de Datos enfocado en el análisis, procesamiento y modelado de datos, machine learning, estadística y programación aplicada.',
+    skillsAria: 'Aptitudes del máster', skills: { statistics: 'Estadística', analysis: 'Análisis de datos', processing: 'Procesamiento de datos', visualization: 'Visualización de datos' }
+  }
+});
+Object.assign(i18n.en.credentials, {
+  master: {
+    kicker: 'Master’s degree in progress', title: 'University Master’s Degree in Data Science', university: 'Universitat Oberta de Catalunya', period: 'Sep 2026 — Jun 2027',
+    copy: 'University Master’s Degree in Data Science focused on data analysis, processing and modelling, machine learning, statistics and applied programming.',
+    skillsAria: 'Master’s degree skills', skills: { statistics: 'Statistics', analysis: 'Data Analysis', processing: 'Data Processing', visualization: 'Data Visualization' }
+  }
+});
+Object.assign(i18n.ca.credentials, {
+  master: {
+    kicker: 'Màster en curs', title: 'Màster Universitari en Ciència de Dades', university: 'Universitat Oberta de Catalunya', period: 'Set. 2026 — Juny 2027',
+    copy: 'Màster Universitari en Ciència de Dades enfocat en l’anàlisi, el processament i el modelatge de dades, machine learning, estadística i programació aplicada.',
+    skillsAria: 'Aptituds del màster', skills: { statistics: 'Estadística', analysis: 'Anàlisi de dades', processing: 'Processament de dades', visualization: 'Visualització de dades' }
+  }
+});
+Object.assign(i18n.no.credentials, {
+  master: {
+    kicker: 'Pågående mastergrad', title: 'Mastergrad i datavitenskap', university: 'Universitat Oberta de Catalunya', period: 'Sep. 2026 — Jun. 2027',
+    copy: 'Mastergrad i datavitenskap med fokus på dataanalyse, databehandling og modellering, maskinlæring, statistikk og anvendt programmering.',
+    skillsAria: 'Ferdigheter fra mastergraden', skills: { statistics: 'Statistikk', analysis: 'Dataanalyse', processing: 'Databehandling', visualization: 'Datavisualisering' }
+  }
+});
+
+Object.assign(i18n.es.contact, { copy: '¿Quieres aplicar algo similar en tu empresa? Cuéntame tu caso y vemos si tiene sentido automatizarlo con IA.', businessCta: 'Quiero una solución IA para mi empresa', businessHref: 'mailto:axelberrallopez@gmail.com?subject=Quiero%20una%20soluci%C3%B3n%20IA%20para%20mi%20empresa&body=Hola%20Axel%2C%0A%0AQuiero%20explorar%20una%20soluci%C3%B3n%20IA%20para%20mi%20empresa.%20El%20proceso%20que%20me%20gustar%C3%ADa%20mejorar%20es%3A%0A%0A' });
+Object.assign(i18n.en.contact, { copy: 'Want to apply something similar in your company? Tell me your use case and we can see whether it makes sense to automate it with AI.', businessCta: 'I want an AI solution for my company', businessHref: 'mailto:axelberrallopez@gmail.com?subject=I%20want%20an%20AI%20solution%20for%20my%20company&body=Hi%20Axel%2C%0A%0AI%20want%20to%20explore%20an%20AI%20solution%20for%20my%20company.%20The%20process%20I%20would%20like%20to%20improve%20is%3A%0A%0A' });
+Object.assign(i18n.ca.contact, { copy: 'Vols aplicar alguna cosa similar a la teva empresa? Explica’m el teu cas i veiem si té sentit automatitzar-lo amb IA.', businessCta: 'Vull una solució IA per a la meva empresa', businessHref: 'mailto:axelberrallopez@gmail.com?subject=Vull%20una%20soluci%C3%B3%20IA%20per%20a%20la%20meva%20empresa&body=Hola%20Axel%2C%0A%0AVull%20explorar%20una%20soluci%C3%B3%20IA%20per%20a%20la%20meva%20empresa.%20El%20proc%C3%A9s%20que%20m%27agradaria%20millorar%20%C3%A9s%3A%0A%0A' });
+Object.assign(i18n.no.contact, { copy: 'Vil du bruke noe lignende i bedriften din? Fortell meg om caset, så ser vi om det gir mening å automatisere det med AI.', businessCta: 'Jeg vil ha en AI-løsning for bedriften min', businessHref: 'mailto:axelberrallopez@gmail.com?subject=Jeg%20vil%20ha%20en%20AI-l%C3%B8sning%20for%20bedriften%20min&body=Hei%20Axel%2C%0A%0AJeg%20vil%20utforske%20en%20AI-l%C3%B8sning%20for%20bedriften%20min.%20Prosessen%20jeg%20vil%20forbedre%20er%3A%0A%0A' });
+
 const getValue = (obj, path) => path.split('.').reduce((acc, part) => acc && acc[part], obj);
 
 function applyLanguage(lang) {
