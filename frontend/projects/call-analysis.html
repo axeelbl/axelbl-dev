@@ -9,9 +9,13 @@
 <link rel="stylesheet" href="/styles.css?v=20260728-theme2" />
   <title>Pipeline end-to-end de IA para análisis de audio — Axel Berral López</title>
   <meta name="description" content="Caso de estudio: pipeline on-premise con Whisper, vLLM, FastAPI, Docker y 2 NVIDIA RTX PRO 6000 Blackwell para analizar más de 160.000 audios evaluados." />
+  <meta name="robots" content="index,follow,max-image-preview:large" /><link rel="canonical" href="https://axelbl.dev/projects/call-analysis.html" />
   <meta property="og:title" content="Pipeline end-to-end de IA para análisis de audio — Axel Berral López" />
   <meta property="og:description" content="Más de 250.000 audios evaluados automáticamente y picos de 306 audios por hora en un pipeline IA on-premise de producción." />
   <meta property="og:image" content="https://axelbl.dev/assets/axel-hero.jpg" />
+  <meta property="og:type" content="article" /><meta property="og:url" content="https://axelbl.dev/projects/call-analysis.html" /><meta property="og:image:alt" content="Axel Berral, AI Engineer" />
+  <meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="Pipeline end-to-end de IA para análisis de audio" /><meta name="twitter:description" content="Caso de estudio de un pipeline IA on-premise de producción para analizar audio." /><meta name="twitter:image" content="https://axelbl.dev/assets/axel-hero.jpg" />
+  <link rel="stylesheet" href="/legal.css?v=20260902" />
 </head>
 <body class="project-page" data-project-key="call-analysis">
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -249,6 +253,7 @@
     if ('IntersectionObserver' in window && !reduced) { const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' }); revealItems.forEach((el) => observer.observe(el)); } else { revealItems.forEach((el) => el.classList.add('is-visible')); }
     if (!reduced) { const layers = [...document.querySelectorAll('[data-parallax-layer]')]; let ticking = false; const render = () => { const y = window.scrollY || window.pageYOffset || 0; const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight); document.documentElement.style.setProperty('--scroll-y', `${y}px`); document.documentElement.style.setProperty('--scroll-progress', String(Math.min(Math.max(y / max, 0), 1))); if (window.innerWidth > 760) { const center = y + window.innerHeight / 2; layers.forEach((el) => { const rect = el.getBoundingClientRect(); const elCenter = y + rect.top + rect.height / 2; const depth = Number(el.dataset.parallaxLayer || 0.08); const offset = Math.min(Math.max((center - elCenter) * depth, -80), 80); el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`; }); } ticking = false; }; const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(render); } }; render(); window.addEventListener('scroll', request, { passive: true }); window.addEventListener('resize', request, { passive: true }); }
   </script>
-  <script src="/analytics.js?v=20260815-funnel" defer></script>
+  <script src="/site-compliance.js?v=20260902"></script>
+  <script src="/analytics.js?v=20260902-consent" defer></script>
 </body>
 </html>

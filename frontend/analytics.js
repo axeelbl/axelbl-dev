@@ -1,4 +1,6 @@
 (() => {
+  const CONSENT_KEY = 'axel_analytics_consent';
+  try { if (localStorage.getItem(CONSENT_KEY) !== 'granted') return; } catch (_) { return; }
   const ENDPOINT = '/analytics/event';
   const UTM_KEYS = ['utm_source','utm_medium','utm_campaign','utm_content'];
   const now = () => Date.now();

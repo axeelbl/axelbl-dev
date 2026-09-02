@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agente Apuestas Tenis | Chatbot IA de tenis</title>
+    <meta name="description" content="Demo educativa para analizar partidos y contexto de tenis con IA. No ofrece garantías ni sustituye asesoramiento sobre apuestas responsables." />
+    <meta name="robots" content="index,follow,max-image-preview:large" /><link rel="canonical" href="https://axelbl.dev/agents/tenista/" />
+    <meta property="og:title" content="Agente de tenis | Análisis responsable con IA" /><meta property="og:description" content="Análisis educativo de partidos y contexto de tenis mediante IA, sin garantías de resultados." /><meta property="og:type" content="website" /><meta property="og:url" content="https://axelbl.dev/agents/tenista/" /><meta property="og:image" content="https://axelbl.dev/assets/axel-hero.jpg" /><meta property="og:image:alt" content="Portfolio de agentes IA de Axel Berral" />
+    <meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="Agente de tenis | Análisis responsable con IA" /><meta name="twitter:description" content="Análisis educativo de partidos y contexto de tenis mediante IA, sin garantías de resultados." /><meta name="twitter:image" content="https://axelbl.dev/assets/axel-hero.jpg" />
     <link rel="icon" type="image/png" href="/agents/tenista/pictures/favicon.png">
     <link rel="stylesheet" href="/agents/tenista/css/main.css">
+    <link rel="stylesheet" href="/legal.css?v=20260902" />
 
 <style id="portfolio-back-style">
 .portfolio-back{position:fixed;top:18px;left:18px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(8,10,14,.78);backdrop-filter:blur(12px);color:#fff!important;text-decoration:none!important;font:600 14px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.01em;box-shadow:0 10px 30px rgba(0,0,0,.22)}
@@ -100,10 +105,10 @@
                 <section class="panel-card prediction-card">
                     <span class="section-kicker">Predicción rápida</span>
                     <form id="predictionForm" class="prediction-form">
-                        <label>Jugador 1<input id="player1Input" type="text" placeholder="Alcaraz"></label>
-                        <label>Jugador 2<input id="player2Input" type="text" placeholder="Sinner"></label>
+                        <label>Jugador 1<input id="player1Input" name="player1" type="text" placeholder="Alcaraz" required></label>
+                        <label>Jugador 2<input id="player2Input" name="player2" type="text" placeholder="Sinner" required></label>
                         <label>Superficie
-                            <select id="surfaceInput">
+                            <select id="surfaceInput" name="surface">
                                 <option value="">No indicada</option>
                                 <option value="Hard">Hard</option>
                                 <option value="Clay">Clay</option>
@@ -111,16 +116,16 @@
                             </select>
                         </label>
                         <div class="form-row">
-                            <label>Nivel<input id="levelInput" type="text" placeholder="G, M, A"></label>
+                            <label>Nivel<input id="levelInput" name="level" type="text" placeholder="G, M, A"></label>
                             <label>Best of
-                                <select id="bestOfInput">
+                                <select id="bestOfInput" name="best_of">
                                     <option value="">-</option>
                                     <option value="3">3</option>
                                     <option value="5">5</option>
                                 </select>
                             </label>
                         </div>
-                        <label>Ronda<input id="roundInput" type="text" placeholder="Final, QF, R16"></label>
+                        <label>Ronda<input id="roundInput" name="round" type="text" placeholder="Final, QF, R16"></label>
                         <button type="submit">Predecir partido</button>
                     </form>
                     <div id="predictionResult" class="prediction-result"></div>
@@ -151,6 +156,7 @@
     </div>
 
     <script type="module" src="/agents/tenista/js/main.js"></script>
-  <script src="/analytics.js?v=20260815-funnel" defer></script>
+  <script src="/site-compliance.js?v=20260902"></script>
+  <script src="/analytics.js?v=20260902-consent" defer></script>
 </body>
 </html>
