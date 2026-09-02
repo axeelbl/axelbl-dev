@@ -1,0 +1,53 @@
+# Axel Berral López
+
+> Factual, machine-readable summary of Axel Berral López and his professional portfolio. Canonical website: https://axelbl.dev/
+
+## Identity
+
+- Full name: Axel Berral López
+- Professional roles: AI Software Engineer, AI Engineer and Computer Engineer
+- Location: Barcelona, Catalonia, Spain
+- Current employer: MST Holding
+- Professional profiles: https://www.linkedin.com/in/axelbl/ and https://github.com/axeelbl
+
+## Education
+
+- Computer Engineering graduate from Universitat de Lleida (UdL)
+- Erasmus studies at NTNU in Gjøvik, Norway
+- University Master's Degree in Data Science at Universitat Oberta de Catalunya (UOC), 2026–2027
+
+## Areas of work
+
+- Applied artificial intelligence systems
+- LLM agents and orchestration
+- Call, speech and audio analysis with AI
+- Machine learning and graph neural networks
+- Python and FastAPI backend engineering
+- Local LLMs, private APIs and on-premise GPU inference
+- Docker, Linux, Nginx and AWS deployments
+
+## Selected work
+
+- AI call analysis system: https://axelbl.dev/projects/call-analysis.html
+- AI Agent Studio: https://axelbl.dev/projects/agent-studio.html
+- AI analysis demos: https://axelbl.dev/projects/ai-analysis-demo.html
+- Graph ML research: https://axelbl.dev/projects/gnn-edge-research.html
+- Thermal GNN Lab: https://axelbl.dev/projects/thermal-gnn-lab.html
+- LLM agent framework: https://axelbl.dev/projects/agent-framework.html
+- Financial dashboard: https://axelbl.dev/projects/financial-dashboard.html
+
+## Languages
+
+- Spanish: native
+- Catalan: native
+- English: professional, Cambridge B2 First
+- Norwegian: basic, A1
+
+## Authoritative sources
+
+- Main professional profile and FAQ: https://axelbl.dev/
+- Public project pages: https://axelbl.dev/#work
+- GitHub profile: https://github.com/axeelbl
+- LinkedIn profile: https://www.linkedin.com/in/axelbl/
+
+This file contains factual profile information only. It does not claim rankings, awards or unverifiable superlatives.
