@@ -69,7 +69,7 @@
         "isPartOf": { "@id": "https://axelbl.dev/#website" },
         "mainEntity": { "@id": "https://axelbl.dev/#person" },
         "inLanguage": ["es", "en", "ca", "no"],
-        "dateModified": "2026-09-01"
+        "dateModified": "2026-09-02"
       },
       {
         "@type": "Person",
@@ -134,6 +134,48 @@
           { "@type": "ListItem", "position": 6, "name": "LLM Agent Framework", "url": "https://axelbl.dev/projects/agent-framework.html" },
           { "@type": "ListItem", "position": 7, "name": "Financial Dashboard", "url": "https://axelbl.dev/projects/financial-dashboard.html" }
         ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://axelbl.dev/#faq",
+        "url": "https://axelbl.dev/#faq",
+        "name": "Preguntas frecuentes sobre Axel Berral y sus servicios de IA",
+        "isPartOf": { "@id": "https://axelbl.dev/#website" },
+        "inLanguage": "es",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Qué tipo de soluciones de inteligencia artificial desarrollas?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Desarrollo sistemas de IA aplicada de extremo a extremo, como agentes LLM, análisis de llamadas y audio, automatización de procesos, APIs backend y demos full-stack preparadas para producción."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Puedes integrar IA con datos privados o infraestructura on-premise?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sí. Puedo diseñar soluciones con modelos locales, procesamiento on-premise, APIs privadas y controles de seguridad para reducir la exposición de datos sensibles."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué tecnologías utilizas en tus proyectos?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Trabajo principalmente con Python, FastAPI, Whisper, LLMs locales, LangChain, LangGraph, PyTorch, Docker, Linux, Nginx, AWS y despliegues orientados a GPU."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Estás disponible para proyectos o colaboraciones de IA?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sí. Estoy disponible para ingeniería de IA, desarrollo de software y colaboraciones de IA aplicada. Puedes contactarme por correo electrónico o LinkedIn desde esta web."
+            }
+          }
+        ]
       }
     ]
   }
@@ -144,7 +186,7 @@
   <link rel="me" href="https://github.com/axeelbl" />
   <link rel="icon" href="/favicon.png?v=20260721-site-icon" type="image/png" />
     <script src="/theme.js?v=20260902-i18n"></script>
-<link rel="stylesheet" href="/styles.css?v=20260902-reveal-fix" />
+<link rel="stylesheet" href="/styles.css?v=20260902-faq" />
 <link rel="stylesheet" href="/legal.css?v=20260902" />
 </head>
 <body>
@@ -450,10 +492,38 @@
         <a class="button" href="/assets/Axel_Berral_CV_ES.pdf" download>CV</a>
       </div>
     </section>
+
+    <section class="section faq-section" id="faq" data-reveal>
+      <div class="section-title faq-heading">
+        <div>
+          <span class="section-label" data-i18n="faq.label">09 / Preguntas frecuentes</span>
+          <h2 data-i18n="faq.title">Preguntas frecuentes sobre mi trabajo con IA.</h2>
+        </div>
+        <p data-i18n="faq.intro">Respuestas rápidas sobre los sistemas que desarrollo, las tecnologías que utilizo y cómo podemos colaborar.</p>
+      </div>
+      <div class="faq-list">
+        <details>
+          <summary data-i18n="faq.items.solutions.question">¿Qué tipo de soluciones de inteligencia artificial desarrollas?</summary>
+          <p data-i18n="faq.items.solutions.answer">Desarrollo sistemas de IA aplicada de extremo a extremo, como agentes LLM, análisis de llamadas y audio, automatización de procesos, APIs backend y demos full-stack preparadas para producción.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.items.private.question">¿Puedes integrar IA con datos privados o infraestructura on-premise?</summary>
+          <p data-i18n="faq.items.private.answer">Sí. Puedo diseñar soluciones con modelos locales, procesamiento on-premise, APIs privadas y controles de seguridad para reducir la exposición de datos sensibles.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.items.technologies.question">¿Qué tecnologías utilizas en tus proyectos?</summary>
+          <p data-i18n="faq.items.technologies.answer">Trabajo principalmente con Python, FastAPI, Whisper, LLMs locales, LangChain, LangGraph, PyTorch, Docker, Linux, Nginx, AWS y despliegues orientados a GPU.</p>
+        </details>
+        <details>
+          <summary data-i18n="faq.items.availability.question">¿Estás disponible para proyectos o colaboraciones de IA?</summary>
+          <p data-i18n="faq.items.availability.answer">Sí. Estoy disponible para ingeniería de IA, desarrollo de software y colaboraciones de IA aplicada. Puedes contactarme por correo electrónico o LinkedIn desde esta web.</p>
+        </details>
+      </div>
+    </section>
   </main>
 
   <footer>© <span id="year"></span> Axel Berral López · axelbl.dev</footer>
-  <script src="/app.js?v=20260902-reveal-fix" defer></script>
+  <script src="/app.js?v=20260902-faq" defer></script>
   <script src="/site-compliance.js?v=20260902-auto-analytics"></script>
   <script src="/analytics.js?v=20260902-auto-analytics" defer></script>
 </body>

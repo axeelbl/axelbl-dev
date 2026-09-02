@@ -109,6 +109,43 @@ Object.assign(i18n.en.contact, { copy: 'Want to apply something similar in your 
 Object.assign(i18n.ca.contact, { copy: 'Vols aplicar alguna cosa similar a la teva empresa? Explica’m el teu cas i veiem si té sentit automatitzar-lo amb IA.', businessCta: 'Vull una solució IA per a la meva empresa', businessHref: 'mailto:axelberrallopez@gmail.com?subject=Vull%20una%20soluci%C3%B3%20IA%20per%20a%20la%20meva%20empresa&body=Hola%20Axel%2C%0A%0AVull%20explorar%20una%20soluci%C3%B3%20IA%20per%20a%20la%20meva%20empresa.%20El%20proc%C3%A9s%20que%20m%27agradaria%20millorar%20%C3%A9s%3A%0A%0A' });
 Object.assign(i18n.no.contact, { copy: 'Vil du bruke noe lignende i bedriften din? Fortell meg om caset, så ser vi om det gir mening å automatisere det med AI.', businessCta: 'Jeg vil ha en AI-løsning for bedriften min', businessHref: 'mailto:axelberrallopez@gmail.com?subject=Jeg%20vil%20ha%20en%20AI-l%C3%B8sning%20for%20bedriften%20min&body=Hei%20Axel%2C%0A%0AJeg%20vil%20utforske%20en%20AI-l%C3%B8sning%20for%20bedriften%20min.%20Prosessen%20jeg%20vil%20forbedre%20er%3A%0A%0A' });
 
+Object.assign(i18n.es, { faq: {
+  label: '09 / Preguntas frecuentes', title: 'Preguntas frecuentes sobre mi trabajo con IA.', intro: 'Respuestas rápidas sobre los sistemas que desarrollo, las tecnologías que utilizo y cómo podemos colaborar.',
+  items: {
+    solutions: { question: '¿Qué tipo de soluciones de inteligencia artificial desarrollas?', answer: 'Desarrollo sistemas de IA aplicada de extremo a extremo, como agentes LLM, análisis de llamadas y audio, automatización de procesos, APIs backend y demos full-stack preparadas para producción.' },
+    private: { question: '¿Puedes integrar IA con datos privados o infraestructura on-premise?', answer: 'Sí. Puedo diseñar soluciones con modelos locales, procesamiento on-premise, APIs privadas y controles de seguridad para reducir la exposición de datos sensibles.' },
+    technologies: { question: '¿Qué tecnologías utilizas en tus proyectos?', answer: 'Trabajo principalmente con Python, FastAPI, Whisper, LLMs locales, LangChain, LangGraph, PyTorch, Docker, Linux, Nginx, AWS y despliegues orientados a GPU.' },
+    availability: { question: '¿Estás disponible para proyectos o colaboraciones de IA?', answer: 'Sí. Estoy disponible para ingeniería de IA, desarrollo de software y colaboraciones de IA aplicada. Puedes contactarme por correo electrónico o LinkedIn desde esta web.' }
+  }
+} });
+Object.assign(i18n.en, { faq: {
+  label: '09 / Frequently asked questions', title: 'Frequently asked questions about my AI work.', intro: 'Quick answers about the systems I build, the technologies I use and how we can work together.',
+  items: {
+    solutions: { question: 'What kind of artificial intelligence solutions do you build?', answer: 'I build end-to-end applied AI systems, including LLM agents, call and audio analysis, process automation, backend APIs and production-ready full-stack demos.' },
+    private: { question: 'Can you integrate AI with private data or on-premise infrastructure?', answer: 'Yes. I can design solutions with local models, on-premise processing, private APIs and security controls to reduce the exposure of sensitive data.' },
+    technologies: { question: 'Which technologies do you use in your projects?', answer: 'I mainly work with Python, FastAPI, Whisper, local LLMs, LangChain, LangGraph, PyTorch, Docker, Linux, Nginx, AWS and GPU-oriented deployments.' },
+    availability: { question: 'Are you available for AI projects or collaborations?', answer: 'Yes. I am available for AI engineering, software development and applied AI collaborations. You can contact me by email or LinkedIn from this website.' }
+  }
+} });
+Object.assign(i18n.ca, { faq: {
+  label: '09 / Preguntes freqüents', title: 'Preguntes freqüents sobre la meva feina amb IA.', intro: 'Respostes ràpides sobre els sistemes que desenvolupo, les tecnologies que utilitzo i com podem col·laborar.',
+  items: {
+    solutions: { question: 'Quin tipus de solucions d’intel·ligència artificial desenvolupes?', answer: 'Desenvolupo sistemes d’IA aplicada d’extrem a extrem, com ara agents LLM, anàlisi de trucades i àudio, automatització de processos, APIs backend i demos full-stack preparades per a producció.' },
+    private: { question: 'Pots integrar IA amb dades privades o infraestructura on-premise?', answer: 'Sí. Puc dissenyar solucions amb models locals, processament on-premise, APIs privades i controls de seguretat per reduir l’exposició de dades sensibles.' },
+    technologies: { question: 'Quines tecnologies utilitzes en els teus projectes?', answer: 'Treballo principalment amb Python, FastAPI, Whisper, LLMs locals, LangChain, LangGraph, PyTorch, Docker, Linux, Nginx, AWS i desplegaments orientats a GPU.' },
+    availability: { question: 'Estàs disponible per a projectes o col·laboracions d’IA?', answer: 'Sí. Estic disponible per a enginyeria d’IA, desenvolupament de software i col·laboracions d’IA aplicada. Pots contactar amb mi per correu electrònic o LinkedIn des d’aquesta web.' }
+  }
+} });
+Object.assign(i18n.no, { faq: {
+  label: '09 / Ofte stilte spørsmål', title: 'Ofte stilte spørsmål om AI-arbeidet mitt.', intro: 'Korte svar om systemene jeg bygger, teknologiene jeg bruker og hvordan vi kan samarbeide.',
+  items: {
+    solutions: { question: 'Hvilke typer løsninger innen kunstig intelligens utvikler du?', answer: 'Jeg bygger komplette anvendte AI-systemer, blant annet LLM-agenter, samtale- og lydanalyse, prosessautomatisering, backend-API-er og produksjonsklare full-stack-demoer.' },
+    private: { question: 'Kan du integrere AI med private data eller lokal infrastruktur?', answer: 'Ja. Jeg kan designe løsninger med lokale modeller, lokal databehandling, private API-er og sikkerhetskontroller for å redusere eksponeringen av sensitive data.' },
+    technologies: { question: 'Hvilke teknologier bruker du i prosjektene dine?', answer: 'Jeg jobber hovedsakelig med Python, FastAPI, Whisper, lokale LLM-er, LangChain, LangGraph, PyTorch, Docker, Linux, Nginx, AWS og GPU-orienterte deployeringer.' },
+    availability: { question: 'Er du tilgjengelig for AI-prosjekter eller samarbeid?', answer: 'Ja. Jeg er tilgjengelig for AI engineering, programvareutvikling og samarbeid innen anvendt AI. Du kan kontakte meg via e-post eller LinkedIn fra denne nettsiden.' }
+  }
+} });
+
 const getValue = (obj, path) => path.split('.').reduce((acc, part) => acc && acc[part], obj);
 const localeByLanguage = { es: 'es_ES', en: 'en_GB', ca: 'ca_ES', no: 'nb_NO' };
 
