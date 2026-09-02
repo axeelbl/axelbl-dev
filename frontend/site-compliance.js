@@ -9,7 +9,7 @@
   const existingFooter = document.querySelector('body > footer:not(.composer)');
   const footer = existingFooter || document.createElement('footer');
   footer.classList.add('site-legal-footer');
-  footer.innerHTML = '<span>© <span data-legal-year></span> Axel Berral López</span><a href="/privacidad.html">Privacidad</a><a href="/aviso-legal.html">Aviso legal y condiciones</a><button type="button" data-manage-privacy>Preferencias de privacidad</button>';
+  footer.innerHTML = '<span>© <span id="year" data-legal-year></span> Axel Berral López</span><a href="/privacidad.html">Privacidad</a><a href="/aviso-legal.html">Aviso legal y condiciones</a><button type="button" data-manage-privacy>Preferencias de privacidad</button>';
   if (!existingFooter) document.body.appendChild(footer);
   footer.querySelector('[data-legal-year]').textContent = new Date().getFullYear();
 

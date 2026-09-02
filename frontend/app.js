@@ -154,7 +154,8 @@ function applyLanguage(lang) {
   window.dispatchEvent(new CustomEvent('portfolioLanguageChanged', { detail: { lang } }));
 }
 
-document.getElementById('year').textContent = new Date().getFullYear();
+const yearElement = document.getElementById('year');
+if (yearElement) yearElement.textContent = new Date().getFullYear();
 
 document.querySelectorAll('[data-lang]').forEach((button) => {
   button.addEventListener('click', () => applyLanguage(button.dataset.lang || 'es'));
