@@ -478,21 +478,7 @@ def analytics_summary(days: int = 30) -> dict[str, Any]:
 
     visitors_set = {visitor_key(r) for r in rows if visitor_key(r)}
     visitors = len(visitors_set)
-    explicit_sessions = {r["session_id"] for r in rows if r["session_id"]}
-    cookieless_sessions = 0
-    last_seen: dict[str, datetime] = {}
-    for row in rows_oldest:
-        if row["session_id"] or not row["ip_hash"]:
-            continue
-        try:
-            seen_at = datetime.fromisoformat((row["created_at"] or "").replace("Z", "+00:00"))
-        except ValueError:
-            continue
-        previous = last_seen.get(row["ip_hash"])
-        if previous is None or (seen_at - previous).total_seconds() > 1800:
-            cookieless_sessions += 1
-        last_seen[row["ip_hash"]] = seen_at
-    sessions = len(explicit_sessions) + cookieless_sessions
+    sessions = len({r["session_id"] for r in rows if r["session_id"]})
     page_views = sum(1 for r in rows if r["event"] == "page_view")
     projects_opened = sum(1 for r in rows if r["event"] == "project_opened")
     cta_clicks = sum(1 for r in rows if r["event"] == "cta_clicked")
