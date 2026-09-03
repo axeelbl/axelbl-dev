@@ -472,7 +472,15 @@ export class ChatUI {
     setFeaturedLink(linkUrl, linkLabel = "Abrir fuente") {
         if (!this.featuredLink) return;
 
-        if (!linkUrl) {
+        let safeLinkUrl = "";
+        try {
+            const parsed = new URL(linkUrl, window.location.origin);
+            if (["http:", "https:"].includes(parsed.protocol)) safeLinkUrl = parsed.href;
+        } catch {
+            safeLinkUrl = "";
+        }
+
+        if (!safeLinkUrl) {
             this.featuredLink.classList.add("hidden");
             this.featuredLink.removeAttribute("href");
             this.featuredImageLink?.removeAttribute("href");
@@ -480,10 +488,10 @@ export class ChatUI {
             return;
         }
 
-        this.featuredLink.href = linkUrl;
+        this.featuredLink.href = safeLinkUrl;
         this.featuredLink.textContent = linkLabel;
         this.featuredLink.classList.remove("hidden");
-        this.featuredImageLink?.setAttribute("href", linkUrl);
+        this.featuredImageLink?.setAttribute("href", safeLinkUrl);
         this.featuredImageLink?.classList.remove("is-disabled");
     }
 

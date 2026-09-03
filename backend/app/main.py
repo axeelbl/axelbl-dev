@@ -22,7 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Attachment, Disposition, FileContent, FileName, FileType, Mail
 
@@ -102,7 +102,7 @@ class MessageRequest(BaseModel):
 
 class AgentStudioRequest(BaseModel):
     sector: str = "restaurante"
-    tools: list[str] = []
+    tools: list[str] = Field(default_factory=list)
     instructions: str = ""
     user_message: str = ""
     agent_name: str = ""

@@ -101,7 +101,7 @@ export class ChatController {
                 title: channel.title || "Panel de tenis",
                 body: channel.body || "Sin contenido disponible.",
                 imageUrl: this.getCleanImageUrl(channel.imageUrl),
-                linkUrl: channel.linkUrl || "",
+                linkUrl: this.getCleanExternalUrl(channel.linkUrl),
                 linkLabel: channel.linkLabel || "Abrir fuente",
                 prediction: channel.prediction || null,
                 match: channel.match || null,
@@ -110,8 +110,19 @@ export class ChatController {
     }
 
     getCleanImageUrl(url) {
-        const value = (url || "").trim();
-        return /^https?:\/\//i.test(value) ? value : "";
+        return this.getCleanExternalUrl(url);
+    }
+
+    getCleanExternalUrl(url) {
+        const value = typeof url === "string" ? url.trim() : "";
+        if (!value) return "";
+
+        try {
+            const parsed = new URL(value, window.location.origin);
+            return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "";
+        } catch {
+            return "";
+        }
     }
 
     setActiveScreenChannels(items, { isDefault = false } = {}) {
@@ -342,10 +353,21 @@ export class ChatController {
         const row = document.createElement("div");
         row.className = "probability-row";
         const probability = Number.isFinite(value) ? value : 0;
-        row.innerHTML = `
-            <div class="probability-top"><span>${label || "Jugador"}</span><strong>${Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : "n/d"}</strong></div>
-            <div class="probability-bar"><span style="width:${Math.max(0, Math.min(100, probability * 100))}%"></span></div>
-        `;
+
+        const top = document.createElement("div");
+        top.className = "probability-top";
+        const player = document.createElement("span");
+        player.textContent = label || "Jugador";
+        const percentage = document.createElement("strong");
+        percentage.textContent = Number.isFinite(value) ? `${(value * 100).toFixed(1)}%` : "n/d";
+        top.append(player, percentage);
+
+        const bar = document.createElement("div");
+        bar.className = "probability-bar";
+        const fill = document.createElement("span");
+        fill.style.width = `${Math.max(0, Math.min(100, probability * 100))}%`;
+        bar.appendChild(fill);
+        row.append(top, bar);
         return row;
     }
 
@@ -367,18 +389,39 @@ export class ChatController {
     buildNewsPanel(articles) {
         const panel = document.createElement("section");
         panel.className = "insight-panel news-panel";
-        panel.innerHTML = "<h3>Noticias destacadas</h3>";
+        const heading = document.createElement("h3");
+        heading.textContent = "Noticias destacadas";
+        panel.appendChild(heading);
+
         articles.slice(0, 4).forEach((article) => {
             const card = document.createElement("article");
             card.className = "news-card";
-            card.innerHTML = `
-                <div class="news-card-body">
-                    <div class="news-card-meta">${article.source || "Fuente"} | ${this.formatPublishedAt(article.published_at)}</div>
-                    <h4>${article.title || "Noticia de tenis"}</h4>
-                    <p>${article.description || "Sin extracto disponible."}</p>
-                    ${article.url ? `<a href="${article.url}" target="_blank" rel="noreferrer">Abrir fuente</a>` : ""}
-                </div>
-            `;
+
+            const body = document.createElement("div");
+            body.className = "news-card-body";
+
+            const meta = document.createElement("div");
+            meta.className = "news-card-meta";
+            meta.textContent = `${article.source || "Fuente"} | ${this.formatPublishedAt(article.published_at)}`;
+
+            const title = document.createElement("h4");
+            title.textContent = article.title || "Noticia de tenis";
+
+            const description = document.createElement("p");
+            description.textContent = article.description || "Sin extracto disponible.";
+
+            body.append(meta, title, description);
+            const articleUrl = this.getCleanExternalUrl(article.url);
+            if (articleUrl) {
+                const link = document.createElement("a");
+                link.href = articleUrl;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = "Abrir fuente";
+                body.appendChild(link);
+            }
+
+            card.appendChild(body);
             panel.appendChild(card);
         });
         return panel;

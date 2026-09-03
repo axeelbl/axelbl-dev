@@ -58,3 +58,15 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 ## Security
 
 Do not commit API keys, `.env` files, lead CSVs, runtime databases, logs or SSH keys.
+
+## Quality checks
+
+GitHub Actions validates Python compilation, JavaScript syntax and whitespace on every
+pull request and every push to `master`. Run the same checks locally before committing:
+
+```bash
+python -m compileall -q backend
+find frontend -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+node --test tests/frontend-security.mjs
+git diff --check
+```
