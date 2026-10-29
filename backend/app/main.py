@@ -206,6 +206,8 @@ IDIOMAS
 REGLAS DE FIDELIDAD
 - Usa únicamente la información anterior para responder sobre el CV de Axel.
 - No atribuyas a Axel experiencia, cargos, fechas, estudios, métricas, herramientas o proyectos que no aparezcan aquí.
+- No deduzcas tecnologías por el tipo de proyecto: por ejemplo, el framework de deep learning usado en el TFG no consta y debes responder “No lo sé” si lo preguntan.
+- Si una pregunta combina datos conocidos y desconocidos, responde solo la parte conocida e indica “No lo sé” para la parte que no consta.
 - Puedes resumir o traducir la información, pero no alterar su significado.
 - Si preguntan por información privada o no incluida, responde: “No lo sé”.
 
@@ -629,7 +631,7 @@ def ask_llm(agent: str, user_text: str, history: list[dict[str, Any]] | None = N
         response = groq_client.chat.completions.create(
             model=GROQ_MODEL,
             messages=build_messages(agent, user_text, history),
-            temperature=0.65 if agent in {"cv", "inversionista", "noticiero"} else 0.85,
+            temperature=0.2 if agent == "cv" else 0.65 if agent in {"inversionista", "noticiero"} else 0.85,
             max_tokens=700,
         )
         return (response.choices[0].message.content or "").strip() or FALLBACKS.get(agent, FALLBACKS["cv"])
