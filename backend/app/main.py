@@ -66,6 +66,14 @@ load_extra_env(PROJECT_DIR / "sendgrid.env", override=False)
 GROQ_API_KEY = (os.getenv("GROQ_API_KEY") or "").strip()
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 groq_client = Groq(api_key=GROQ_API_KEY) if Groq and GROQ_API_KEY else None
+TENNIS_MAX_TOKENS = 2000
+TENNIS_CONTINUATION_MAX_TOKENS = 1200
+TENNIS_MAX_CONTINUATIONS = 1
+TENNIS_COMPLETION_INSTRUCTION = (
+    "Entrega una respuesta completa y autosuficiente en un máximo aproximado de 900 palabras. "
+    "Prioriza los puntos útiles, reserva siempre espacio para la conclusión y el aviso responsable, "
+    "y no dejes frases, listas ni secciones a medias."
+)
 
 DB_PATH = PROJECT_DIR / "agent_data.sqlite3"
 LAST_SENT = 0
@@ -615,6 +623,8 @@ def agent_from_request(request: Request, body: Optional[dict[str, Any]] = None) 
 
 def build_messages(agent: str, user_text: str, history: list[dict[str, Any]] | None = None) -> list[dict[str, str]]:
     messages = [{"role": "system", "content": PROMPTS.get(agent, PROMPTS["cv"])}]
+    if agent == "tenista":
+        messages.append({"role": "system", "content": TENNIS_COMPLETION_INSTRUCTION})
     for item in (history or [])[-8:]:
         role = item.get("role")
         content = str(item.get("content") or item.get("text") or "")[:1200]
@@ -624,17 +634,70 @@ def build_messages(agent: str, user_text: str, history: list[dict[str, Any]] | N
     return messages
 
 
+def ask_tennis_llm(messages: list[dict[str, str]], temperature: float) -> str:
+    """Return a complete tennis answer, continuing only when Groq reports truncation."""
+    response = groq_client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=messages,
+        temperature=temperature,
+        max_tokens=TENNIS_MAX_TOKENS,
+    )
+    choice = response.choices[0]
+    parts = [(choice.message.content or "").strip()]
+
+    for _ in range(TENNIS_MAX_CONTINUATIONS):
+        finish_reason = str(getattr(choice, "finish_reason", "") or "").lower()
+        if finish_reason not in {"length", "max_tokens"}:
+            break
+
+        partial_answer = "\n".join(part for part in parts if part)
+        continuation_messages = [
+            *messages,
+            {"role": "assistant", "content": partial_answer},
+            {
+                "role": "user",
+                "content": (
+                    "Continúa exactamente desde donde se cortó. No repitas el texto anterior. "
+                    "Completa solo lo imprescindible, incluye la conclusión y el aviso responsable, "
+                    "y termina ahora sin dejar frases, listas ni secciones a medias."
+                ),
+            },
+        ]
+        response = groq_client.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=continuation_messages,
+            temperature=0.2,
+            max_tokens=TENNIS_CONTINUATION_MAX_TOKENS,
+        )
+        choice = response.choices[0]
+        continuation = (choice.message.content or "").strip()
+        if continuation:
+            parts.append(continuation)
+
+    finish_reason = str(getattr(choice, "finish_reason", "") or "").lower()
+    if finish_reason in {"length", "max_tokens"}:
+        raise RuntimeError("Tennis response remained truncated after bounded continuations")
+
+    return "\n".join(part for part in parts if part).strip()
+
+
 def ask_llm(agent: str, user_text: str, history: list[dict[str, Any]] | None = None) -> str:
     if not groq_client:
         return FALLBACKS.get(agent, FALLBACKS["cv"])
     try:
-        response = groq_client.chat.completions.create(
-            model=GROQ_MODEL,
-            messages=build_messages(agent, user_text, history),
-            temperature=0.2 if agent == "cv" else 0.65 if agent in {"inversionista", "noticiero"} else 0.85,
-            max_tokens=700,
-        )
-        return (response.choices[0].message.content or "").strip() or FALLBACKS.get(agent, FALLBACKS["cv"])
+        messages = build_messages(agent, user_text, history)
+        temperature = 0.2 if agent == "cv" else 0.65 if agent in {"inversionista", "noticiero"} else 0.85
+        if agent == "tenista":
+            answer = ask_tennis_llm(messages, temperature)
+        else:
+            response = groq_client.chat.completions.create(
+                model=GROQ_MODEL,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=700,
+            )
+            answer = (response.choices[0].message.content or "").strip()
+        return answer or FALLBACKS.get(agent, FALLBACKS["cv"])
     except Exception as exc:
         print(f"Groq error for {agent}:", repr(exc), flush=True)
         return FALLBACKS.get(agent, FALLBACKS["cv"])
